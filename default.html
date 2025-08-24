@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Énergétique - Votre Entreprise</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f5f5f5;
+    }
+    header {
+      background: #2a9d8f;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 20px;
+      transition: background 0.3s;
+    }
+    nav button:hover,
+    nav button.active {
+      background: #21867a;
+      border-radius: 5px;
+    }
+
+    section {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: auto;
+      display: none; /* hidden by default */
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    section.active {
+      display: block;
+    }
+
+    h2 { color: #264653; }
+    .services, .about {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .service, .team-member {
+      background: white;
+      padding: 20px;
+      flex: 1 1 300px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    footer {
+      background: #264653;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 500px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .contact-form button {
+      background: #2a9d8f;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .contact-form button:hover {
+      background: #21867a;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Audit Énergétique</h1>
+    <nav>
+      <button class="tab-link active" data-tab="services">Services</button>
+      <button class="tab-link" data-tab="about">À propos</button>
+      <button class="tab-link" data-tab="contact">Contact</button>
+    </nav>
+  </header>
+
+  <section id="services" class="active">
+    <h2>Nos Services</h2>
+    <div class="services">
+      <div class="service">
+        <h3>Audit énergétique résidentiel</h3>
+        <p>Analyse complète de votre logement pour réduire la consommation d'énergie et optimiser vos factures.</p>
+      </div>
+      <div class="service">
+        <h3>Audit énergétique commercial</h3>
+        <p>Évaluation énergétique des bâtiments professionnels pour améliorer la performance et le confort.</p>
+      </div>
+      <div class="service">
+        <h3>Conseils et recommandations</h3>
+        <p>Solutions personnalisées pour améliorer l'efficacité énergétique et réduire votre impact environnemental.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>À propos de nous</h2>
+    <p>Nous sommes une entreprise spécialisée dans l'audit énergétique, dédiée à aider nos clients à optimiser leur consommation d'énergie et à réduire leur impact environnemental.</p>
+    <div class="about">
+      <div class="team-member">
+        <h3>Notre mission</h3>
+        <p>Fournir des audits précis et fiables pour aider nos clients à économiser l'énergie.</p>
+      </div>
+      <div class="team-member">
+        <h3>Notre expertise</h3>
+        <p>Une équipe certifiée avec plusieurs années d'expérience dans le domaine de l'énergie.</p>
+      </div>
+      <div class="team-member">
+        <h3>Nos valeurs</h3>
+        <p>Transparence, fiabilité et engagement envers l'efficacité énergétique et le développement durable.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contactez-nous</h2>
+    <form class="contact-form" action="#" method="POST">
+      <input type="text" name="name" placeholder="Votre nom" required>
+      <input type="email" name="email" placeholder="Votre email" required>
+      <textarea name="message" rows="5" placeholder="Votre message" required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+  </section>
+
+  <footer>
+    &copy; 2025 Audit Énergétique. Tous droits réservés.
+  </footer>
+
+  <script>
+    const tabLinks = document.querySelectorAll(".tab-link");
+    const sections = document.querySelectorAll("section");
+
+    tabLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        // reset active
+        tabLinks.forEach(btn => btn.classList.remove("active"));
+        sections.forEach(sec => sec.classList.remove("active"));
+
+        // activate selected
+        link.classList.add("active");
+        document.getElementById(link.dataset.tab).classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
