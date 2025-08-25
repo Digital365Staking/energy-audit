@@ -127,6 +127,14 @@
       height: 315px;
       border: none;
     }
+    .encart {
+      width: min(680px, 95vw);
+      background: radial-gradient(120% 140% at 10% -10%, rgba(50,212,164,.08), transparent 40%), var(--card);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+      padding: 24px;
+    }
 
     /* Responsive */
     @media (min-width: 768px) {
@@ -198,7 +206,7 @@
     </div>
   </section>
 
-  <section id="contact">
+  <section id="contact" class="encart" role="contentinfo" aria-labelledby="titre-entreprise">
     <h2>Contactez-nous</h2>
     <form class="contact-form" action="#" method="POST">
       <input type="text" name="name" placeholder="Votre nom" required>
