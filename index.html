@@ -171,6 +171,9 @@
       text-decoration-color: var(--accent); 
       flex: 1;
     }
+    .line{
+      display: flex;              /* side-by-side layout */
+    }
     .logo {
       width: 42px; height: 42px;
       border-radius: 12px;
@@ -257,11 +260,13 @@
 
   <section id="contact" class="encart" role="contentinfo" aria-labelledby="titre-entreprise">
     <div class="grid">
+      <div class="line">
         <div class="logo" aria-hidden="true">DE</div>
         <div class="col">
           <h2 id="titre-entreprise">DIGITAL ENERGY AUDIT</h2>
           <div class="subtitle">Société énergétique (Espagne)</div>
         </div>
+      </div>
         <div class="label">NIF</div>
         <div class="value" id="nif"><!-- Renseignez le NIF ci-dessous -->
           <strong>À renseigner</strong>
