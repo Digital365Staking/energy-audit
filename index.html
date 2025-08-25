@@ -146,6 +146,9 @@
       justify-content: space-between; /* Spread items */
       align-items: center;      /* Align vertically */
     }
+    .col{
+      flex: 1;
+    }
     .right {
       display: inline-block;  /* Puts them side by side */
       vertical-align: middle; /* Optional: vertical alignment */
@@ -159,18 +162,14 @@
       vertical-align: middle; /* Optional: vertical alignment */
       width: 70%;
     }
-    .label { 
-      display: inline-block;  /* Puts them side by side */
-      vertical-align: middle; /* Optional: vertical alignment */
+    .label {
       color: var(--muted); 
-      width: 50%;
+      flex: 1;
     }
-    .value { 
-      display: inline-block;  /* Puts them side by side */
-      vertical-align: middle; /* Optional: vertical alignment */
+    .value {
       color: #e8edf6; 
       text-decoration-color: var(--accent); 
-      width: 50%;
+      flex: 1;
     }
     .logo {
       width: 42px; height: 42px;
@@ -180,8 +179,7 @@
       display: grid; place-items: center;
       color: #0b1020; font-weight: 800;
       letter-spacing: .5px;
-      display: inline-block;  /* Puts them side by side */
-      vertical-align: middle; /* Optional: vertical alignment */
+      flex: 1;
     }
     h2 {
       font-size: 1.25rem; margin: 0 0 2px 0; letter-spacing: .3px;
@@ -260,7 +258,7 @@
   <section id="contact" class="encart" role="contentinfo" aria-labelledby="titre-entreprise">
     <div class="grid">
         <div class="logo" aria-hidden="true">DE</div>
-        <div class="right">
+        <div class="col">
           <h2 id="titre-entreprise">DIGITAL ENERGY AUDIT</h2>
           <div class="subtitle">Société énergétique (Espagne)</div>
         </div>
