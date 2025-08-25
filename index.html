@@ -151,16 +151,25 @@
       vertical-align: middle; /* Optional: vertical alignment */
     }
     .grid {
-      display: grid;
+      display: flex;
       grid-template-columns: 160px 1fr;
       gap: 10px 18px;
       padding-top: 8px;
       display: inline-block;  /* Puts them side by side */
       vertical-align: middle; /* Optional: vertical alignment */
-      width: 50%;
+      width: 70%;
     }
-    .label { color: var(--muted); }
-    .value a { color: var(--text); text-decoration-color: var(--accent); }
+    .label { 
+      display: inline-block;  /* Puts them side by side */
+      vertical-align: middle; /* Optional: vertical alignment */
+      color: var(--muted); 
+    }
+    .value a { 
+      display: inline-block;  /* Puts them side by side */
+      vertical-align: middle; /* Optional: vertical alignment */
+      color: #e8edf6; 
+      text-decoration-color: var(--accent); 
+    }
     .logo {
       width: 42px; height: 42px;
       border-radius: 12px;
