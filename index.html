@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Audit Énergétique - Votre Entreprise</title>
   <style>
+    :root {
+      --bg: #0b1020;
+      --card: #11162a;
+      --accent: #32d4a4;
+      --text: #e8edf6;
+      --muted: #9aa4b2;
+      --ring: rgba(50, 212, 164, 0.35);
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0; padding: 0;
@@ -135,6 +143,14 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
       padding: 24px;
     }
+    .grid {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 10px 18px;
+      padding-top: 8px;
+    }
+    .label { color: var(--muted); }
+    .value a { color: var(--text); text-decoration-color: var(--accent); }
 
     /* Responsive */
     @media (min-width: 768px) {
@@ -208,6 +224,29 @@
 
   <section id="contact" class="encart" role="contentinfo" aria-labelledby="titre-entreprise">
     <h2>Contactez-nous</h2>
+    <div class="grid">
+        <div class="label">NIF</div>
+        <div class="value" id="nif"><!-- Renseignez le NIF ci-dessous -->
+          <strong>À renseigner</strong>
+          <!-- Exemple de format personnes morales : B12345678 -->
+        </div>
+
+        <div class="label">Adresse</div>
+        <div class="value" id="adresse">
+          <address>
+            <!-- Remplacez par l'adresse en Espagne -->
+            Rue / Avenue, Numéro<br />
+            Code postal, Ville, Province<br />
+            Espagne
+          </address>
+        </div>
+
+        <div class="label">Email</div>
+        <div class="value" id="email">
+          <!-- Remplacez par l'email de contact -->
+          <a href="mailto:contact@digitalenergyaudit.es">contact@digitalenergyaudit.es</a>
+        </div>
+    </div>
     <form class="contact-form" action="#" method="POST">
       <input type="text" name="name" placeholder="Votre nom" required>
       <input type="email" name="email" placeholder="Votre email" required>
