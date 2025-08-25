@@ -157,10 +157,23 @@
       padding-top: 8px;
       display: inline-block;  /* Puts them side by side */
       vertical-align: middle; /* Optional: vertical alignment */
+      width: 50%;
     }
     .label { color: var(--muted); }
     .value a { color: var(--text); text-decoration-color: var(--accent); }
-
+    .logo {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      background: conic-gradient(from 210deg, var(--accent), #72ffd1, var(--accent));
+      box-shadow: 0 0 0 6px rgba(50,212,164,.08);
+      display: grid; place-items: center;
+      color: #0b1020; font-weight: 800;
+      letter-spacing: .5px;
+    }
+    h2 {
+      font-size: 1.25rem; margin: 0 0 2px 0; letter-spacing: .3px;
+    }
+    .subtitle { color: var(--muted); font-size: .95rem; }
     /* Responsive */
     @media (min-width: 768px) {
       .carousel-item {
@@ -234,6 +247,11 @@
   <section id="contact" class="encart" role="contentinfo" aria-labelledby="titre-entreprise">
     <h2>Contactez-nous</h2>
     <div class="grid">
+        <div class="logo" aria-hidden="true">DE</div>
+        <div>
+          <h2 id="titre-entreprise">DIGITAL ENERGY AUDIT</h2>
+          <div class="subtitle">Société énergétique (Espagne)</div>
+        </div>
         <div class="label">NIF</div>
         <div class="value" id="nif"><!-- Renseignez le NIF ci-dessous -->
           <strong>À renseigner</strong>
