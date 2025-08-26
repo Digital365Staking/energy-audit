@@ -149,11 +149,21 @@
       flex-wrap: wrap;
       gap: 5px; /* spacing between items */
     }
-    .col{
-      flex: 1 1 calc(50% - 5px);
-      padding: 5px;
-      box-sizing: border-box; /* include padding in width */
+    /* Mobile: 1 column */
+    @media (max-width: 768px) {
+      .col{
+        flex: 0 0 100%; /* full width = one column */
+      }
     }
+    /* PC: 2 columns */
+    @media (min-width: 768px) {
+      .col{
+        flex: 1 1 calc(30% - 5px);
+        padding: 5px;
+        box-sizing: border-box; /* include padding in width */
+      }
+    }
+    
     .right {
       display: inline-block;  /* Puts them side by side */
       vertical-align: middle; /* Optional: vertical alignment */
