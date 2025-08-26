@@ -49,7 +49,7 @@
       display: block;
     }
 
-    h2 { color: #264653; }
+    h2 { color: #0a1ca5; }
     .services, .about {
       display: flex;
       flex-wrap: wrap;
@@ -165,13 +165,11 @@
       width: 70%;
     }
     .label {
-      color: var(--muted); 
-      flex: 1;
+      color: #0a1ca5;
     }
     .value {
       color: #e8edf6; 
-      text-decoration-color: var(--accent); 
-      flex: 1;
+      text-decoration-color: var(--accent);
     }
     .line{
       display: flex;              /* side-by-side layout */
