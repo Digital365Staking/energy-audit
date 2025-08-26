@@ -129,21 +129,37 @@
       border: none;
     }
     .encart {
-      width: min(460px, 95vw);
-      background-image: linear-gradient(
-        23deg,
-        hsl(120, 100%, 75%) 0%,    /* light green */
-        hsl(120, 90%, 60%) 20%,    /* medium green */
-        hsl(120, 80%, 50%) 40%,    /* darker green */
-        hsl(120, 70%, 40%) 60%,    /* deep green */
-        hsl(120, 53%, 48%) 80%,    /* very dark green */
-        hsl(120, 40%, 38%) 100%    /* almost forest green */
-        );
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
-      padding: 24px;
-    }
+  max-width: 460px;            /* don't exceed 460px on large screens */
+  width: 95%;                  /* take 95% of viewport width on small screens */
+  margin: 20px auto;           /* center horizontally and add top/bottom spacing */
+  
+  background-image: linear-gradient(
+    23deg,
+    hsl(120, 100%, 75%) 0%, 
+    hsl(120, 90%, 60%) 20%, 
+    hsl(120, 80%, 50%) 40%, 
+    hsl(120, 70%, 40%) 60%, 
+    hsl(120, 53%, 48%) 80%, 
+    hsl(120, 40%, 38%) 100%
+  );
+  
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  padding: 24px;
+  
+  display: flex;              /* optional if you want to align content inside */
+  flex-direction: column;
+  gap: 12px;                  /* space between child elements */
+  box-sizing: border-box;     /* include padding/border in width */
+}
+/* Optional: adjust padding on very small screens */
+@media (max-width: 480px) {
+  .encart {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}
     .container{
       display: flex;            /* Activate flexbox */
       flex-wrap: wrap;
