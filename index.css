@@ -143,13 +143,15 @@
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
       padding: 24px;
+    }
+    .container{
       display: flex;            /* Activate flexbox */
       flex-wrap: wrap;
-      gap: 20px; /* spacing between items */
+      gap: 5px; /* spacing between items */
     }
     .col{
-      flex: 1 1 calc(50% - 20px);
-      padding: 20px;
+      flex: 1 1 calc(50% - 5px);
+      padding: 5px;
       box-sizing: border-box; /* include padding in width */
     }
     .right {
