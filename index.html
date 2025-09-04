@@ -35,38 +35,47 @@
     </div>
 
 <script>
-  const track = document.querySelector('.carousel-track');
-  const items = document.querySelectorAll('.carousel-item');
-  const prev = document.querySelector('.prev');
-  const next = document.querySelector('.next');
+ function initCarousels() {
+  // Récupère tous les carousels sur la page
+  const carousels = document.querySelectorAll('.carousel');
 
-  let index = 0;
-  const maxIndex = items.length - 1;
+  carousels.forEach(carousel => {
+    const track = carousel.querySelector('.carousel-track');
+    const items = carousel.querySelectorAll('.carousel-item');
+    const prev = carousel.querySelector('.prev');
+    const next = carousel.querySelector('.next');
 
-  function updateCarousel() {
-    track.style.transform = `translateX(-${index * 100}%)`;
+    let index = 0;
+    const maxIndex = items.length - 1;
 
-    // Désactiver/activer les boutons selon l'index
-    prev.disabled = index === 0;
-    next.disabled = index === maxIndex;
-  }
-
-  prev.addEventListener('click', () => {
-    if (index > 0) {
-      index--;
-      updateCarousel();
+    function updateCarousel() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+      prev.disabled = index === 0;
+      next.disabled = index === maxIndex;
     }
-  });
 
-  next.addEventListener('click', () => {
-    if (index < maxIndex) {
-      index++;
-      updateCarousel();
-    }
-  });
+    prev.addEventListener('click', () => {
+      if (index > 0) {
+        index--;
+        updateCarousel();
+      }
+    });
 
-  // Initial update
-  updateCarousel();
+    next.addEventListener('click', () => {
+      if (index < maxIndex) {
+        index++;
+        updateCarousel();
+      }
+    });
+
+    // Initial update
+    updateCarousel();
+  });
+}
+
+// Appel de la fonction après le chargement du DOM
+document.addEventListener('DOMContentLoaded', initCarousels);
+
 </script>
   </section>
 
