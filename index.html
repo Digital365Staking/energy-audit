@@ -17,28 +17,16 @@
 
   <section id="services" class="active">
     <h2>🎬 Nos réalisations</h2>
-    <div class="carousel">
+   <div class="carousel">
   <div class="carousel-track">
     <div class="carousel-item">
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Vidéo 1"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Vidéo 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="carousel-item">
-      <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U"
-              title="Vidéo 2"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U" title="Vidéo 2" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="carousel-item">
-      <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4"
-              title="Vidéo 3"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" title="Vidéo 3" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -53,20 +41,32 @@
   const next = document.querySelector('.next');
 
   let index = 0;
+  const maxIndex = items.length - 1;
 
   function updateCarousel() {
     track.style.transform = `translateX(-${index * 100}%)`;
+
+    // Désactiver/activer les boutons selon l'index
+    prev.disabled = index === 0;
+    next.disabled = index === maxIndex;
   }
 
   prev.addEventListener('click', () => {
-    index = (index > 0) ? index - 1 : items.length - 1;
-    updateCarousel();
+    if (index > 0) {
+      index--;
+      updateCarousel();
+    }
   });
 
   next.addEventListener('click', () => {
-    index = (index < items.length - 1) ? index + 1 : 0;
-    updateCarousel();
+    if (index < maxIndex) {
+      index++;
+      updateCarousel();
+    }
   });
+
+  // Initial update
+  updateCarousel();
 </script>
   </section>
 
