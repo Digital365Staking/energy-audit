@@ -99,21 +99,25 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
+
     .carousel {
     position: relative;
-    width: 560px; /* largeur fixe ou responsive */
-    height: 315px; /* hauteur fixe ou responsive */
+    width: 100%;
+    max-width: 800px; /* largeur max sur PC */
+    margin: auto;
     overflow: hidden;
+    aspect-ratio: 16/9; /* garde le format vidéo */
   }
 
   .carousel-track {
     display: flex;
     transition: transform 0.5s ease;
+    height: 100%;
   }
 
   .carousel-item {
     min-width: 100%;
+    height: 100%;
     box-sizing: border-box;
   }
 
@@ -133,6 +137,8 @@
     border: none;
     padding: 10px;
     cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
   }
 
   .carousel .prev {
@@ -142,6 +148,15 @@
   .carousel .next {
     right: 10px;
   }
+
+  /* Sur mobile : réduire un peu la taille des boutons */
+  @media (max-width: 600px) {
+    .carousel button {
+      padding: 6px;
+      font-size: 14px;
+    }
+  }
+    
     .encart {
   max-width: 460px;            /* don't exceed 460px on large screens */
   width: 95%;                  /* take 95% of viewport width on small screens */
