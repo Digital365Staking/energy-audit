@@ -101,33 +101,47 @@
     }
     
     .carousel {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 1rem;
-    }
+    position: relative;
+    width: 560px; /* largeur fixe ou responsive */
+    height: 315px; /* hauteur fixe ou responsive */
+    overflow: hidden;
+  }
 
-    .carousel::-webkit-scrollbar {
-      display: none; /* Masquer la scrollbar */
-    }
+  .carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
 
-    .carousel-item {
-      flex: 0 0 80%; /* chaque vidéo occupe 80% de la largeur */
-      max-width: 600px;
-      scroll-snap-align: start;
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+  .carousel-item {
+    min-width: 100%;
+    box-sizing: border-box;
+  }
 
-    .carousel-item iframe {
-      width: 100%;
-      height: 315px;
-      border: none;
-    }
+  .carousel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Boutons */
+  .carousel button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .carousel .prev {
+    left: 10px;
+  }
+
+  .carousel .next {
+    right: 10px;
+  }
     .encart {
   max-width: 460px;            /* don't exceed 460px on large screens */
   width: 95%;                  /* take 95% of viewport width on small screens */
