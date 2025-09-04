@@ -18,28 +18,56 @@
   <section id="services" class="active">
     <h2>🎬 Nos réalisations</h2>
     <div class="carousel">
-      <div class="carousel-item">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="Vidéo 1"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-      </div>
-      <div class="carousel-item">
-        <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U"
-                title="Vidéo 2"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-      </div>
-      <div class="carousel-item">
-        <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4"
-                title="Vidéo 3"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-      </div>
+  <div class="carousel-track">
+    <div class="carousel-item">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="Vidéo 1"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
     </div>
+    <div class="carousel-item">
+      <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U"
+              title="Vidéo 2"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>
+    <div class="carousel-item">
+      <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4"
+              title="Vidéo 3"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <button class="prev">&#10094;</button>
+  <button class="next">&#10095;</button>
+</div>
+
+<script>
+  const track = document.querySelector('.carousel-track');
+  const items = document.querySelectorAll('.carousel-item');
+  const prev = document.querySelector('.prev');
+  const next = document.querySelector('.next');
+
+  let index = 0;
+
+  function updateCarousel() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  prev.addEventListener('click', () => {
+    index = (index > 0) ? index - 1 : items.length - 1;
+    updateCarousel();
+  });
+
+  next.addEventListener('click', () => {
+    index = (index < items.length - 1) ? index + 1 : 0;
+    updateCarousel();
+  });
+</script>
   </section>
 
   <section id="about">
