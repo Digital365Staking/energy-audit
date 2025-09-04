@@ -100,13 +100,13 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .carousel {
+     .carousel {
     position: relative;
     width: 100%;
-    max-width: 800px; /* largeur max sur PC */
+    max-width: 800px;
     margin: auto;
     overflow: hidden;
-    aspect-ratio: 16/9; /* garde le format vidéo */
+    aspect-ratio: 16/9;
   }
 
   .carousel-track {
@@ -139,6 +139,13 @@
     cursor: pointer;
     font-size: 18px;
     border-radius: 50%;
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+
+  .carousel button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .carousel .prev {
@@ -149,12 +156,10 @@
     right: 10px;
   }
 
-  /* Sur mobile : réduire taille des boutons et limiter la hauteur du carousel */
   @media (max-width: 600px) {
     .carousel {
-      max-height: 70vh; /* pas plus de 70% de la hauteur de l'écran */
+      max-height: 70vh;
     }
-
     .carousel button {
       padding: 6px;
       font-size: 14px;
