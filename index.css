@@ -164,9 +164,16 @@
     right: 10px;
   }
 
+  .img-height {
+    height: 700px; /* default for large screens */
+  }
+
   @media (max-width: 600px) {
     .carousel {
       max-height: 70vh;
+    }
+    .img-height {
+      height: 250px; /* default for large screens */
     }
     .carousel button {
       padding: 6px;
