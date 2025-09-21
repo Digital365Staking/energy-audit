@@ -165,7 +165,7 @@
   }
 
   .img-height {
-    height: 700px; /* default for large screens */
+    height: 1200px; /* default for large screens */
   }
 
   @media (max-width: 600px) {
