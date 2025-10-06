@@ -50,22 +50,40 @@
 
   <!-- ABOUT -->
   <section id="about" class="fade">
-    <h2 data-key="about-title">À propos de nous</h2>
-    <p data-key="about-text">
-      La société accompagne ses clients dans la maîtrise et l’optimisation de leur consommation électrique.
-    </p>
+    <h2 data-key="aboutTitle"></h2>
+    <p data-key="aboutText"></p>
     <ul>
-      <li data-key="about-li1">Des mesures et audits précis des appareils, installations et bâtiments</li>
-      <li data-key="about-li2">Des conseils personnalisés pour améliorer l’efficacité énergétique</li>
-      <li data-key="about-li3">Installation et suivi de systèmes intelligents de mesure</li>
+      <li data-key="about1"></li>
+      <li data-key="about2"></li>
+      <li data-key="about3"></li>
+      <li data-key="about4"></li>
     </ul>
+    <div class="about">
+      <div class="team-member">
+        <h3 data-key="sensorTitle"></h3>
+        <p data-key="sensorText"></p>
+      </div>
+      <div class="team-member">
+        <h3 data-key="itTitle"></h3>
+        <p data-key="itText"></p>
+      </div>
+      <div class="team-member">
+        <h3 data-key="teamTitle"></h3>
+        <img style="width:100%; max-width:400px; height:300px; object-fit:cover; border-radius:10px;" 
+             src="https://raw.githubusercontent.com/Digital365Staking/energy-audit-fr/refs/heads/main/MyProfile.jpeg" 
+             alt="CEO profile">
+      </div>
+    </div>
   </section>
 
   <!-- CONTACT -->
   <section id="contact" class="fade">
-    <h2 data-key="contact-title">Contactez-nous</h2>
-    <p><strong>Email :</strong> <a href="mailto:contact@digitalenergyaudit.es">contact@digitalenergyaudit.es</a></p>
-    <p><strong data-key="address-label">Adresse :</strong> Rue / Avenue, Numéro, Ville, Espagne</p>
+    <div class="container" style="max-width:600px;margin:auto;text-align:center;">
+      <h2>DIGITAL ENERGY AUDIT</h2>
+      <p><strong>NIF:</strong> <span data-key="nif"></span></p>
+      <p><strong data-key="address"></strong>: Rue / Avenue, Numéro<br>Code postal, Ville, Province<br>Espagne</p>
+      <p><strong>Email:</strong> <a href="mailto:contact@digitalenergyaudit.es">contact@digitalenergyaudit.es</a></p>
+    </div>
   </section>
 
   <footer>
@@ -74,7 +92,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // === TABS ===
+      // === Tabs ===
       const tabLinks = document.querySelectorAll(".tab-link");
       const sections = document.querySelectorAll("section");
       tabLinks.forEach(link => {
@@ -86,7 +104,7 @@
         });
       });
 
-      // === CAROUSEL ===
+      // === Carousel ===
       const carousel = document.querySelector(".carousel");
       const track = carousel.querySelector(".carousel-track");
       const items = carousel.querySelectorAll(".carousel-item");
@@ -97,6 +115,7 @@
       function updateCarousel() {
         track.style.transform = `translateX(-${index * 100}%)`;
       }
+
       prev.addEventListener("click", () => {
         index = index > 0 ? index - 1 : items.length - 1;
         updateCarousel();
@@ -106,40 +125,61 @@
         updateCarousel();
       });
 
-      // === TRANSLATION ===
+      // === Translations ===
       const translations = {
         fr: {
           home: "🏠 Accueil", about: "À propos", contact: "Contact",
           realisations: "🎬 Nos réalisations",
-          "about-title": "À propos de nous",
-          "about-text": "La société accompagne ses clients dans la maîtrise et l’optimisation de leur consommation électrique.",
-          "about-li1": "Des mesures et audits précis des appareils, installations et bâtiments",
-          "about-li2": "Des conseils personnalisés pour améliorer l’efficacité énergétique",
-          "about-li3": "Installation et suivi de systèmes intelligents de mesure",
-          "contact-title": "Contactez-nous",
-          "address-label": "Adresse", rights: "Tous droits réservés."
+          aboutTitle: "À propos de nous",
+          aboutText: "La société accompagne ses clients dans la maîtrise et l’optimisation de leur consommation électrique.",
+          about1: "Mesure et audit précis des appareils et installations électriques",
+          about2: "Conseils personnalisés pour améliorer l’efficacité énergétique",
+          about3: "Fourniture et installation de systèmes intelligents de mesure",
+          about4: "Intégration de solutions IA pour la détection d’anomalies et l’optimisation des performances",
+          sensorTitle: "Capteurs et Mesure",
+          sensorText: "Nous utilisons des capteurs avancés pour mesurer avec précision la consommation énergétique des appareils et installations.",
+          itTitle: "Solutions IT et IA",
+          itText: "Nos ingénieurs en intelligence artificielle développent des solutions de collecte, d’analyse et de reporting automatisé.",
+          teamTitle: "Direction Technique",
+          nif: "Y12345678",
+          address: "Adresse",
+          rights: "Tous droits réservés."
         },
         en: {
           home: "🏠 Home", about: "About", contact: "Contact",
           realisations: "🎬 Our Projects",
-          "about-title": "About Us",
-          "about-text": "The company helps clients manage and optimize their electricity consumption.",
-          "about-li1": "Accurate measurements and audits of devices, installations, and buildings",
-          "about-li2": "Personalized advice to improve energy efficiency",
-          "about-li3": "Installation and monitoring of smart metering systems",
-          "contact-title": "Contact Us",
-          "address-label": "Address", rights: "All rights reserved."
+          aboutTitle: "About Us",
+          aboutText: "The company helps clients manage and optimize their electrical consumption.",
+          about1: "Precise measurement and audit of devices and electrical installations",
+          about2: "Personalized advice to improve energy efficiency",
+          about3: "Supply and installation of smart metering systems",
+          about4: "Integration of AI solutions for anomaly detection and performance optimization",
+          sensorTitle: "Sensors and Measurement",
+          sensorText: "We use advanced sensors to accurately measure energy consumption across devices and installations.",
+          itTitle: "IT & AI Solutions",
+          itText: "Our AI engineers develop automated systems for data collection, analysis, and reporting.",
+          teamTitle: "Technical Management",
+          nif: "Y12345678",
+          address: "Address",
+          rights: "All rights reserved."
         },
         es: {
           home: "🏠 Inicio", about: "Acerca de", contact: "Contacto",
           realisations: "🎬 Nuestras realizaciones",
-          "about-title": "Acerca de nosotros",
-          "about-text": "La empresa ayuda a sus clientes a optimizar su consumo eléctrico.",
-          "about-li1": "Mediciones y auditorías precisas de dispositivos, instalaciones y edificios",
-          "about-li2": "Consejos personalizados para mejorar la eficiencia energética",
-          "about-li3": "Instalación y seguimiento de sistemas inteligentes de medición",
-          "contact-title": "Contáctanos",
-          "address-label": "Dirección", rights: "Todos los derechos reservados."
+          aboutTitle: "Acerca de nosotros",
+          aboutText: "La empresa ayuda a sus clientes a optimizar su consumo eléctrico.",
+          about1: "Medición y auditoría precisa de dispositivos e instalaciones eléctricas",
+          about2: "Asesoramiento personalizado para mejorar la eficiencia energética",
+          about3: "Suministro e instalación de sistemas inteligentes de medición",
+          about4: "Integración de soluciones de IA para detección de anomalías y optimización del rendimiento",
+          sensorTitle: "Sensores y Medición",
+          sensorText: "Utilizamos sensores avanzados para medir con precisión el consumo energético de los dispositivos e instalaciones.",
+          itTitle: "Soluciones IT e IA",
+          itText: "Nuestros ingenieros desarrollan sistemas automatizados de recopilación, análisis e informes.",
+          teamTitle: "Dirección Técnica",
+          nif: "Y12345678",
+          address: "Dirección",
+          rights: "Todos los derechos reservados."
         }
       };
 
