@@ -1,5 +1,5 @@
 :root {
-  --bg: #0b1020;         /* Main background */
+  --bg: rgb(89 208 136 / 80%);         /* Main background */
   --card: #11162a;       /* Cards & sections */
   --accent: #32d4a4;     /* Accent / highlight */
   --text: #e8edf6;       /* Main text */
