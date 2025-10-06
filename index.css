@@ -1,185 +1,130 @@
-  :root {
-      --bg: #0b1020;
-      --card: #11162a;
-      --accent: #32d4a4;
-      --text: #e8edf6;
-      --muted: #9aa4b2;
-      --ring: rgba(50, 212, 164, 0.35);
-    }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: #f5f5f5;
-    }
-    header {
-      background: #2a9d8f;
-      color: white;
-      padding: 20px 0;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 15px;
-    }
-    nav button {
-      background: none;
-      border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      padding: 10px 20px;
-      transition: background 0.3s;
-    }
-    nav button:hover,
-    nav button.active {
-      background: #21867a;
-      border-radius: 5px;
-    }
+:root {
+  --bg: #0b1020;
+  --card: #11162a;
+  --accent: #32d4a4;
+  --text: #e8edf6;
+  --muted: #9aa4b2;
+  --ring: rgba(50, 212, 164, 0.35);
+}
 
-    section {
-      padding: 40px 20px;
-      max-width: 1000px;
-      margin: auto;
-      display: none; /* hidden by default */
-      animation: fadeIn 0.4s ease-in-out;
-    }
-    section.active {
-      display: block;
-    }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+}
 
-    h2 { color: #0a1ca5; }
-    .services, .about {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .service, .team-member {
-      background: white;
-      padding: 20px;
-      flex: 1 1 300px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    footer {
-      background: #264653;
-      color: white;
-      text-align: center;
-      padding: 20px 20px 20px 20px;
-      margin-top: 50px;
-    }
+header {
+  background: #2a9d8f;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
 
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 500px;
-    }
-    .contact-form input,
-    .contact-form textarea {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .contact-form button {
-      background: #2a9d8f;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .contact-form button:hover {
-      background: #21867a;
-    }
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+nav button {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background 0.3s;
+}
 
-     .carousel {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    margin-top: 20px;
-    overflow: hidden;
-    aspect-ratio: 16/9;
-  }
+nav button:hover,
+nav button.active {
+  background: #21867a;
+  border-radius: 5px;
+}
 
-  .carousel-track {
-    display: flex;
-    transition: transform 0.5s ease;
-    height: 100%;
-  }
+.lang-switcher {
+  margin-top: 10px;
+}
 
-  .carousel-item {
-    min-width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-  }
+section {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: auto;
+  display: none;
+  animation: fadeIn 0.4s ease-in-out;
+}
 
-  .carousel iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
+section.active {
+  display: block;
+}
 
-  .carousel img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* couvre toute la zone sans déformer */
-    display: block;
-  }
+h2 {
+  color: #0a1ca5;
+}
 
-  /* Boutons */
-  .carousel button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    border-radius: 50%;
-    opacity: 1;
-    transition: opacity 0.3s;
-  }
+footer {
+  background: #264653;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+}
 
-  .carousel button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
+/* Carousel */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
 
-  .carousel .prev {
-    left: 10px;
-  }
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  height: 100%;
+}
 
-  .carousel .next {
-    right: 10px;
-  }
+.carousel-item {
+  min-width: 100%;
+  height: 100%;
+}
 
-  @media (max-width: 600px) {
-    .carousel {
-      max-height: 70vh;
-    }
-    
-    .carousel button {
-      padding: 6px;
-      font-size: 14px;
-    }
-  }
-    
-    .encart {
-  max-width: 460px;            /* don't exceed 460px on large screens */
-  width: 95%;                  /* take 95% of viewport width on small screens */
-  margin: 20px auto;           /* center horizontally and add top/bottom spacing */
-  
+.carousel iframe,
+.carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 50%;
+}
+
+.carousel .prev { left: 10px; }
+.carousel .next { right: 10px; }
+
+.carousel button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.encart {
+  max-width: 460px;
+  width: 95%;
+  margin: 20px auto;
   background-image: linear-gradient(
     23deg,
     hsl(120, 100%, 75%) 0%, 
@@ -189,74 +134,33 @@
     hsl(120, 53%, 48%) 80%, 
     hsl(120, 40%, 38%) 100%
   );
-  
-  border: 1px solid rgba(255,255,255,.06);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
   padding: 24px;
-  box-sizing: border-box;     /* include padding/border in width */
 }
-/* Optional: adjust padding on very small screens */
-@media (max-width: 480px) {
-  .encart {
-    padding: 16px;
-    border-radius: 16px;
-  }
-}
-    .container{
-      display: flex;            /* Activate flexbox */
-      flex-wrap: wrap;
-      gap: 5px; /* spacing between items */
-    }
-    /* Mobile: 1 column */
-    @media (max-width: 768px) {
-      .col{
-        flex: 0 0 100%; /* full width = one column */
-      }
-    }
-    /* PC: 2 columns */
-    @media (min-width: 768px) {
-      .col{
-        flex: 1 1 calc(30% - 5px);
-        padding: 5px;
-        box-sizing: border-box; /* include padding in width */
-      }
-    }
-    
-    .right {
-      display: inline-block;  /* Puts them side by side */
-      vertical-align: middle; /* Optional: vertical alignment */
-    }    
-    .label {
-      color: #0a1ca5;
-    }
-    .value {
-      color: #e8edf6; 
-      text-decoration-color: var(--accent);
-    }    
-    .logo {
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      background: conic-gradient(from 210deg, var(--accent), #72ffd1, var(--accent));
-      box-shadow: 0 0 0 6px rgba(50,212,164,.08);
-      display: grid; place-items: center;
-      color: #0b1020; font-weight: 800;
-      letter-spacing: .5px;
-      flex: 1;
-    }
-    h2 {
-      font-size: 1.25rem; margin: 0 0 2px 0; letter-spacing: .3px;
-    }
-    .subtitle { color: var(--muted); font-size: .95rem; }
-    /* Responsive */
-    @media (min-width: 768px) {
-      .carousel-item {
-        flex: 0 0 45%; /* deux vidéos visibles sur tablette */
-      }
-    }
 
-    @media (min-width: 1024px) {
-      .carousel-item {
-        flex: 0 0 30%; /* trois vidéos visibles sur desktop */
-      }
-    }
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.col { flex: 1 1 calc(30% - 5px); }
+
+.logo {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: conic-gradient(from 210deg, var(--accent), #72ffd1, var(--accent));
+  display: grid;
+  place-items: center;
+  color: #0b1020;
+  font-weight: 800;
+}
+
+.label { color: #0a1ca5; }
+.value { color: #e8edf6; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
