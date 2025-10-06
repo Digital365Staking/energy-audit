@@ -1,24 +1,27 @@
 :root {
-  --bg: #0b1020;
-  --card: #11162a;
-  --accent: #32d4a4;
-  --text: #e8edf6;
-  --muted: #9aa4b2;
-  --ring: rgba(50, 212, 164, 0.35);
+  --bg: #0b1020;         /* Main background */
+  --card: #11162a;       /* Cards & sections */
+  --accent: #32d4a4;     /* Accent / highlight */
+  --text: #e8edf6;       /* Main text */
+  --muted: #9aa4b2;      /* Muted text */
+  --highlight: #21867a;  /* Hover & button highlight */
 }
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f5f5f5;
+  background: var(--bg);
+  color: var(--text);
 }
 
+/* === HEADER === */
 header {
-  background: #2a9d8f;
-  color: white;
+  background: var(--bg);
+  color: var(--text);
   text-align: center;
   padding: 20px;
+  border-bottom: 2px solid var(--accent);
 }
 
 nav {
@@ -29,19 +32,21 @@ nav {
 }
 
 nav button {
-  background: none;
-  border: none;
-  color: white;
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--text);
   font-weight: bold;
   cursor: pointer;
   padding: 10px 20px;
-  transition: background 0.3s;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 nav button:hover,
 nav button.active {
-  background: #21867a;
-  border-radius: 5px;
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
 }
 
 .lang-switcher {
@@ -51,28 +56,45 @@ nav button.active {
 section {
   padding: 40px 20px;
   max-width: 1000px;
-  margin: auto;
+  margin: 40px auto;
   display: none;
   animation: fadeIn 0.4s ease-in-out;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
 section.active {
   display: block;
 }
 
-h2 {
-  color: #0a1ca5;
+h2, h3 {
+  color: var(--accent);
 }
 
+p, li {
+  color: var(--text);
+}
+
+.service, .team-member {
+  background: var(--card);
+  padding: 20px;
+  flex: 1 1 300px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* === FOOTER === */
 footer {
-  background: #264653;
-  color: white;
+  background: var(--bg);
+  color: var(--text);
   text-align: center;
   padding: 20px;
   margin-top: 50px;
+  border-top: 2px solid var(--accent);
 }
 
-/* Carousel */
+/* === CAROUSEL === */
 .carousel {
   position: relative;
   width: 100%;
@@ -80,6 +102,9 @@ footer {
   margin: 20px auto;
   overflow: hidden;
   aspect-ratio: 16/9;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
 .carousel-track {
@@ -98,29 +123,36 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px;
 }
 
 .carousel button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: white;
+  background: var(--accent);
+  color: var(--bg);
   border: none;
   padding: 10px;
   cursor: pointer;
   font-size: 18px;
   border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.carousel button:hover {
+  background: var(--highlight);
 }
 
 .carousel .prev { left: 10px; }
 .carousel .next { right: 10px; }
 
 .carousel button:disabled {
-  opacity: 0.3;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* === ENCADRE CONTACT === */
 .encart {
   max-width: 460px;
   width: 95%;
@@ -139,46 +171,44 @@ footer {
   padding: 24px;
 }
 
- .service, .team-member {
-      background: white;
-      padding: 20px;
-      flex: 1 1 300px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
 .contact {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 500px;
-    }
-    .contact input,
-    .contact textarea {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .contact button {
-      background: #2a9d8f;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .contact button:hover {
-      background: #21867a;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  margin: auto;
+}
 
+.contact input,
+.contact textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.contact button {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.contact button:hover {
+  background: var(--highlight);
+}
+
+/* === GENERAL LAYOUT === */
 .container {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 10px;
 }
 
-.col { flex: 1 1 calc(30% - 5px); }
+.col { flex: 1 1 calc(30% - 10px); }
 
 .logo {
   width: 42px; height: 42px;
@@ -186,13 +216,14 @@ footer {
   background: conic-gradient(from 210deg, var(--accent), #72ffd1, var(--accent));
   display: grid;
   place-items: center;
-  color: #0b1020;
+  color: var(--bg);
   font-weight: 800;
 }
 
-.label { color: #0a1ca5; }
-.value { color: #e8edf6; }
+.label { color: var(--accent); }
+.value { color: var(--text); }
 
+/* === ANIMATIONS === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
