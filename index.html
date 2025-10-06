@@ -3,35 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Audit Énergétique - DIGITAL ENERGY AUDIT</title>
+  <title>Digital Energy Audit</title>
   <link rel="stylesheet" href="index.css" />
 </head>
+
 <body>
   <header>
-    <h1 id="title">Audit Énergétique - DIGITAL ENERGY AUDIT</h1>
+    <div class="header-top">
+      <h1 class="site-title">DIGITAL ENERGY AUDIT</h1>
+      <div class="lang-switcher">
+        <select id="language-select">
+          <option value="fr">🇫🇷 Français</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
+      </div>
+    </div>
     <nav>
       <button class="tab-link active" data-tab="services" data-key="home">🏠</button>
       <button class="tab-link" data-tab="about" data-key="about">À propos</button>
       <button class="tab-link" data-tab="contact" data-key="contact">Contact</button>
     </nav>
-    <div class="lang-switcher">
-      <select id="language-select">
-        <option value="fr">Français</option>
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
-    </div>
   </header>
 
-  <section id="services" class="active">
+  <!-- SECTION SERVICES -->
+  <section id="services" class="active fade">
     <h2 data-key="realisations">🎬 Nos réalisations</h2>
     <div class="carousel">
       <div class="carousel-track">
         <div class="carousel-item">
-          <iframe src="https://www.youtube.com/embed/9He76uCylVQ" title="MINI-AUDIT OF THE MICROWAVE OVEN" loading="lazy" allowfullscreen></iframe>
+          <iframe
+            src="https://www.youtube.com/embed/9He76uCylVQ"
+            title="MINI-AUDIT OF THE MICROWAVE OVEN"
+            loading="lazy"
+            allowfullscreen></iframe>
         </div>
         <div class="carousel-item">
-          <iframe src="https://www.youtube.com/embed/g2Fs5dMTKCw" title="MINI-AUDIT OF THE WASHING MACHINE" loading="lazy" allowfullscreen></iframe>
+          <iframe
+            src="https://www.youtube.com/embed/g2Fs5dMTKCw"
+            title="MINI-AUDIT OF THE WASHING MACHINE"
+            loading="lazy"
+            allowfullscreen></iframe>
         </div>
       </div>
       <button class="prev">&#10094;</button>
@@ -39,7 +51,8 @@
     </div>
   </section>
 
-  <section id="about">
+  <!-- SECTION ABOUT -->
+  <section id="about" class="fade">
     <h2 data-key="about-title">À propos de nous</h2>
     <p data-key="about-text">
       La société accompagne ses clients dans la maîtrise et l’optimisation de leur consommation électrique.
@@ -53,11 +66,15 @@
     <div class="about">
       <div class="team-member">
         <h3 data-key="sensor-title">Nos capteurs énergétiques</h3>
-        <p data-key="sensor-text">Nos capteurs offrent des mesures fiables et précises pour optimiser votre consommation.</p>
+        <p data-key="sensor-text">
+          Nos capteurs offrent des mesures fiables et précises pour optimiser votre consommation.
+        </p>
       </div>
       <div class="team-member">
         <h3 data-key="expert-title">Notre expert IT</h3>
-        <p data-key="expert-text">Une équipe certifiée avec plusieurs années d'expérience dans le domaine de l'énergie.</p>
+        <p data-key="expert-text">
+          Une équipe certifiée avec plusieurs années d'expérience dans le domaine de l'énergie.
+        </p>
       </div>
       <div class="team-member">
         <h3 data-key="team-title">Notre équipe</h3>
@@ -74,35 +91,45 @@
     </div>
   </section>
 
-  <section id="contact" class="encart">
+  <!-- SECTION CONTACT -->
+  <section id="contact" class="encart fade">
     <div class="container">
       <div class="logo">DE</div>
       <div class="col">
         <h2 id="titre-entreprise">DIGITAL ENERGY AUDIT</h2>
       </div>
+
       <div class="label col" data-key="nif-label">NIF</div>
       <div class="value col"><strong>À renseigner</strong></div>
+
       <div class="label col" data-key="address-label">Adresse</div>
       <div class="value col">
-        <address>Rue / Avenue, Numéro<br>Code postal, Ville, Province<br>Espagne</address>
+        <address>
+          Rue / Avenue, Numéro<br>
+          Code postal, Ville, Province<br>
+          Espagne
+        </address>
       </div>
+
       <div class="label col" style="flex-basis:100%;" data-key="email-label">Email</div>
-      <div class="value col"><a href="mailto:contact@digitalenergyaudit.es">contact@digitalenergyaudit.es</a></div>
+      <div class="value col">
+        <a href="mailto:contact@digitalenergyaudit.es">contact@digitalenergyaudit.es</a>
+      </div>
     </div>
   </section>
 
   <footer>
-    &copy; 2025 DIGITAL ENERGY AUDIT. <span data-key="rights">Tous droits réservés.</span>
+    &copy; 2025 DIGITAL ENERGY AUDIT — <span data-key="rights">Tous droits réservés.</span>
   </footer>
 
   <script>
     // Carousel
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.carousel').forEach(carousel => {
-        const track = carousel.querySelector('.carousel-track');
-        const items = carousel.querySelectorAll('.carousel-item');
-        const prev = carousel.querySelector('.prev');
-        const next = carousel.querySelector('.next');
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".carousel").forEach(carousel => {
+        const track = carousel.querySelector(".carousel-track");
+        const items = carousel.querySelectorAll(".carousel-item");
+        const prev = carousel.querySelector(".prev");
+        const next = carousel.querySelector(".next");
         let index = 0;
 
         const update = () => {
@@ -111,21 +138,23 @@
           next.disabled = index === items.length - 1;
         };
 
-        prev.addEventListener('click', () => { if (index > 0) index--; update(); });
-        next.addEventListener('click', () => { if (index < items.length - 1) index++; update(); });
+        prev.addEventListener("click", () => { if (index > 0) index--; update(); });
+        next.addEventListener("click", () => { if (index < items.length - 1) index++; update(); });
         update();
       });
     });
 
-    // Tabs
+    // Tabs with animation
     const tabLinks = document.querySelectorAll(".tab-link");
     const sections = document.querySelectorAll("section");
+
     tabLinks.forEach(link => {
       link.addEventListener("click", () => {
         tabLinks.forEach(btn => btn.classList.remove("active"));
         sections.forEach(sec => sec.classList.remove("active"));
         link.classList.add("active");
-        document.getElementById(link.dataset.tab).classList.add("active");
+        const target = document.getElementById(link.dataset.tab);
+        target.classList.add("active");
       });
     });
 
