@@ -2,7 +2,7 @@
   --bg: #49A130;         /* Main background */
   --card: #11162a;       /* Cards & sections */
   --accent: #32d4a4;     /* Accent / highlight */
-  --text: #e8edf6;       /* Main text */
+  --text: #ffff;       /* Main text */
   --muted: #9aa4b2;      /* Muted text */
   --highlight: #21867a;  /* Hover & button highlight */
 }
