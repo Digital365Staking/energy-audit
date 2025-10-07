@@ -24,6 +24,12 @@ header, footer {
   padding: 20px 0; /* adjust vertical padding as needed */
 }
 
+/* If you have sections inside header/footer, remove extra width constraints */
+header > *, footer > * {
+  width: 100%;
+  max-width: 100%;
+}
+
 /* === HEADER === */
 header {
   background: var(--bg);
