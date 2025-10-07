@@ -115,7 +115,7 @@ document.addEventListener("click", (ev) => {
     carousel.dataset.index = currentIndex;
     track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-    // Disable/enable buttons
+    // Update buttons state
     const prevBtn = carousel.querySelector(".prev");
     const nextBtn = carousel.querySelector(".next");
     if (prevBtn) prevBtn.disabled = currentIndex === 0;
@@ -134,14 +134,14 @@ document.querySelectorAll(".carousel").forEach(carousel => {
 
   // initialize index
   carousel.dataset.index = carousel.dataset.index || "0";
-  const index = parseInt(carousel.dataset.index, 10);
-  track.style.transform = `translateX(-${index * 100}%)`;
+  let currentIndex = parseInt(carousel.dataset.index, 10);
+  track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-  // Set initial button state
+  // Buttons
   const prevBtn = carousel.querySelector(".prev");
   const nextBtn = carousel.querySelector(".next");
-  if (prevBtn) prevBtn.disabled = index === 0;
-  if (nextBtn) nextBtn.disabled = index === items.length - 1;
+  if (prevBtn) prevBtn.disabled = currentIndex === 0;
+  if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
 
   // Simple touch support
   let startX = 0;
@@ -152,7 +152,6 @@ document.querySelectorAll(".carousel").forEach(carousel => {
   track.addEventListener("touchend", (e) => {
     const dx = e.changedTouches[0].clientX - startX;
     if (Math.abs(dx) < 40) return;
-    let currentIndex = parseInt(carousel.dataset.index || "0", 10);
 
     if (dx < 0 && currentIndex < items.length - 1) {
       currentIndex++;
@@ -170,6 +169,7 @@ document.querySelectorAll(".carousel").forEach(carousel => {
     if (DEBUG) console.log("Swipe ->", currentIndex);
   }, { passive: true });
 });
+
 
 
   /* -------------------------
