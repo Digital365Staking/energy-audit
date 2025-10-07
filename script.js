@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const translations = {
     en: {
       menuAbout: "About Us", menuVideos: "Videos", menuContact: "Contact",
+      realisations: "Our Achievements",
       aboutTitle: "Who We Are", aboutText: "We are a company specialized in measuring and optimizing electrical energy consumption.",
       about1: "Real-time consumption monitoring", about2: "Detailed energy audit reports",
       about3: "Integration with IoT sensors", about4: "Energy efficiency recommendations",
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     fr: {
       menuAbout: "À propos", menuVideos: "Vidéos", menuContact: "Contact",
+      realisations: "Nos réalisations",
       aboutTitle: "Qui sommes-nous ?", aboutText: "Nous sommes spécialisés dans la mesure et l’optimisation de la consommation électrique.",
       about1: "Suivi de la consommation en temps réel", about2: "Rapports d’audit détaillés",
       about3: "Intégration avec capteurs IoT", about4: "Recommandations pour l'efficacité énergétique",
@@ -29,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     es: {
       menuAbout: "Sobre nosotros", menuVideos: "Vídeos", menuContact: "Contacto",
+      realisations: "Nuestros Logros",
       aboutTitle: "Quiénes somos", aboutText: "Especializados en medición y optimización del consumo eléctrico.",
       about1: "Monitorización en tiempo real", about2: "Informes de auditoría detallados",
       about3: "Integración con sensores IoT", about4: "Recomendaciones de eficiencia energética",
