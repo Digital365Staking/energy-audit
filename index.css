@@ -46,7 +46,6 @@ header {
   border: 1px solid #ccc;
 }
 
-/* Your existing nav styles */
 nav {
   display: flex;
   justify-content: center;
@@ -64,6 +63,20 @@ nav button {
   transition: all 0.3s ease;
   font-size: 1.1rem;
 }
+
+/* Hover effect */
+nav button:hover {
+  border-color: var(--accent);
+  background-color: rgba(0, 0, 0, 0.05); /* subtle feedback */
+}
+
+/* Active (clicked or selected tab) */
+nav button.active {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: white;
+}
+
 
 
 section {
