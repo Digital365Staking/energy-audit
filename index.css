@@ -174,8 +174,12 @@ footer {
 .carousel .next { right: 10px; }
 
 .carousel button:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+}
+
+.carousel .prev:disabled,
+.carousel .next:disabled {
+  opacity: 0.3;
 }
 
 /* === ENCADRE CONTACT === */
