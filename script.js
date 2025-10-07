@@ -77,78 +77,100 @@ document.addEventListener("DOMContentLoaded", () => {
     if (DEBUG) console.log("Language set:", lang);
   }
 
-  /* -------------------------
-     TABS: use event delegation so clicks are always captured
-     - elements should have class .tab-link and data-tab="<section-id>"
-     ------------------------- */
-  document.addEventListener("click", (ev) => {
-    const tab = ev.target.closest(".tab-link");
-    if (tab) {
-      // If it's an anchor, prevent default navigation
-      if (tab.tagName.toLowerCase() === "a") ev.preventDefault();
-      const targetId = tab.dataset.tab;
-      if (!targetId) return;
-      // update active state (tabs)
-      document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t === tab));
-      // show/hide sections (smooth fade handled in CSS)
-      document.querySelectorAll("main section, section").forEach(sec => {
-        sec.classList.toggle("active", sec.id === targetId);
-      });
-      // optional: scroll to top smoothly
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      if (DEBUG) console.log("Switched to tab:", targetId);
-      return;
-    }
+document.addEventListener("click", (ev) => {
+  const tab = ev.target.closest(".tab-link");
+  if (tab) {
+    if (tab.tagName.toLowerCase() === "a") ev.preventDefault();
+    const targetId = tab.dataset.tab;
+    if (!targetId) return;
 
-    // CAROUSEL PREV/NEXT using delegation
-    const btn = ev.target.closest(".carousel .prev, .carousel .next");
-    if (btn) {
-      const carousel = btn.closest(".carousel");
-      if (!carousel) return;
-      const track = carousel.querySelector(".carousel-track");
-      const items = carousel.querySelectorAll(".carousel-item");
-      const currentIndex = parseInt(carousel.dataset.index || "0", 10);
-      let newIndex = currentIndex;
-      if (btn.classList.contains("prev")) {
-        newIndex = (currentIndex - 1 + items.length) % items.length;
-      } else {
-        newIndex = (currentIndex + 1) % items.length;
-      }
-      carousel.dataset.index = newIndex;
-      track.style.transform = `translateX(-${newIndex * 100}%)`;
-      if (DEBUG) console.log("Carousel moved to", newIndex);
-      return;
-    }
-  }, { passive: true });
+    // Update active tab
+    document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t === tab));
 
-  /* -------------------------
-     INIT CAROUSELS (per-carousel, touch support)
-     ------------------------- */
-  document.querySelectorAll(".carousel").forEach(carousel => {
+    // Show/hide sections
+    document.querySelectorAll("main section, section").forEach(sec => {
+      sec.classList.toggle("active", sec.id === targetId);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (DEBUG) console.log("Switched to tab:", targetId);
+    return;
+  }
+
+  // CAROUSEL PREV/NEXT
+  const btn = ev.target.closest(".carousel .prev, .carousel .next");
+  if (btn) {
+    const carousel = btn.closest(".carousel");
+    if (!carousel) return;
     const track = carousel.querySelector(".carousel-track");
     const items = carousel.querySelectorAll(".carousel-item");
-    if (!track || items.length === 0) return;
-    // initialize index
-    carousel.dataset.index = carousel.dataset.index || "0";
-    track.style.transform = `translateX(-${carousel.dataset.index * 100}%)`;
+    let currentIndex = parseInt(carousel.dataset.index || "0", 10);
 
-    // touch support (simple)
-    let startX = 0;
-    track.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-    }, { passive: true });
+    if (btn.classList.contains("prev") && currentIndex > 0) {
+      currentIndex--;
+    } else if (btn.classList.contains("next") && currentIndex < items.length - 1) {
+      currentIndex++;
+    }
 
-    track.addEventListener("touchend", (e) => {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) < 40) return;
-      const isNext = dx < 0;
-      const currentIndex = parseInt(carousel.dataset.index || "0", 10);
-      const newIndex = isNext ? (currentIndex + 1) % items.length : (currentIndex - 1 + items.length) % items.length;
-      carousel.dataset.index = newIndex;
-      track.style.transform = `translateX(-${newIndex * 100}%)`;
-      if (DEBUG) console.log("Swipe ->", newIndex);
-    }, { passive: true });
-  });
+    carousel.dataset.index = currentIndex;
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    // Disable/enable buttons
+    const prevBtn = carousel.querySelector(".prev");
+    const nextBtn = carousel.querySelector(".next");
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
+
+    if (DEBUG) console.log("Carousel moved to", currentIndex);
+    return;
+  }
+}, { passive: true });
+
+// INIT CAROUSELS
+document.querySelectorAll(".carousel").forEach(carousel => {
+  const track = carousel.querySelector(".carousel-track");
+  const items = carousel.querySelectorAll(".carousel-item");
+  if (!track || items.length === 0) return;
+
+  // initialize index
+  carousel.dataset.index = carousel.dataset.index || "0";
+  const index = parseInt(carousel.dataset.index, 10);
+  track.style.transform = `translateX(-${index * 100}%)`;
+
+  // Set initial button state
+  const prevBtn = carousel.querySelector(".prev");
+  const nextBtn = carousel.querySelector(".next");
+  if (prevBtn) prevBtn.disabled = index === 0;
+  if (nextBtn) nextBtn.disabled = index === items.length - 1;
+
+  // Simple touch support
+  let startX = 0;
+  track.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  track.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) < 40) return;
+    let currentIndex = parseInt(carousel.dataset.index || "0", 10);
+
+    if (dx < 0 && currentIndex < items.length - 1) {
+      currentIndex++;
+    } else if (dx > 0 && currentIndex > 0) {
+      currentIndex--;
+    }
+
+    carousel.dataset.index = currentIndex;
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    // Update buttons
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
+
+    if (DEBUG) console.log("Swipe ->", currentIndex);
+  }, { passive: true });
+});
+
 
   /* -------------------------
      QUICK SANITY CHECK HELPERS (useful while debugging)
