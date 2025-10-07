@@ -51,8 +51,8 @@ nav button.active {
 }
 
 .lang-switcher select {
-    width: 200px;        /* wider dropdown */
-    height: 50px;        /* taller dropdown */
+    width: 150px;        /* wider dropdown */
+    height: 30px;        /* taller dropdown */
     font-size: 1.2rem;   /* larger text */
     padding: 8px 12px;   /* more space inside */
     border-radius: 10px; /* rounded corners */
@@ -62,7 +62,7 @@ nav button.active {
   }
 
   .lang-switcher select option {
-    font-size: 1.2rem; /* larger option text */
+    font-size: 1.1rem; /* larger option text */
   }
 
   .lang-switcher select:focus {
