@@ -49,9 +49,25 @@ nav button.active {
   border-color: var(--accent);
 }
 
-.lang-switcher {
-  margin-top: 10px;
-}
+.lang-switcher select {
+    width: 200px;        /* wider dropdown */
+    height: 50px;        /* taller dropdown */
+    font-size: 1.2rem;   /* larger text */
+    padding: 8px 12px;   /* more space inside */
+    border-radius: 10px; /* rounded corners */
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .lang-switcher select option {
+    font-size: 1.2rem; /* larger option text */
+  }
+
+  .lang-switcher select:focus {
+    outline: none;
+    border-color: #0078ff; /* highlight on focus */
+  }
 
 section {
   padding: 40px 20px;
