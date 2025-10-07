@@ -52,7 +52,7 @@ nav button.active {
 
 .lang-switcher select {
     width: 150px;        /* wider dropdown */
-    height: 30px;        /* taller dropdown */
+    height: 40px;        /* taller dropdown */
     font-size: 1.2rem;   /* larger text */
     padding: 8px 12px;   /* more space inside */
     border-radius: 10px; /* rounded corners */
