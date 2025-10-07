@@ -99,7 +99,7 @@ h2, h3 {
 }
 
 p, li {
-  color: #e0f3d7;
+  color: var(--card);
 }
 
 .service, .team-member {
