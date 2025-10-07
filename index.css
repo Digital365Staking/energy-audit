@@ -15,6 +15,15 @@ body {
   color: var(--text);
 }
 
+/* Ensure header and footer span 100% of viewport */
+header, footer {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 20px 0; /* adjust vertical padding as needed */
+}
+
 /* === HEADER === */
 header {
   background: var(--bg);
