@@ -5,47 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Digital Energy Audit</title>
   <link rel="stylesheet" href="index.css" />
-  <style>
-    
-    .carousel-images img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      display: none;
-    }
-  
-     .carousel-images {
-        display: flex;
-        transition: transform 0.4s ease-in-out;
-        width: 100%;
-      }
-    
-      .carousel-images img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        flex-shrink: 0;
-      }
-    
-      .prev, .next {
-        cursor: pointer;
-        position: absolute;
-        top: 50%;
-        width: auto;
-        padding: 10px;
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-        border-radius: 50%;
-        background-color: rgba(0,0,0,0.5);
-        user-select: none;
-        transform: translateY(-50%);
-        z-index: 2;
-      }
-    
-      .prev { left: 10px; }
-      .next { right: 10px; }
-  </style>
 </head>
 <body>
   <header>
@@ -129,8 +88,8 @@
               >
             </div>
           </div>
-          <span class="prev">&#10094;</span>
-          <span class="next">&#10095;</span>
+          <button class="prev" disabled>&#10094;</button>
+          <button class="next">&#10095;</button>
         </div>
 
       </div>
