@@ -191,16 +191,25 @@ footer {
 .carousel button.next { right: 10px; }
 
 /* Responsiveness */
-@media (max-width: 480px) {
-  .carousel-item img {
-    height: 520px;
-  }
-
+/* 🔹 Mobile view adjustments */
+@media (max-width: 600px) {
   .carousel button.prev,
   .carousel button.next {
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
+    width: 32px;         /* slightly smaller */
+    height: 32px;
+    font-size: 16px;     /* smaller icon */
+    top: 45%;            /* adjusted vertical position */
+    background-color: rgba(0, 0, 0, 0.4); /* lighter overlay */
+  }
+
+  .carousel button.prev { left: 6px; }
+  .carousel button.next { right: 6px; }
+
+  /* Make them more thumb-friendly */
+  .carousel button.prev:active,
+  .carousel button.next:active {
+    transform: scale(0.95);
+    background-color: rgba(0, 0, 0, 0.6);
   }
 }
 
