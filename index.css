@@ -129,6 +129,7 @@ footer {
   margin: 20px auto;
   overflow: hidden;
   border-radius: 10px;
+  height: 500px; /* adjust height as needed */
   touch-action: pan-y;
 }
 
