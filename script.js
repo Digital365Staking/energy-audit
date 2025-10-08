@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aboutTitle: "Who We Are", aboutText: "We are a company specialized in measuring and optimizing electrical energy consumption.",
       about1: "Real-time consumption monitoring", about2: "Detailed energy audit reports",
       about3: "Integration with IoT sensors", about4: "Energy efficiency recommendations",
-      sensorTitle: "Sensors & Measurement", sensorText: "Advanced sensors to monitor consumption.",
+      sensorTitle: "Sensors & Measurement", sensorText: "We use advanced sensors to monitor energy consumption.",
       itTitle: "IT & Data", itText: "AI systems to detect anomalies and reduce costs.",
       teamTitle: "Our Team", videosTitle: "Discover Our Projects",
       nif: "NIF12345678A", address: "Address", rights: "All rights reserved."
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aboutTitle: "Qui sommes-nous ?", aboutText: "Nous sommes spécialisés dans la mesure et l’optimisation de la consommation électrique.",
       about1: "Suivi de la consommation en temps réel", about2: "Rapports d’audit détaillés",
       about3: "Intégration avec capteurs IoT", about4: "Recommandations pour l'efficacité énergétique",
-      sensorTitle: "Capteurs & Mesures", sensorText: "Capteurs avancés pour surveiller la consommation.",
+      sensorTitle: "Capteurs & Mesures", sensorText: "Nous utilisons des capteurs avancés pour surveiller la consommation énergétique.",
       itTitle: "Informatique & Données", itText: "Systèmes IA pour détecter anomalies et réduire coûts.",
       teamTitle: "Notre Équipe", videosTitle: "Découvrez Nos Projets",
       nif: "NIF12345678A", address: "Adresse", rights: "Tous droits réservés."
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aboutTitle: "Quiénes somos", aboutText: "Especializados en medición y optimización del consumo eléctrico.",
       about1: "Monitorización en tiempo real", about2: "Informes de auditoría detallados",
       about3: "Integración con sensores IoT", about4: "Recomendaciones de eficiencia energética",
-      sensorTitle: "Sensores y Medición", sensorText: "Sensores avanzados para monitorizar consumo.",
+      sensorTitle: "Sensores y Medición", sensorText: "Utilizamos sensores avanzados para supervisar el consumo energético.",
       itTitle: "Informática y Datos", itText: "IA para detectar anomalías y reducir costes.",
       teamTitle: "Nuestro Equipo", videosTitle: "Descubre Nuestros Proyectos",
       nif: "NIF12345678A", address: "Dirección", rights: "Todos los rights reservados."
