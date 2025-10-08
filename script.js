@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* -------------------------
      TRANSLATIONS (FR / EN / ES)
-     add/adjust keys as needed
      ------------------------- */
   const translations = {
     en: {
@@ -38,25 +37,24 @@ document.addEventListener("DOMContentLoaded", () => {
       sensorTitle: "Sensores y Medición", sensorText: "Utilizamos sensores avanzados para supervisar el consumo energético.",
       itTitle: "Informática y Datos", itText: "IA para detectar anomalías y reducir costes.",
       teamTitle: "Nuestro Equipo", videosTitle: "Descubre Nuestros Proyectos",
-      nif: "NIF12345678A", address: "Dirección", rights: "Todos los rights reservados."
+      nif: "NIF12345678A", address: "Dirección", rights: "Todos los derechos reservados."
     }
   };
 
   /* -------------------------
      LANGUAGE: detect / init
-     - try localStorage -> browser -> fallback 'en'
-     - try multiple language-select element selectors
      ------------------------- */
   const supported = ["en","fr","es"];
-  const browserLang = (navigator.language || navigator.userLanguage || "en").substring(0,2);
+  const browserLang = (navigator.language || "en").substring(0,2);
   const stored = localStorage.getItem("dga-lang");
-  const defaultLang = stored && supported.includes(stored) ? stored : (supported.includes(browserLang) ? browserLang : "en");
+  const defaultLang = stored && supported.includes(stored)
+    ? stored
+    : (supported.includes(browserLang) ? browserLang : "en");
 
   const langSelector = document.querySelector(
     '#languageSelect, #language-select, .lang-selector select, .lang-switcher select, select.lang-select, select[name="language"]'
   );
 
-  // Apply default language
   setLanguage(defaultLang);
   if (langSelector) {
     langSelector.value = defaultLang;
@@ -71,125 +69,108 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!translations[lang]) return;
     document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
-      if (!key) return;
       const val = translations[lang][key];
-      if (val !== undefined) {
-        el.textContent = val;
-      }
+      if (val !== undefined) el.textContent = val;
     });
     if (DEBUG) console.log("Language set:", lang);
   }
 
-document.addEventListener("click", (ev) => {
-  const tab = ev.target.closest(".tab-link");
-  if (tab) {
-    if (tab.tagName.toLowerCase() === "a") ev.preventDefault();
-    const targetId = tab.dataset.tab;
-    if (!targetId) return;
+  /* -------------------------
+     TAB NAVIGATION HANDLER
+     ------------------------- */
+  document.addEventListener("click", (ev) => {
+    const tab = ev.target.closest(".tab-link");
+    if (tab) {
+      if (tab.tagName.toLowerCase() === "a") ev.preventDefault();
+      const targetId = tab.dataset.tab;
+      if (!targetId) return;
 
-    // Update active tab
-    document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t === tab));
+      document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t === tab));
+      document.querySelectorAll("main section, section").forEach(sec => {
+        sec.classList.toggle("active", sec.id === targetId);
+      });
 
-    // Show/hide sections
-    document.querySelectorAll("main section, section").forEach(sec => {
-      sec.classList.toggle("active", sec.id === targetId);
-    });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    if (DEBUG) console.log("Switched to tab:", targetId);
-    return;
-  }
-
-  // CAROUSEL PREV/NEXT
-  const btn = ev.target.closest(".carousel .prev, .carousel .next");
-  if (btn) {
-    const carousel = btn.closest(".carousel");
-    if (!carousel) return;
-    const track = carousel.querySelector(".carousel-track");
-    const items = carousel.querySelectorAll(".carousel-item");
-    let currentIndex = parseInt(carousel.dataset.index || "0", 10);
-
-    if (btn.classList.contains("prev") && currentIndex > 0) {
-      currentIndex--;
-    } else if (btn.classList.contains("next") && currentIndex < items.length - 1) {
-      currentIndex++;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (DEBUG) console.log("Switched to tab:", targetId);
+      return;
     }
 
-    carousel.dataset.index = currentIndex;
+    /* -------------------------
+       CAROUSEL BUTTON HANDLER
+       ------------------------- */
+    const btn = ev.target.closest(".carousel .prev, .carousel .next");
+    if (btn) {
+      const carousel = btn.closest(".carousel");
+      if (!carousel) return;
+      const track = carousel.querySelector(".carousel-track");
+      const items = carousel.querySelectorAll(".carousel-item");
+      let currentIndex = parseInt(carousel.dataset.index || "0", 10);
+
+      if (btn.classList.contains("prev") && currentIndex > 0) currentIndex--;
+      else if (btn.classList.contains("next") && currentIndex < items.length - 1) currentIndex++;
+
+      carousel.dataset.index = currentIndex;
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+      const prevBtn = carousel.querySelector(".prev");
+      const nextBtn = carousel.querySelector(".next");
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
+
+      if (DEBUG) console.log("Carousel moved to", currentIndex);
+      return;
+    }
+  }, { passive: true });
+
+  /* -------------------------
+     CAROUSEL INITIALIZATION + SWIPE SUPPORT
+     ------------------------- */
+  document.querySelectorAll(".carousel").forEach(carousel => {
+    const track = carousel.querySelector(".carousel-track");
+    const items = carousel.querySelectorAll(".carousel-item");
+    if (!track || items.length === 0) return;
+
+    carousel.dataset.index = carousel.dataset.index || "0";
+    let currentIndex = parseInt(carousel.dataset.index, 10);
+    track.style.transition = "transform 0.4s ease-in-out";
     track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
-    // Update buttons state
     const prevBtn = carousel.querySelector(".prev");
     const nextBtn = carousel.querySelector(".next");
     if (prevBtn) prevBtn.disabled = currentIndex === 0;
     if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
 
-    if (DEBUG) console.log("Carousel moved to", currentIndex);
-    return;
-  }
-}, { passive: true });
+    // Swipe detection
+    let startX = 0, endX = 0;
+    track.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
 
-// INIT CAROUSELS
-document.querySelectorAll(".carousel").forEach(carousel => {
-  const track = carousel.querySelector(".carousel-track");
-  const items = carousel.querySelectorAll(".carousel-item");
-  if (!track || items.length === 0) return;
+    track.addEventListener("touchmove", (e) => {
+      endX = e.touches[0].clientX;
+    }, { passive: true });
 
-  // initialize index
-  carousel.dataset.index = carousel.dataset.index || "0";
-  let currentIndex = parseInt(carousel.dataset.index, 10);
-  track.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-  // Buttons
-  const prevBtn = carousel.querySelector(".prev");
-  const nextBtn = carousel.querySelector(".next");
-  if (prevBtn) prevBtn.disabled = currentIndex === 0;
-  if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
-
-  // Simple touch support
-  let startX = 0;
-  track.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  }, { passive: true });
-
-  track.addEventListener("touchend", (e) => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) < 40) return;
-
-    if (dx < 0 && currentIndex < items.length - 1) {
-      currentIndex++;
-    } else if (dx > 0 && currentIndex > 0) {
-      currentIndex--;
-    }
-
-    carousel.dataset.index = currentIndex;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-    // Update buttons
-    if (prevBtn) prevBtn.disabled = currentIndex === 0;
-    if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
-
-    if (DEBUG) console.log("Swipe ->", currentIndex);
-  }, { passive: true });
-});
-
-
+    track.addEventListener("touchend", () => {
+      const dx = startX - endX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0 && currentIndex < items.length - 1) currentIndex++; // swipe left
+        else if (dx < 0 && currentIndex > 0) currentIndex--; // swipe right
+        carousel.dataset.index = currentIndex;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex === items.length - 1;
+      if (DEBUG) console.log("Swipe →", currentIndex);
+    }, { passive: true });
+  });
 
   /* -------------------------
-     QUICK SANITY CHECK HELPERS (useful while debugging)
+     DEBUG HELPERS
      ------------------------- */
   if (DEBUG) {
     console.log("script initialized");
-    console.log("Found language selector:", !!langSelector);
-    console.log("Tab links count:", document.querySelectorAll(".tab-link").length);
-    console.log("Carousels count:", document.querySelectorAll(".carousel").length);
+    console.log("Lang selector:", !!langSelector);
+    console.log("Tabs:", document.querySelectorAll(".tab-link").length);
+    console.log("Carousels:", document.querySelectorAll(".carousel").length);
   }
-
-  /* -------------------------
-     If clicks still don't register:
-       - open DevTools Console and enable DEBUG=true above
-       - check for overlaying elements (CSS `pointer-events: none` or z-index)
-       - check console for errors that stop script execution
-       - ensure this script is loaded AFTER the HTML (script tag before </body>)
-     ------------------------- */
 });
