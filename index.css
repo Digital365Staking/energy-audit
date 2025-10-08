@@ -150,11 +150,9 @@ footer {
 
 .carousel-item img {
   width: 100%;
-  height: 1000px;
   object-fit: cover;
   border-radius: 10px;
   display: block;
-  transform: scale(0.85);
 }
 
 /* Navigation arrows */
