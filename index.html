@@ -6,6 +6,15 @@
   <title>Digital Energy Audit</title>
   <link rel="stylesheet" href="index.css" />
   <style>
+    .carousel {
+      position: relative;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: pan-y; /* allows horizontal swiping */
+    }
+    
     .carousel-images img {
       width: 100%;
       height: 300px;
@@ -112,7 +121,7 @@
       <div class="team-member">
         <h3 data-key="teamTitle"></h3>
         <div class="carousel">
-          <div class="carousel-images">
+          <div class="carousel-images" id="carouselTrack">
             <img src="https://raw.githubusercontent.com/Digital365Staking/energy-audit-fr/refs/heads/main/MyProfile.jpeg" class="active" alt="CEO profile">
             <img src="https://raw.githubusercontent.com/Digital365Staking/energy-audit-fr/refs/heads/main/JohnSalsa.png" class="active" alt="CEO profile">
           </div>
@@ -137,8 +146,8 @@
     &copy; 2025 DIGITAL ENERGY AUDIT — <span data-key="rights">Tous droits réservés.</span>
   </footer>
   
-  <!-- JavaScript reference -->
-  <script src="script.js"></script>
+  <!-- JavaScript reference  <script src="script.js"></script> -->
+  
   <script>
   const track = document.getElementById('carouselTrack');
   const images = document.querySelectorAll('.carousel-images img');
