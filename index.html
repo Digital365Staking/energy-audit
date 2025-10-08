@@ -13,27 +13,37 @@
       display: none;
     }
   
-    .carousel-images img.active {
-      display: block;
-    }
-  
-    .prev, .next {
-      cursor: pointer;
-      position: absolute;
-      top: 50%;
-      width: auto;
-      padding: 10px;
-      color: white;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 50%;
-      background-color: rgba(0,0,0,0.5);
-      user-select: none;
-      transform: translateY(-50%);
-    }
-  
-    .prev { left: 10px; }
-    .next { right: 10px; }
+     .carousel-images {
+        display: flex;
+        transition: transform 0.4s ease-in-out;
+        width: 100%;
+      }
+    
+      .carousel-images img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+    
+      .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        padding: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.5);
+        user-select: none;
+        transform: translateY(-50%);
+        z-index: 2;
+      }
+    
+      .prev { left: 10px; }
+      .next { right: 10px; }
   </style>
 </head>
 <body>
@@ -130,21 +140,45 @@
   <!-- JavaScript reference -->
   <script src="script.js"></script>
   <script>
+  const track = document.getElementById('carouselTrack');
   const images = document.querySelectorAll('.carousel-images img');
-  let current = 0;
+  const totalImages = images.length;
+  let index = 0;
 
-  function showImage(index) {
-    images.forEach((img, i) => img.classList.toggle('active', i === index));
-  }
+  const updateCarousel = () => {
+    track.style.transform = `translateX(-${index * 100}%)`;
+  };
 
   document.querySelector('.next').addEventListener('click', () => {
-    current = (current + 1) % images.length;
-    showImage(current);
+    index = (index + 1) % totalImages;
+    updateCarousel();
   });
 
   document.querySelector('.prev').addEventListener('click', () => {
-    current = (current - 1 + images.length) % images.length;
-    showImage(current);
+    index = (index - 1 + totalImages) % totalImages;
+    updateCarousel();
+  });
+
+  // Swipe functionality
+  let startX = 0;
+  let endX = 0;
+
+  track.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+  });
+
+  track.addEventListener('touchend', e => {
+    endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+
+    if (Math.abs(diff) > 50) { // minimal swipe distance
+      if (diff > 0) {
+        index = (index + 1) % totalImages; // swipe left → next
+      } else {
+        index = (index - 1 + totalImages) % totalImages; // swipe right → prev
+      }
+      updateCarousel();
+    }
   });
 </script>
 </body>
