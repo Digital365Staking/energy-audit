@@ -190,8 +190,19 @@ footer {
 .carousel button.prev { left: 10px; }
 .carousel button.next { right: 10px; }
 
+/* Specific styling per image if needed */
+.img-ceo {
+  height: 800px;
+}
+
+.img-cto {
+  height: 900px;
+  transform: scale(0.8);
+  margin-top: -100px;
+}
+
 /* Responsiveness */
-/* 🔹 Mobile view adjustments */
+/* Mobile view adjustments */
 @media (max-width: 600px) {
   .carousel button.prev,
   .carousel button.next {
@@ -211,6 +222,17 @@ footer {
     transform: scale(0.95);
     background-color: rgba(0, 0, 0, 0.6);
   }
+
+  .img-ceo {
+    height: 400px;
+  }
+
+  .img-cto {
+    height: 420px;
+    transform: scale(0.95);
+    margin-top: -20px;
+  }
+  
 }
 
 
