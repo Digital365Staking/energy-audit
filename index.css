@@ -154,7 +154,7 @@ footer {
   object-fit: cover;
   border-radius: 10px;
   display: block;
-  transform: scale(0.7);
+  transform: scale(0.85);
 }
 
 /* Navigation arrows */
