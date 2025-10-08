@@ -208,8 +208,7 @@ footer {
   .carousel button.next {
     width: 36px;         /* slightly smaller */
     height: 36px;
-    font-size: 18px;     /* smaller icon */
-    margin-top: -20px;            /* adjusted vertical position */
+    font-size: 15px;     /* smaller icon */
     background-color: rgba(0, 0, 0, 0.4); /* lighter overlay */
   }
 
