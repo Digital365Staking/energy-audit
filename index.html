@@ -140,47 +140,5 @@
   
   <!-- JavaScript reference -->
   <script src="script.js"></script> 
-  <script>
-  const track = document.getElementById('carouselTrack');
-  const images = document.querySelectorAll('.carousel-images img');
-  const totalImages = images.length;
-  let index = 0;
-
-  const updateCarousel = () => {
-    track.style.transform = `translateX(-${index * 100}%)`;
-  };
-
-  document.querySelector('.next').addEventListener('click', () => {
-    index = (index + 1) % totalImages;
-    updateCarousel();
-  });
-
-  document.querySelector('.prev').addEventListener('click', () => {
-    index = (index - 1 + totalImages) % totalImages;
-    updateCarousel();
-  });
-
-  // Swipe functionality
-  let startX = 0;
-  let endX = 0;
-
-  track.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX;
-  });
-
-  track.addEventListener('touchend', e => {
-    endX = e.changedTouches[0].clientX;
-    const diff = startX - endX;
-
-    if (Math.abs(diff) > 50) { // minimal swipe distance
-      if (diff > 0) {
-        index = (index + 1) % totalImages; // swipe left → next
-      } else {
-        index = (index - 1 + totalImages) % totalImages; // swipe right → prev
-      }
-      updateCarousel();
-    }
-  });
-</script>
 </body>
 </html>
