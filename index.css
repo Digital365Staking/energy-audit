@@ -209,7 +209,7 @@ footer {
     width: 36px;         /* slightly smaller */
     height: 36px;
     font-size: 18px;     /* smaller icon */
-    top: 30%;            /* adjusted vertical position */
+    margin-top: -20px;            /* adjusted vertical position */
     background-color: rgba(0, 0, 0, 0.4); /* lighter overlay */
   }
 
