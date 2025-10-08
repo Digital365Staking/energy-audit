@@ -128,6 +128,7 @@ footer {
   overflow: hidden;
   width: 100%;
   height: 500px; /* adjust height as needed */
+  touch-action: pan-y; /* allows horizontal swiping */
 }
 
 .carousel-track {
