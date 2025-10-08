@@ -206,9 +206,9 @@ footer {
 @media (max-width: 600px) {
   .carousel button.prev,
   .carousel button.next {
-    width: 32px;         /* slightly smaller */
-    height: 32px;
-    font-size: 16px;     /* smaller icon */
+    width: 36px;         /* slightly smaller */
+    height: 36px;
+    font-size: 18px;     /* smaller icon */
     top: 45%;            /* adjusted vertical position */
     background-color: rgba(0, 0, 0, 0.4); /* lighter overlay */
   }
