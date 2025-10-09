@@ -161,7 +161,7 @@ footer {
 }
 
 .carousel-label {
-    top: 480px;
+    top: 495px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
@@ -235,7 +235,7 @@ footer {
 
 /* Specific styling per image if needed */
 .img-ceo {
-  height: 800px;
+  height: 600px;
 }
 
 .img-cto {
