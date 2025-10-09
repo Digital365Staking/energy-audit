@@ -160,6 +160,14 @@ footer {
   touch-action: pan-y; /* allows horizontal swiping */
 }
 
+.carousel-label {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
 .carousel-track {
   display: flex;
   transition: transform 0.3s ease;
