@@ -156,12 +156,12 @@ footer {
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 500px; /* adjust height as needed */
+  height: 600px; /* adjust height as needed */
   touch-action: pan-y; /* allows horizontal swiping */
 }
 
 .carousel-label {
-    top: 495px;
+    top: 585px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
@@ -242,7 +242,7 @@ footer {
 
 .img-cto {
   height: 900px;
-  transform: scale(0.7);
+  transform: scale(0.6);
   margin-top: 0px;
 }
 
@@ -251,7 +251,7 @@ footer {
 @media (max-width: 600px) {
 
   .carousel-label {
-    top: 440px;
+    top: 305px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
@@ -287,6 +287,91 @@ footer {
     height: 420px;
     transform: scale(0.7);
     margin-top: 0px;
+  }
+
+   /* Header */
+  .header-top {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .lang-switcher select {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  nav button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  /* Sections */
+  section {
+    padding: 20px 15px;
+    margin: 20px 10px;
+  }
+
+  .service, .team-member {
+    flex: 1 1 100%;
+    padding: 15px;
+  }
+
+  /* Carousel */
+  .carousel {
+    height: 320px; /* smaller height for mobile */
+  }
+
+  .carousel .prev,
+  .carousel .next {
+    padding: 8px 12px;
+  }
+
+  /* Encart / Contact */
+  .encart {
+    min-width:468px;
+    padding: 20px;
+  }
+
+  .contact {
+    max-width: 100%;
+  }
+
+  .contact input,
+  .contact textarea {
+    font-size: 1rem;
+  }
+
+  .contact button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  /* General container layout */
+  .container {
+    flex-direction: column;
+  }
+
+  .col {
+    flex: 1 1 100%;
+  }
+
+  /* Reduce gaps for mobile */
+  .container, .header-top, .header-actions, .contact {
+    gap: 8px;
   }
   
 }
@@ -367,93 +452,4 @@ footer {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* === MOBILE VIEW (max-width: 768px) === */
-@media (max-width: 768px) {
-
-  /* Header */
-  .header-top {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-  }
-
-  .header-actions {
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-  }
-
-  .lang-switcher select {
-    width: 100%;
-    font-size: 1rem;
-  }
-
-  nav {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  nav button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-  }
-
-  /* Sections */
-  section {
-    padding: 20px 15px;
-    margin: 20px 10px;
-  }
-
-  .service, .team-member {
-    flex: 1 1 100%;
-    padding: 15px;
-  }
-
-  /* Carousel */
-  .carousel {
-    height: 300px; /* smaller height for mobile */
-  }
-
-  .carousel .prev,
-  .carousel .next {
-    padding: 8px 12px;
-  }
-
-  /* Encart / Contact */
-  .encart {
-    min-width:468px;
-    padding: 20px;
-  }
-
-  .contact {
-    max-width: 100%;
-  }
-
-  .contact input,
-  .contact textarea {
-    font-size: 1rem;
-  }
-
-  .contact button {
-    font-size: 1rem;
-    padding: 12px;
-  }
-
-  /* General container layout */
-  .container {
-    flex-direction: column;
-  }
-
-  .col {
-    flex: 1 1 100%;
-  }
-
-  /* Reduce gaps for mobile */
-  .container, .header-top, .header-actions, .contact {
-    gap: 8px;
-  }
 }
