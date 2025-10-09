@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     en: {
       menuAbout: "About Us", menuVideos: "Videos", menuContact: "Contact",
       realisations: "Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor (Madrid, Geneva, and Luxembourg)",
-      titleJuan: "John, CEO & Data Analyst (Dublin and Madrid)",
+      titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)",
       aboutTitle: "Who We Are", aboutText: "We are a company specialized in measuring and optimizing electrical energy consumption.",
       about1: "Real-time consumption monitoring", about2: "Detailed energy audit reports",
       about3: "Integration with IoT sensors", about4: "Energy efficiency recommendations",
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fr: {
       menuAbout: "À propos", menuVideos: "Vidéos", menuContact: "Contact",
       realisations: "Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique (Madrid, Genève et Luxembourg)",
-      titleJuan: "John, PDG & Analyste de Données (Dublin et Madrid)",
+      titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)",
       aboutTitle: "Qui sommes-nous ?", aboutText: "Nous sommes spécialisés dans la mesure et l’optimisation de la consommation électrique.",
       about1: "Suivi de la consommation en temps réel", about2: "Rapports d’audit détaillés",
       about3: "Intégration avec capteurs IoT", about4: "Recommandations pour l'efficacité énergétique",
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     es: {
       menuAbout: "Sobre nosotros", menuVideos: "Vídeos", menuContact: "Contacto",
       realisations: "Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético (Madrid, Ginebra y Luxemburgo)",
-      titleJuan: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)",
+      titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)",
       aboutTitle: "Quiénes somos", aboutText: "Especializados en medición y optimización del consumo eléctrico.",
       about1: "Monitorización en tiempo real", about2: "Informes de auditoría detallados",
       about3: "Integración con sensores IoT", about4: "Recomendaciones de eficiencia energética",
