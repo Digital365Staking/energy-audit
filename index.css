@@ -236,6 +236,7 @@ footer {
 /* Specific styling per image if needed */
 .img-ceo {
   height: 800px;
+  transform: scale(0.8);
 }
 
 .img-cto {
