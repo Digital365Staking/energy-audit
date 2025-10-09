@@ -175,8 +175,10 @@ footer {
 }
 
 .carousel-item {
-  flex: 0 0 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column; /* ensures children stack vertically */
 }
 
 .carousel-item iframe {
