@@ -176,7 +176,7 @@ footer {
 
 .carousel-item {
   height: 100%;
-  display: flex;
+  flex: 0 0 100%;
   justify-content: center;
   flex-direction: column; /* ensures children stack vertically */
 }
