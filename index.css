@@ -161,11 +161,12 @@ footer {
 }
 
 .carousel-label {
-    margin-top: 5px;
+    top: 410px;
     font-size: 14px;
     font-weight: bold;
     color: #333;
     text-align: center;
+    position:fixed;
 }
 
 .carousel-track {
