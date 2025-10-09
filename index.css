@@ -15,25 +15,32 @@ body {
   color: var(--text);
 }
 
-.h1-3d {
+.h1-3d-zoom {
     font-size: 60px;
     font-weight: bold;
-    color: #00aaff; /* Main text color */
+    color: #00aaff;
     position: relative;
     display: inline-block;
     text-transform: uppercase;
-    
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+
     /* 3D effect using multiple shadows */
     text-shadow:
         1px 1px 0 #000,
         2px 2px 0 #000,
         3px 3px 0 #000,
         4px 4px 0 #000;
-    
-    /* Optional: gradient effect for more depth */
-    background: linear-gradient(45deg, #00aaff, #0055aa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+/* Zoom + extra 3D depth on hover */
+.h1-3d-zoom:hover {
+    transform: scale(1.2); /* Zoom effect */
+    text-shadow:
+        2px 2px 0 #000,
+        4px 4px 0 #000,
+        6px 6px 0 #000,
+        8px 8px 0 #000; /* Enhanced depth while zooming */
+    cursor: pointer;
 }
 
 
