@@ -161,8 +161,8 @@ footer {
 }
 
 .carousel-label {
-    top: 440px;
-    font-size: 14px;
+    top: 480px;
+    font-size: 16px;
     font-weight: bold;
     color: #333;
     text-align: center;
@@ -247,6 +247,18 @@ footer {
 /* Responsiveness */
 /* Mobile view adjustments */
 @media (max-width: 600px) {
+
+  .carousel-label {
+    top: 440px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    position:fixed;
+    z-index:999999;
+    width:100%;
+  }
+  
   .carousel button.prev,
   .carousel button.next {
     width: 36px;         /* slightly smaller */
