@@ -15,6 +15,28 @@ body {
   color: var(--text);
 }
 
+.h1-3d {
+    font-size: 60px;
+    font-weight: bold;
+    color: #00aaff; /* Main text color */
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    
+    /* 3D effect using multiple shadows */
+    text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #000,
+        3px 3px 0 #000,
+        4px 4px 0 #000;
+    
+    /* Optional: gradient effect for more depth */
+    background: linear-gradient(45deg, #00aaff, #0055aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
 /* === HEADER === */
 header {
   background: var(--bg);
