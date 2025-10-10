@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnOferta = ev.target.closest(".offer-button");
     if (btnOferta) {
       const targetId = "contact";
-      document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t === targetId));
+      document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t.dataset.tab === targetId));
       document.querySelectorAll("main section, section").forEach(sec => {
         sec.classList.toggle("active", sec.id === targetId);
       });
