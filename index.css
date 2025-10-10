@@ -21,7 +21,8 @@ body {
   align-items: center;
   text-align: center;
   width: 100%;
-  margin: 20% auto;
+  margin-left: 20%; 
+  margin-right: 20%;
 }
 
 .offer-text {
