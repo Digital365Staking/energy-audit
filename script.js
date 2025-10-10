@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector('.offer-button').addEventListener('click', function () {
     // Find the contact section
-    const contactSection = document.querySelector('section[data-tab="contact"]');
+    const contactSection = document.getElementById('contact');
     if (!contactSection) return;
 
     // Optional: hide other sections if you use tab-like behavior
