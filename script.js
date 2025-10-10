@@ -86,8 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const key = el.dataset.key;
       const val = translations[lang][key];
       // Find the iframe by its data-key
-      if(key === "youtubeVideo"){        
+      if (key.startsWith("urlYTB")) {        
         el.src = val;
+        return;
       }      
       if (val !== undefined) el.textContent = val;
     });
