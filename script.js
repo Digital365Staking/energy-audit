@@ -129,17 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const btnOferta = ev.target.closest(".offer-button");
     if (btnOferta) {
-      // Find the contact section
-      const contactSection = document.getElementById('contact');
-      if (!contactSection) return;
+      const targetId = "contact";
+      document.querySelectorAll("main section, section").forEach(sec => {
+        sec.classList.toggle("active", sec.id === targetId);
+      });
 
-      // Optional: hide other sections if you use tab-like behavior
-      document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
-
-      // Show and scroll to contact section
-      contactSection.classList.remove('hidden');
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-      if (DEBUG) console.log("btnOferta moved to contact");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (DEBUG) console.log("Switched to tab:", targetId);
       return;
     }
   }, { passive: true });
