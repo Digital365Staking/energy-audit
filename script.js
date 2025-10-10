@@ -87,10 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const val = translations[lang][key];
       // Find the iframe by its data-key
       if (key.startsWith("urlYTB")) {        
-        el.src = val;
-        return;
-      }      
-      if (val !== undefined) el.textContent = val;
+        el.src = val;        
+      }else{
+        if (val !== undefined) el.textContent = val;
+      }
     });
     if (DEBUG) console.log("Language set:", lang);
   }
