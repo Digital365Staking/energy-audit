@@ -128,6 +128,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: true });
 
+  document.querySelector('.offer-button').addEventListener('click', function () {
+    // Find the contact section
+    const contactSection = document.querySelector('section[data-tab="contact"]');
+    if (!contactSection) return;
+
+    // Optional: hide other sections if you use tab-like behavior
+    document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+
+    // Show and scroll to contact section
+    contactSection.classList.remove('hidden');
+    contactSection.scrollIntoView({ behavior: 'smooth' });
+  });
+  
   /* -------------------------
      CAROUSEL INITIALIZATION + SWIPE SUPPORT
      ------------------------- */
