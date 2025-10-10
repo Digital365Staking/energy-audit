@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     en: {
       menuAbout: "About Us", menuVideos: "Videos", menuContact: "Contact",
       realisations: "Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor (Madrid, Geneva, and Luxembourg)",
-      urlYTB1: "https://youtu.be/9He76uCylVQ", urlYTB2: "https://youtu.be/g2Fs5dMTKCw", 
+      urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", 
       titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)",
       beforeOferta: "Do you like the style of energy-audit.com? Get your own website based on the same model from just ", priceMin: "€ 5 per month !",
       adTitle: "Optimize your systems for maximum energy efficiency.", adFree: "Track your devices’ energy usage with precision and get a free summary report !", 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fr: {
       menuAbout: "À propos", menuVideos: "Vidéos", menuContact: "Contact",
       realisations: "Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique (Madrid, Genève et Luxembourg)",
-      urlYTB1: "https://youtu.be/YOtMUHGRBE0", urlYTB2: "https://youtu.be/FolPWASMSmY", 
+      urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", 
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)",
       beforeOferta: "Vous aimez le style de energy-audit.com ? Obtenez votre propre site web sur le même modèle dès ", priceMin: "5 € par mois !",
       adTitle: "Améliorez la performance énergétique de vos équipements.", adFree: "Obtenez, pour chaque appareil, une mesure précise de sa consommation et un rapport synthétique gratuit.", 
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     es: {
       menuAbout: "Sobre nosotros", menuVideos: "Vídeos", menuContact: "Contacto",
       realisations: "Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético (Madrid, Ginebra y Luxemburgo)",
-      urlYTB1: "https://youtu.be/qLSXEuEyUH4", urlYTB2: "https://youtu.be/PMwAN2vTdwI", 
+      urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", 
       titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)",
       beforeOferta: "¿Te gusta el estilo de energy-audit.com? ¡Obtén tu propio sitio web con el mismo modelo desde solo ", priceMin: "5 € al mes !",
       adTitle: "Convierta la eficiencia energética en rendimiento.", adFree: "¡ Conozca el consumo exacto de sus dispositivos con un resumen gratuito y sencillo !", 
