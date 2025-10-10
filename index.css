@@ -15,6 +15,41 @@ body {
   color: var(--text);
 }
 
+.offer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 2rem 0;
+}
+
+.offer-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.offer-button {
+  background: linear-gradient(135deg, #0078ff, #00c6ff);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 1rem 0;
+}
+
+.offer-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 120, 255, 0.3);
+}
+
+
 .h1-3d-zoom {
     font-size: 40px;
     font-weight: bold;
