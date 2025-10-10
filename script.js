@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sec.classList.toggle("active", sec.id === targetId);
       });
       if(targetId !== "contact"){
+        document.querySelectorAll('.hidden').forEach(sec => sec.classList.add('offer-container'));
         document.querySelectorAll('.offer-container').forEach(sec => sec.classList.remove('hidden'));
       }
       
@@ -136,8 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".tab-link").forEach(t => t.classList.toggle("active", t.dataset.tab === targetId));
       document.querySelectorAll("main section, section").forEach(sec => {
         sec.classList.toggle("active", sec.id === targetId);
-      });
+      });      
       document.querySelectorAll('.offer-container').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('hidden').forEach(sec => sec.classList.remove('offer-container'));
       window.scrollTo({ top: 0, behavior: "smooth" });
       if (DEBUG) console.log("Switched to tab:", targetId);
       return;
