@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll("main section, section").forEach(sec => {
         sec.classList.toggle("active", sec.id === targetId);
       });
-
+      document.querySelectorAll('.offer-button').forEach(sec => sec.classList.add('hidden'));
       window.scrollTo({ top: 0, behavior: "smooth" });
       if (DEBUG) console.log("Switched to tab:", targetId);
       return;
