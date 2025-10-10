@@ -126,21 +126,24 @@ document.addEventListener("DOMContentLoaded", () => {
       if (DEBUG) console.log("Carousel moved to", currentIndex);
       return;
     }
+
+    const btnOferta = ev.target.closest(".offer-button");
+    if (btnOferta) {
+      // Find the contact section
+      const contactSection = document.getElementById('contact');
+      if (!contactSection) return;
+
+      // Optional: hide other sections if you use tab-like behavior
+      document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+
+      // Show and scroll to contact section
+      contactSection.classList.remove('hidden');
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+      if (DEBUG) console.log("btnOferta moved to contact");
+      return;
+    }
   }, { passive: true });
 
-  document.querySelector('.offer-button').addEventListener('click', function () {
-    // Find the contact section
-    const contactSection = document.getElementById('contact');
-    if (!contactSection) return;
-
-    // Optional: hide other sections if you use tab-like behavior
-    document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
-
-    // Show and scroll to contact section
-    contactSection.classList.remove('hidden');
-    contactSection.scrollIntoView({ behavior: 'smooth' });
-  });
-  
   /* -------------------------
      CAROUSEL INITIALIZATION + SWIPE SUPPORT
      ------------------------- */
