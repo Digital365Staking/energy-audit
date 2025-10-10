@@ -15,10 +15,6 @@ body {
   color: var(--text);
 }
 
-.hidden {
-  display: none;
-}
-
 .offer-container {
   display: flex;
   flex-direction: column;
