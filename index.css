@@ -21,13 +21,13 @@ body {
   align-items: center;
   text-align: center;
   width: 100%;
-  margin: 2rem 0;
+  margin: 20% auto;
 }
 
 .offer-text {
   font-size: 1.25rem;
   font-weight: 500;
-  color: #333;
+  color: var(--accent);
   margin: 0.5rem 0;
 }
 
