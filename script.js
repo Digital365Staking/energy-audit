@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (key.startsWith("urlYTB")) {        
         el.src = val;        
       }else{
-        if (val !== undefined) el.textContent = val;
+        if (val !== undefined) el.innerHTML = val;
       }
     });
     if (DEBUG) console.log("Language set:", lang);
