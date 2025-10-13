@@ -283,6 +283,12 @@ footer {
   margin-top: 0px;
 }
 
+.img-iplug {
+  height: 900px;
+  transform: scale(0.9);
+  margin-top: -30px;
+}
+
 /* Responsiveness */
 /* Mobile view adjustments */
 @media (max-width: 600px) {
