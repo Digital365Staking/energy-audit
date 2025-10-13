@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       about1: "Real-time consumption monitoring", about2: "Detailed energy audit reports",
       about3: "Integration with IoT sensors", about4: "Energy efficiency recommendations",
       sensorTitle: "Sensors & Measurement", sensorText: "We use advanced sensors to monitor energy consumption.",
-      itTitle: "IT & Data", itText: "AI systems to detect anomalies and reduce costs.",
+      itTitle: "IoT Data Management and Analysis", itText: "AI systems to detect anomalies and reduce costs.",
       teamTitle: "Our Team", videosTitle: "Discover Our Projects",
       nif: "NIF12345678A", address: "Address", rights: "All rights reserved."
     },
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       about1: "Suivi de la consommation en temps réel", about2: "Rapports d’audit détaillés",
       about3: "Intégration avec capteurs IoT", about4: "Recommandations pour l'efficacité énergétique",
       sensorTitle: "Capteurs & Mesures", sensorText: "Nous utilisons des capteurs avancés pour surveiller la consommation énergétique.",
-      itTitle: "Informatique & Données", itText: "Systèmes IA pour détecter anomalies et réduire coûts.",
+      itTitle: "Gestion et analyse des données IoT", itText: "Notre équipe dispose d’une solide expertise informatique lui permettant de gérer, analyser et valoriser efficacement les données issues des capteurs IoT. Grâce à des technologies avancées telles que la plateforme Home Assistant (voir démonstration ci-dessous), nous sommes en mesure de centraliser, visualiser et automatiser la collecte d’informations. Nous exploitons également des langages de programmation comme Python, sous environnement Linux Ubuntu, pour produire des reportings d’audit personnalisés et automatisés, intégrés directement dans les comptes rendus finaux. Par ailleurs, notre savoir-faire s’étend aux environnements Microsoft, avec une parfaite maîtrise de C# .NET, React, Power Automate, PowerApps et SharePoint Online (Microsoft 365), garantissant une intégration fluide dans les écosystèmes existants. Enfin, nous mettons un soin particulier à la présentation et la communication des résultats, en utilisant de manière professionnelle les outils PowerPoint, Word et Excel pour des reportings clairs, impactants et adaptés à vos besoins.",
       teamTitle: "Notre Équipe", videosTitle: "Découvrez Nos Projets",
       nif: "NIF12345678A", address: "Adresse", rights: "Tous droits réservés."
     },
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       about1: "Monitorización en tiempo real", about2: "Informes de auditoría detallados",
       about3: "Integración con sensores IoT", about4: "Recomendaciones de eficiencia energética",
       sensorTitle: "Sensores y Medición", sensorText: "Utilizamos sensores avanzados para supervisar el consumo energético.",
-      itTitle: "Informática y Datos", itText: "IA para detectar anomalías y reducir costes.",
+      itTitle: "Gestión y análisis de datos IoT", itText: "IA para detectar anomalías y reducir costes.",
       teamTitle: "Nuestro Equipo", videosTitle: "Descubre Nuestros Proyectos",
       nif: "NIF12345678A", address: "Dirección", rights: "Todos los derechos reservados."
     }
