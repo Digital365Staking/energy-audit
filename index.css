@@ -31,6 +31,7 @@ body {
   font-weight: 500;
   color: var(--accent);
   margin: 0.5rem auto;
+  width: 100%;
 }
 
 .offer-button {
