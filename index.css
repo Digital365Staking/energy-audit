@@ -31,7 +31,7 @@ body {
   font-weight: 500;
   color: var(--accent);
   margin: 0.5rem auto;
-  min-width: 500px;
+  min-width: 400px;
 }
 
 .offer-button {
