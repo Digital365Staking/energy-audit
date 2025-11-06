@@ -198,8 +198,8 @@ footer {
   touch-action: pan-y; /* allows horizontal swiping */
 }
 
-.carousel-label {
-    top: 610px;
+.carousel-label, .carousel-label-ceo {
+    top: 590px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
