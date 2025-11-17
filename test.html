@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Full-Screen Aggregated Power vs Nominal Chart</title>
+  <title>Responsive Aggregated Chart</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     body, html {
@@ -12,10 +12,7 @@
       height: 100%;
       font-family: Arial, sans-serif;
     }
-    svg {
-      width: 100vw;
-      height: 100vh;
-    }
+    svg { width: 100vw; height: 100vh; }
     .bar { fill: steelblue; fill-opacity: 0.8; }
     .bar:hover { fill-opacity: 1; }
     .line { fill: none; stroke: orange; stroke-width: 3px; }
@@ -28,8 +25,6 @@
 
 <script>
 const svg = d3.select("svg");
-
-// Responsive dimensions
 const margin = {top: 60, right: 60, bottom: 60, left: 80};
 let width = window.innerWidth - margin.left - margin.right;
 let height = window.innerHeight - margin.top - margin.bottom;
@@ -37,83 +32,100 @@ let height = window.innerHeight - margin.top - margin.bottom;
 const chart = svg.append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// Load CSV
 const csvFile = "data.csv";
 
 d3.csv(csvFile, d => ({
-    Minute: d["Minute"].trim(),
-    Power: +d["Power"].trim(),
-    Nominal: +d["Nominal"].trim()
+  Minute: d["Minute"].trim(),
+  Power: +d["Power"].trim(),
+  Nominal: +d["Nominal"].trim()
 })).then(rawData => {
 
-    // Group by Minute
-    const grouped = d3.groups(rawData, d => d.Minute);
-    const data = grouped.map(([minute, rows]) => ({
-        Minute: minute,
-        Power: d3.mean(rows, r => r.Power),
-        Nominal: +rows[0].Nominal
-    }));
+  // Group and aggregate
+  const grouped = d3.groups(rawData, d => d.Minute);
+  const data = grouped.map(([minute, rows]) => ({
+    Minute: minute,
+    Power: d3.mean(rows, r => r.Power),
+    Nominal: +rows[0].Nominal
+  }));
 
-    console.log("Aggregated data:", data);
+  console.log("Aggregated data:", data);
 
-    // Scales
-    const x = d3.scaleBand()
-        .domain(data.map(d => d.Minute))
-        .range([0, width])
-        .padding(0.2);
+  // Detect mobile (example: width < 600px)
+  const isMobile = window.innerWidth < 600;
 
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
-        .nice()
-        .range([height, 0]);
+  let x, y, xAxis, yAxis;
 
-    // Axes
-    chart.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
+  if (!isMobile) {
+    // HORIZONTAL chart (desktop)
+    x = d3.scaleBand().domain(data.map(d => d.Minute)).range([0, width]).padding(0.2);
+    y = d3.scaleLinear().domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1]).nice().range([height, 0]);
 
-    chart.append("g").call(d3.axisLeft(y));
+    xAxis = g => g.attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
+    yAxis = g => g.call(d3.axisLeft(y));
 
     // Bars
     chart.selectAll(".bar")
-        .data(data)
-        .join("rect")
-          .attr("class", "bar")
-          .attr("x", d => x(d.Minute))
-          .attr("y", d => y(d.Power))
-          .attr("width", x.bandwidth())
-          .attr("height", d => height - y(d.Power));
+      .data(data)
+      .join("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.Minute))
+        .attr("y", d => y(d.Power))
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.Power));
 
     // Line
     const line = d3.line()
-        .x(d => x(d.Minute) + x.bandwidth()/2)
-        .y(d => y(d.Nominal))
-        .curve(d3.curveMonotoneX);
+      .x(d => x(d.Minute) + x.bandwidth()/2)
+      .y(d => y(d.Nominal))
+      .curve(d3.curveMonotoneX);
 
-    chart.append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
+    chart.append("path").datum(data).attr("class","line").attr("d",line);
+    chart.selectAll(".dot").data(data).join("circle")
+      .attr("class","dot")
+      .attr("cx", d => x(d.Minute) + x.bandwidth()/2)
+      .attr("cy", d => y(d.Nominal))
+      .attr("r", 5);
 
-    // Dots
-    chart.selectAll(".dot")
-        .data(data)
-        .join("circle")
-          .attr("class", "dot")
-          .attr("cx", d => x(d.Minute) + x.bandwidth()/2)
-          .attr("cy", d => y(d.Nominal))
-          .attr("r", 5);
+  } else {
+    // VERTICAL chart (mobile)
+    y = d3.scaleBand().domain(data.map(d => d.Minute)).range([0, height]).padding(0.2);
+    x = d3.scaleLinear().domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1]).nice().range([0, width]);
+
+    xAxis = g => g.attr("transform", `translate(0,${height})`).call(d3.axisBottom(x));
+    yAxis = g => g.call(d3.axisLeft(y));
+
+    // Bars horizontal
+    chart.selectAll(".bar")
+      .data(data)
+      .join("rect")
+        .attr("class", "bar")
+        .attr("y", d => y(d.Minute))
+        .attr("x", 0)
+        .attr("height", y.bandwidth())
+        .attr("width", d => x(d.Power));
+
+    // Line horizontal
+    const line = d3.line()
+      .x(d => x(d.Nominal))
+      .y(d => y(d.Minute) + y.bandwidth()/2)
+      .curve(d3.curveMonotoneY);
+
+    chart.append("path").datum(data).attr("class","line").attr("d",line);
+    chart.selectAll(".dot").data(data).join("circle")
+      .attr("class","dot")
+      .attr("cx", d => x(d.Nominal))
+      .attr("cy", d => y(d.Minute) + y.bandwidth()/2)
+      .attr("r", 5);
+  }
+
+  // Draw axes
+  chart.append("g").call(xAxis);
+  chart.append("g").call(yAxis);
 
 });
 
 // Handle window resize
-window.addEventListener("resize", () => {
-    width = window.innerWidth - margin.left - margin.right;
-    height = window.innerHeight - margin.top - margin.bottom;
-    svg.selectAll("*").remove(); // Clear chart
-    // Re-run the script (or implement a redraw function)
-    location.reload();
-});
+window.addEventListener("resize", () => location.reload());
 </script>
 
 </body>
