@@ -72,16 +72,14 @@ function drawChart() {
           .attr("r",5);
 
     if (isMobileDevice()) {
-      
-       const svgElem = document.getElementById("chart");
 
-        svgElem.style.transform = "rotate(90deg)";
-        svgElem.style.transformOrigin = "top left";
-        svgElem.style.width = fullHeight + "px"; // swap width/height
-        svgElem.style.height = fullWidth + "px";
-        svgElem.style.position = "absolute";
-        svgElem.style.top = "0";
-        svgElem.style.left = "0";
+        svg.style.transform = "rotate(90deg)";
+        svg.style.transformOrigin = "top left";
+        svg.style.width = fullHeight + "px"; // swap width/height
+        svg.style.height = fullWidth + "px";
+        svg.style.position = "absolute";
+        svg.style.top = "0";
+        svg.style.left = "0";
 
     }
     
