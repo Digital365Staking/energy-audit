@@ -40,19 +40,21 @@
 
   const csvFile = "data.csv";
 
-  d3.csv(csvFile, d3.autoType).then(rawData => {
+  // --- 1) LOAD CSV WITH TYPE CONVERSION ---
+  d3.csv(csvFile, d => ({
+    Minute: d.Minute,
+    Power: +d.Power,
+    Nominal: +d.Nominal
+  })).then(rawData => {
 
-    // --- 1) GROUP BY MINUTE ---
+    // --- 2) GROUP BY MINUTE AND AGGREGATE ---
     const grouped = d3.groups(rawData, d => d.Minute);
 
-    // --- 2) BUILD AGGREGATED DATA ---
     const data = grouped.map(([minute, rows]) => {
-      const avgPower = d3.mean(rows, r => r.Power);
-      const nominal = rows[0].Nominal; // same for all rows
       return {
         Minute: minute,
-        Power: avgPower,
-        Nominal: nominal
+        Power: d3.mean(rows, r => r.Power), // average Power
+        Nominal: rows[0].Nominal             // take first Nominal
       };
     });
 
@@ -106,6 +108,8 @@
         .attr("cy", d => y(d.Nominal))
         .attr("r", 4);
 
+  }).catch(error => {
+    console.error("Error loading CSV:", error);
   });
 </script>
 
