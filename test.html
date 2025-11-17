@@ -73,16 +73,16 @@ function drawChart() {
           .attr("r",5);
 
     } else {
-      // Mobile: 90° rotated chart
-      // Wrap in a group and translate to right of screen
+      // Mobile: rotate chart 90deg clockwise correctly
+      // Rotate around bottom-left of chart area
       const rotatedGroup = svg.append("g")
-        .attr("transform", `translate(${window.innerWidth},0) rotate(90)`);
+        .attr("transform", `translate(${margin.left},${margin.top + height}) rotate(-90)`);
 
-      // Swap scales: x = Minute (vertical), y = Power/Nominal (horizontal)
+      // Swap scales: x = Minute, y = Power/Nominal
       const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,height]).padding(0.2);
       const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([0,width]);
 
-      // Axes
+      // Axes (inside rotated group)
       rotatedGroup.append("g").call(d3.axisLeft(y));
       rotatedGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(x));
 
