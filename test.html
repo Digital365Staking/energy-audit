@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Power vs Nominal Chart (Bars + Line)</title>
+  <title>Aggregated Power vs Nominal Chart</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     body {
@@ -26,73 +26,88 @@
   </style>
 </head>
 <body>
-  <svg width="900" height="500"></svg>
 
-  <script>
-    const svg = d3.select("svg"),
-          margin = {top: 40, right: 60, bottom: 50, left: 60},
-          width = +svg.attr("width") - margin.left - margin.right,
-          height = +svg.attr("height") - margin.top - margin.bottom;
+<svg width="900" height="500"></svg>
 
-    const chart = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+<script>
+  const svg = d3.select("svg"),
+        margin = {top: 40, right: 60, bottom: 50, left: 60},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
 
-    // Path to your CSV file
-    const csvFile = "data.csv";
+  const chart = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    d3.csv(csvFile, d3.autoType).then(data => {
+  const csvFile = "data.csv";
 
-      // X axis → Minute
-      const x = d3.scaleBand()
-        .domain(data.map(d => d.Minute))
-        .range([0, width])
-        .padding(0.2);
+  d3.csv(csvFile, d3.autoType).then(rawData => {
 
-      // Y axis → shared scale for Power and Nominal
-      const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
-        .nice()
-        .range([height, 0]);
+    // --- 1) GROUP BY MINUTE ---
+    const grouped = d3.groups(rawData, d => d.Minute);
 
-      // Draw X axis
-      chart.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x).tickFormat(d => `Min ${d}`));
-
-      // Draw Y axis
-      chart.append("g").call(d3.axisLeft(y));
-
-      // Draw bars for Power
-      chart.selectAll(".bar")
-        .data(data)
-        .join("rect")
-          .attr("class", "bar")
-          .attr("x", d => x(d.Minute))
-          .attr("y", d => y(d.Power))
-          .attr("width", x.bandwidth())
-          .attr("height", d => height - y(d.Power));
-
-      // Line generator for Nominal
-      const line = d3.line()
-        .x(d => x(d.Minute) + x.bandwidth() / 2) // align point at center of bar
-        .y(d => y(d.Nominal))
-        .curve(d3.curveMonotoneX);
-
-      // Draw Nominal line
-      chart.append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
-
-      // Draw dots on the line
-      chart.selectAll(".dot")
-        .data(data)
-        .join("circle")
-          .attr("class", "dot")
-          .attr("cx", d => x(d.Minute) + x.bandwidth() / 2)
-          .attr("cy", d => y(d.Nominal))
-          .attr("r", 4);
+    // --- 2) BUILD AGGREGATED DATA ---
+    const data = grouped.map(([minute, rows]) => {
+      const avgPower = d3.mean(rows, r => r.Power);
+      const nominal = rows[0].Nominal; // same for all rows
+      return {
+        Minute: minute,
+        Power: avgPower,
+        Nominal: nominal
+      };
     });
-  </script>
+
+    console.log("Aggregated data:", data);
+
+    // --- 3) SCALES ---
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.Minute))
+      .range([0, width])
+      .padding(0.2);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
+      .nice()
+      .range([height, 0]);
+
+    // --- 4) AXES ---
+    chart.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
+
+    chart.append("g").call(d3.axisLeft(y));
+
+    // --- 5) BARS FOR AVERAGE POWER ---
+    chart.selectAll(".bar")
+      .data(data)
+      .join("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.Minute))
+        .attr("y", d => y(d.Power))
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.Power));
+
+    // --- 6) LINE FOR NOMINAL ---
+    const line = d3.line()
+      .x(d => x(d.Minute) + x.bandwidth() / 2)
+      .y(d => y(d.Nominal))
+      .curve(d3.curveMonotoneX);
+
+    chart.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    // --- 7) LINE DOTS ---
+    chart.selectAll(".dot")
+      .data(data)
+      .join("circle")
+        .attr("class", "dot")
+        .attr("cx", d => x(d.Minute) + x.bandwidth() / 2)
+        .attr("cy", d => y(d.Nominal))
+        .attr("r", 4);
+
+  });
+</script>
+
 </body>
 </html>
