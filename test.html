@@ -41,9 +41,12 @@ function drawChart() {
       Nominal: +rows[0].Nominal
     }));
 
-    const isMobile = window.innerWidth < 600;
+    // Function to detect if the user is on a mobile device
+    function isMobileDevice() {
+        return !!/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+    }
 
-    if (!isMobile) {
+    if (!isMobileDevice()) {
       // Desktop horizontal chart
       const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
       const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
