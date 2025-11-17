@@ -89,11 +89,17 @@ function drawChart() {
       // Bars
       rotatedGroup.selectAll(".bar")
         .data(data).join("rect")
-          .attr("class","bar")
-          .attr("y",d=>x(d.Minute))
-          .attr("x",0)
-          .attr("height",x.bandwidth())
-          .attr("width",d=>y(d.Power));
+        .attr("class","bar")
+        .attr("y", d => x(d.Minute))       // current position
+        .attr("x", 0)
+        .attr("height", x.bandwidth())
+        .attr("width", d => y(d.Power))
+        .attr("transform", d => {
+          // rotate 90° clockwise around the top-left corner of the rectangle
+          const cx = 0;                  // x-coordinate pivot
+          const cy = x(d.Minute);        // y-coordinate pivot
+          return `rotate(90, ${cx}, ${cy})`;
+        });
 
       // Line
       const line = d3.line()
