@@ -73,41 +73,51 @@ function drawChart() {
           .attr("r",5);
 
     } else {
-       // Mobile: rotate chart to simulate Y-axis rotation
+        // Mobile: rotated chart
       const rotatedGroup = svg.append("g")
-        .attr("transform", `translate(${window.innerWidth},0) rotate(90)`);
+        .attr("transform", `translate(${fullWidth},0) rotate(90)`);
 
       // Swap scales: X = Minute (vertical), Y = Power/Nominal (horizontal)
-      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,height]).padding(0.2);
-      const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([0,width]);
-
-      // Axes (inside rotated group)
-      rotatedGroup.append("g").call(d3.axisLeft(y));
-      rotatedGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(x));
-
-      // Bars
-     rotatedGroup.selectAll(".bar")
-      .data(data).join("rect")
-      .attr("class","bar")
-      .attr("x", d => x(d.Minute))           // position along X-axis
-      .attr("y", d => y(d.Power))           // top of the bar along Y-axis
-      .attr("width", x.bandwidth())         // bar width
-      .attr("height", d => height - y(d.Power)); // bar height from Y-axis
-
+      const xRot = d3.scaleBand()
+          .domain(data.map(d=>d.Minute))
+          .range([0,height]) // use height as the new vertical range
+          .padding(0.2);
+    
+      const yRot = d3.scaleLinear()
+          .domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1])
+          .nice()
+          .range([0,width]); // width becomes horizontal range
+    
+      const chartGroup = rotatedGroup.append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+      // Axes
+      chartGroup.append("g").call(d3.axisLeft(yRot));
+      chartGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(xRot));
+    
+      // Bars (vertical along rotated Y-axis)
+      chartGroup.selectAll(".bar")
+        .data(data).join("rect")
+          .attr("class","bar")
+          .attr("x",0)                // start from 0 horizontal
+          .attr("y", d => xRot(d.Minute)) // position along rotated vertical axis
+          .attr("width", d => yRot(d.Power)) // width = Power along horizontal axis
+          .attr("height", xRot.bandwidth());
+    
       // Line
       const line = d3.line()
-        .x(d=>y(d.Nominal))
-        .y(d=>x(d.Minute)+x.bandwidth()/2)
-        .curve(d3.curveMonotoneY);
-
-      rotatedGroup.append("path").datum(data).attr("class","line").attr("d",line);
-
+          .x(d => yRot(d.Nominal))
+          .y(d => xRot(d.Minute)+xRot.bandwidth()/2)
+          .curve(d3.curveMonotoneY);
+    
+      chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
+    
       // Dots
-      rotatedGroup.selectAll(".dot")
+      chartGroup.selectAll(".dot")
         .data(data).join("circle")
           .attr("class","dot")
-          .attr("cx",d=>y(d.Nominal))
-          .attr("cy",d=>x(d.Minute)+x.bandwidth()/2)
+          .attr("cx", d => yRot(d.Nominal))
+          .attr("cy", d => xRot(d.Minute)+xRot.bandwidth()/2)
           .attr("r",5);
     }
   });
