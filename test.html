@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clustered Column + Line Chart</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .bar {
+      fill-opacity: 0.7;
+    }
+    .bar:hover {
+      fill-opacity: 1;
+    }
+    .line {
+      fill: none;
+      stroke: #FF5733;
+      stroke-width: 3px;
+    }
+    .axis-label {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="800" height="500"></svg>
+
+  <script>
+    const svg = d3.select("svg"),
+          margin = {top: 40, right: 60, bottom: 50, left: 60},
+          width = +svg.attr("width") - margin.left - margin.right,
+          height = +svg.attr("height") - margin.top - margin.bottom;
+
+    const chart = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Example data: categories with two series + a line value
+    const data = [
+      {category: "A", series1: 30, series2: 50, lineValue: 40},
+      {category: "B", series1: 70, series2: 60, lineValue: 65},
+      {category: "C", series1: 50, series2: 80, lineValue: 70},
+      {category: "D", series1: 90, series2: 40, lineValue: 60}
+    ];
+
+    const subgroups = ["series1", "series2"];
+    const categories = data.map(d => d.category);
+
+    const x0 = d3.scaleBand()
+      .domain(categories)
+      .range([0, width])
+      .paddingInner(0.2);
+
+    const x1 = d3.scaleBand()
+      .domain(subgroups)
+      .range([0, x0.bandwidth()])
+      .padding(0.05);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => Math.max(d.series1, d.series2, d.lineValue)) * 1.1])
+      .nice()
+      .range([height, 0]);
+
+    const color = d3.scaleOrdinal()
+      .domain(subgroups)
+      .range(["#1f77b4", "#ff7f0e"]);
+
+    // X Axis
+    chart.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x0));
+
+    // Y Axis
+    chart.append("g")
+      .call(d3.axisLeft(y));
+
+    // Bars
+    chart.selectAll("g.bar-group")
+      .data(data)
+      .join("g")
+        .attr("transform", d => `translate(${x0(d.category)},0)`)
+      .selectAll("rect")
+      .data(d => subgroups.map(key => ({key, value: d[key]})))
+      .join("rect")
+        .attr("x", d => x1(d.key))
+        .attr("y", d => y(d.value))
+        .attr("width", x1.bandwidth())
+        .attr("height", d => height - y(d.value))
+        .attr("fill", d => color(d.key))
+        .attr("class", "bar");
+
+    // Line
+    const line = d3.line()
+      .x(d => x0(d.category) + x0.bandwidth()/2)
+      .y(d => y(d.lineValue))
+      .curve(d3.curveMonotoneX);
+
+    chart.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    // Line points
+    chart.selectAll(".dot")
+      .data(data)
+      .join("circle")
+        .attr("cx", d => x0(d.category) + x0.bandwidth()/2)
+        .attr("cy", d => y(d.lineValue))
+        .attr("r", 5)
+        .attr("fill", "#FF5733");
+
+  </script>
+</body>
+</html>
