@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Aggregated Power vs Nominal Chart</title>
+  <title>Full-Screen Aggregated Power vs Nominal Chart</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+    svg {
+      width: 100vw;
+      height: 100vh;
+    }
     .bar { fill: steelblue; fill-opacity: 0.8; }
     .bar:hover { fill-opacity: 1; }
     .line { fill: none; stroke: orange; stroke-width: 3px; }
@@ -13,17 +23,21 @@
   </style>
 </head>
 <body>
-<svg width="900" height="500"></svg>
+
+<svg></svg>
 
 <script>
-const svg = d3.select("svg"),
-      margin = {top: 40, right: 60, bottom: 50, left: 60},
-      width = +svg.attr("width") - margin.left - margin.right,
-      height = +svg.attr("height") - margin.top - margin.bottom;
+const svg = d3.select("svg");
+
+// Responsive dimensions
+const margin = {top: 60, right: 60, bottom: 60, left: 80};
+let width = window.innerWidth - margin.left - margin.right;
+let height = window.innerHeight - margin.top - margin.bottom;
 
 const chart = svg.append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
+// Load CSV
 const csvFile = "data.csv";
 
 d3.csv(csvFile, d => ({
@@ -32,66 +46,75 @@ d3.csv(csvFile, d => ({
     Nominal: +d["Nominal"].trim()
 })).then(rawData => {
 
-    // GROUP BY MINUTE
+    // Group by Minute
     const grouped = d3.groups(rawData, d => d.Minute);
-
     const data = grouped.map(([minute, rows]) => ({
         Minute: minute,
         Power: d3.mean(rows, r => r.Power),
-        Nominal: +rows[0].Nominal // ensure number
+        Nominal: +rows[0].Nominal
     }));
 
     console.log("Aggregated data:", data);
 
-    // SCALES
+    // Scales
     const x = d3.scaleBand()
-      .domain(data.map(d => d.Minute))
-      .range([0, width])
-      .padding(0.2);
+        .domain(data.map(d => d.Minute))
+        .range([0, width])
+        .padding(0.2);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
-      .nice()
-      .range([height, 0]);
+        .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
+        .nice()
+        .range([height, 0]);
 
-    // AXES
+    // Axes
     chart.append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x));
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x));
 
     chart.append("g").call(d3.axisLeft(y));
 
-    // BARS
+    // Bars
     chart.selectAll(".bar")
-      .data(data)
-      .join("rect")
-        .attr("class", "bar")
-        .attr("x", d => x(d.Minute))
-        .attr("y", d => y(d.Power))
-        .attr("width", x.bandwidth())
-        .attr("height", d => height - y(d.Power));
+        .data(data)
+        .join("rect")
+          .attr("class", "bar")
+          .attr("x", d => x(d.Minute))
+          .attr("y", d => y(d.Power))
+          .attr("width", x.bandwidth())
+          .attr("height", d => height - y(d.Power));
 
-    // LINE
+    // Line
     const line = d3.line()
-      .x(d => x(d.Minute) + x.bandwidth()/2)
-      .y(d => y(d.Nominal))
-      .curve(d3.curveMonotoneX);
+        .x(d => x(d.Minute) + x.bandwidth()/2)
+        .y(d => y(d.Nominal))
+        .curve(d3.curveMonotoneX);
 
     chart.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", line);
 
-    // LINE DOTS
+    // Dots
     chart.selectAll(".dot")
-      .data(data)
-      .join("circle")
-        .attr("class", "dot")
-        .attr("cx", d => x(d.Minute) + x.bandwidth()/2)
-        .attr("cy", d => y(d.Nominal))
-        .attr("r", 4);
+        .data(data)
+        .join("circle")
+          .attr("class", "dot")
+          .attr("cx", d => x(d.Minute) + x.bandwidth()/2)
+          .attr("cy", d => y(d.Nominal))
+          .attr("r", 5);
 
 });
+
+// Handle window resize
+window.addEventListener("resize", () => {
+    width = window.innerWidth - margin.left - margin.right;
+    height = window.innerHeight - margin.top - margin.bottom;
+    svg.selectAll("*").remove(); // Clear chart
+    // Re-run the script (or implement a redraw function)
+    location.reload();
+});
 </script>
+
 </body>
 </html>
