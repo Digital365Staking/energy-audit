@@ -73,43 +73,37 @@ function drawChart() {
           .attr("r",5);
 
     } else {
-      // Mobile: rotate chart 90deg clockwise correctly
-      // Rotate around bottom-left of chart area
+       // Mobile: rotate the entire chart container 90° but keep bars vertical
       const rotatedGroup = svg.append("g")
-        .attr("transform", `translate(${margin.left},${margin.top + height}) rotate(-90)`);
+        .attr("transform", `translate(${window.innerWidth},0) rotate(90)`);
 
-      // Swap scales: x = Minute, y = Power/Nominal
-      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,height]).padding(0.2);
-      const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([0,width]);
+      // Use same scales, same bar coordinates
+      rotatedGroup.append("g").attr("transform",`translate(${margin.left},${margin.top})`)
+        .call(g => {
+          g.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
+          g.append("g").call(d3.axisLeft(y));
 
-      // Axes (inside rotated group)
-      rotatedGroup.append("g").call(d3.axisLeft(y));
-      rotatedGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(x));
+          g.selectAll(".bar")
+            .data(data).join("rect")
+              .attr("class","bar")
+              .attr("x", d => x(d.Minute))
+              .attr("y", d => y(d.Power))
+              .attr("width", x.bandwidth())
+              .attr("height", d => height - y(d.Power));
 
-      // Bars
-      rotatedGroup.selectAll(".bar")
-        .data(data).join("rect")
-          .attr("class","bar")
-          .attr("y",d=>x(d.Minute))
-          .attr("x",0)
-          .attr("height",x.bandwidth())
-          .attr("width",d=>y(d.Power));
+          const line = d3.line()
+            .x(d => x(d.Minute)+x.bandwidth()/2)
+            .y(d => y(d.Nominal))
+            .curve(d3.curveMonotoneX);
 
-      // Line
-      const line = d3.line()
-        .x(d=>y(d.Nominal))
-        .y(d=>x(d.Minute)+x.bandwidth()/2)
-        .curve(d3.curveMonotoneY);
-
-      rotatedGroup.append("path").datum(data).attr("class","line").attr("d",line);
-
-      // Dots
-      rotatedGroup.selectAll(".dot")
-        .data(data).join("circle")
-          .attr("class","dot")
-          .attr("cx",d=>y(d.Nominal))
-          .attr("cy",d=>x(d.Minute)+x.bandwidth()/2)
-          .attr("r",5);
+          g.append("path").datum(data).attr("class","line").attr("d",line);
+          g.selectAll(".dot")
+            .data(data).join("circle")
+              .attr("class","dot")
+              .attr("cx", d => x(d.Minute)+x.bandwidth()/2)
+              .attr("cy", d => y(d.Nominal))
+              .attr("r",5);
+        });
     }
   });
 }
