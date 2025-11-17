@@ -88,15 +88,12 @@ function drawChart() {
 
       // Bars
       rotatedGroup.selectAll(".bar")
-      .data(data).join("rect")
-      .attr("class","bar")
-      .attr("x", 0)
-      .attr("y", d => x(d.Minute))
-      .attr("width", d => y(d.Power))
-      .attr("height", x.bandwidth())
-      .style("transform", "rotateY(90deg)")
-      .style("transform-origin", "left center")
-      .style("transform-box", "fill-box");
+        .data(data).join("rect")
+          .attr("class","bar")
+          .attr("y",d=>x(d.Minute))
+          .attr("x",0)
+          .attr("height",x.bandwidth())
+          .attr("width",d=>y(d.Power));
 
       // Line
       const line = d3.line()
