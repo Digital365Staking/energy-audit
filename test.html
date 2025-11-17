@@ -2,28 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Clustered Column + Line Chart from CSV</title>
+  <title>Power vs Nominal Chart (Bars + Line)</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
     }
     .bar {
-      fill-opacity: 0.7;
+      fill: steelblue;
+      fill-opacity: 0.8;
     }
     .bar:hover {
       fill-opacity: 1;
     }
     .line {
       fill: none;
-      stroke: #FF5733;
+      stroke: orange;
       stroke-width: 3px;
     }
     .dot {
-      fill: #FF5733;
-    }
-    .axis-label {
-      font-size: 12px;
+      fill: orange;
     }
   </style>
 </head>
@@ -39,79 +37,61 @@
     const chart = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // CSV file path (replace with your CSV file location)
+    // Path to your CSV file
     const csvFile = "data.csv";
 
     d3.csv(csvFile, d3.autoType).then(data => {
-      // Expecting data columns: Minute, Power, Nominal
-      const subgroups = ["Power"]; // Column(s) for bars
-      const lineKey = "Nominal";   // Column for the line
-      const categories = data.map(d => d.Minute);
 
-      const x0 = d3.scaleBand()
-        .domain(categories)
+      // X axis → Minute
+      const x = d3.scaleBand()
+        .domain(data.map(d => d.Minute))
         .range([0, width])
-        .paddingInner(0.2);
+        .padding(0.2);
 
-      const x1 = d3.scaleBand()
-        .domain(subgroups)
-        .range([0, x0.bandwidth()])
-        .padding(0.05);
-
+      // Y axis → shared scale for Power and Nominal
       const y = d3.scaleLinear()
         .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
         .nice()
         .range([height, 0]);
 
-      const color = d3.scaleOrdinal()
-        .domain(subgroups)
-        .range(["#1f77b4"]);
-
-      // X Axis
+      // Draw X axis
       chart.append("g")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x0).tickFormat(d => `Min ${d}`));
+        .call(d3.axisBottom(x).tickFormat(d => `Min ${d}`));
 
-      // Y Axis
-      chart.append("g")
-        .call(d3.axisLeft(y));
+      // Draw Y axis
+      chart.append("g").call(d3.axisLeft(y));
 
-      // Bars
-      chart.selectAll("g.bar-group")
+      // Draw bars for Power
+      chart.selectAll(".bar")
         .data(data)
-        .join("g")
-          .attr("transform", d => `translate(${x0(d.Minute)},0)`)
-        .selectAll("rect")
-        .data(d => subgroups.map(key => ({key, value: d[key]})))
         .join("rect")
-          .attr("x", d => x1(d.key))
-          .attr("y", d => y(d.value))
-          .attr("width", x1.bandwidth())
-          .attr("height", d => height - y(d.value))
-          .attr("fill", d => color(d.key))
-          .attr("class", "bar");
+          .attr("class", "bar")
+          .attr("x", d => x(d.Minute))
+          .attr("y", d => y(d.Power))
+          .attr("width", x.bandwidth())
+          .attr("height", d => height - y(d.Power));
 
-      // Line
+      // Line generator for Nominal
       const line = d3.line()
-        .x(d => x0(d.Minute) + x0.bandwidth()/2)
-        .y(d => y(d[lineKey]))
+        .x(d => x(d.Minute) + x.bandwidth() / 2) // align point at center of bar
+        .y(d => y(d.Nominal))
         .curve(d3.curveMonotoneX);
 
+      // Draw Nominal line
       chart.append("path")
         .datum(data)
         .attr("class", "line")
         .attr("d", line);
 
-      // Line points
+      // Draw dots on the line
       chart.selectAll(".dot")
         .data(data)
         .join("circle")
-          .attr("cx", d => x0(d.Minute) + x0.bandwidth()/2)
-          .attr("cy", d => y(d[lineKey]))
-          .attr("r", 5)
-          .attr("class", "dot");
-    }).catch(error => {
-      console.error("Error loading CSV:", error);
+          .attr("class", "dot")
+          .attr("cx", d => x(d.Minute) + x.bandwidth() / 2)
+          .attr("cy", d => y(d.Nominal))
+          .attr("r", 4);
     });
   </script>
 </body>
