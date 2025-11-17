@@ -10,14 +10,7 @@
   .bar { fill: steelblue; fill-opacity:0.8; }
   .bar:hover { fill-opacity:1; }
   .line { fill:none; stroke:orange; stroke-width:3px; }
-  .dot { fill:orange; }
-  /* Rotate only on mobile (width < 600px) */
-  @media (max-width: 600px) {
-    .box {
-      transform: rotate(90deg);
-      transform-origin: center;
-    }
-  }
+  .dot { fill:orange; }  
 </style>
 </head>
 <body>
@@ -80,7 +73,9 @@ function drawChart() {
 
     if (isMobileDevice()) {
       
-      //chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
+      d3.select("svg")
+      .attr("transform", "rotate(90)")
+      .attr("transform-origin", "0 0");
 
     }
     
