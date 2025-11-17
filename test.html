@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rotated Chart with Readable Axes</title>
+<title>Rotated Chart with Axes</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   body, html { margin:0; padding:0; width:100%; height:100%; font-family: Arial; }
@@ -18,115 +18,98 @@
 
 <script>
 const svg = d3.select("svg");
-let margin = {top:60, right:60, bottom:60, left:80};
-let width = window.innerWidth - margin.left - margin.right;
-let height = window.innerHeight - margin.top - margin.bottom;
-
-const chart = svg.append("g")
-  .attr("transform", `translate(${margin.left},${margin.top})`);
-
-const csvFile = "data.csv";
+const margin = {top:60, right:60, bottom:60, left:80};
 
 function drawChart() {
-  chart.selectAll("*").remove();
-  width = window.innerWidth - margin.left - margin.right;
-  height = window.innerHeight - margin.top - margin.bottom;
+  svg.selectAll("*").remove();
+  const width = window.innerWidth - margin.left - margin.right;
+  const height = window.innerHeight - margin.top - margin.bottom;
 
-  d3.csv(csvFile, d => ({
+  const chartGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  d3.csv("data.csv", d => ({
     Minute: d["Minute"].trim(),
     Power: +d["Power"].trim(),
     Nominal: +d["Nominal"].trim()
   })).then(rawData => {
 
-    const grouped = d3.groups(rawData, d => d.Minute);
-    const data = grouped.map(([minute, rows]) => ({
+    const grouped = d3.groups(rawData, d=>d.Minute);
+    const data = grouped.map(([minute, rows])=>({
       Minute: minute,
-      Power: d3.mean(rows, r => r.Power),
+      Power: d3.mean(rows,r=>r.Power),
       Nominal: +rows[0].Nominal
     }));
 
-    // Function to detect if the user is on a mobile device
-    function isMobileDevice() {
-        return !!/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
-    }
+    const isMobile = window.innerWidth < 600;
 
-    if (!isMobileDevice()) {
-      // Desktop: normal horizontal chart
-      const x = d3.scaleBand().domain(data.map(d => d.Minute)).range([0,width]).padding(0.2);
+    if (!isMobile) {
+      // Desktop horizontal chart
+      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
       const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
 
-      chart.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
-      chart.append("g").call(d3.axisLeft(y));
+      chartGroup.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
+      chartGroup.append("g").call(d3.axisLeft(y));
 
-      // Bars
-      chart.selectAll(".bar")
-        .data(data)
-        .join("rect")
+      chartGroup.selectAll(".bar")
+        .data(data).join("rect")
           .attr("class","bar")
           .attr("x",d=>x(d.Minute))
           .attr("y",d=>y(d.Power))
           .attr("width",x.bandwidth())
           .attr("height",d=>height - y(d.Power));
 
-      // Line
       const line = d3.line()
         .x(d=>x(d.Minute)+x.bandwidth()/2)
         .y(d=>y(d.Nominal))
         .curve(d3.curveMonotoneX);
 
-      chart.append("path").datum(data).attr("class","line").attr("d",line);
+      chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
 
-      chart.selectAll(".dot")
-        .data(data)
-        .join("circle")
+      chartGroup.selectAll(".dot")
+        .data(data).join("circle")
           .attr("class","dot")
           .attr("cx",d=>x(d.Minute)+x.bandwidth()/2)
           .attr("cy",d=>y(d.Nominal))
           .attr("r",5);
 
     } else {
-      // Mobile: true rotation 90° clockwise, axes readable
-      const rotationGroup = chart.append("g")
-        .attr("transform", `translate(0,${height}) rotate(-90)`);
+      // Mobile: rotate entire chart 90deg clockwise
+      // Pivot around top-left corner
+      const rotatedGroup = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top}) rotate(90,0,0)`);
 
       const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,height]).padding(0.2);
       const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([0,width]);
 
-      // Axes (outside rotation, so readable)
-      chart.append("g").attr("transform", `translate(0,0)`).call(d3.axisLeft(y));
-      chart.append("g").attr("transform", `translate(0,${width})`).call(d3.axisBottom(x));
+      rotatedGroup.append("g").attr("transform",`translate(0,0)`).call(d3.axisLeft(y));
+      rotatedGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(x));
 
-      // Bars inside rotated group
-      rotationGroup.selectAll(".bar")
-        .data(data)
-        .join("rect")
+      rotatedGroup.selectAll(".bar")
+        .data(data).join("rect")
           .attr("class","bar")
-          .attr("x",0)
           .attr("y",d=>x(d.Minute))
+          .attr("x",0)
           .attr("height",x.bandwidth())
           .attr("width",d=>y(d.Power));
 
-      // Line inside rotated group
       const line = d3.line()
         .x(d=>y(d.Nominal))
         .y(d=>x(d.Minute)+x.bandwidth()/2)
         .curve(d3.curveMonotoneY);
 
-      rotationGroup.append("path").datum(data).attr("class","line").attr("d",line);
+      rotatedGroup.append("path").datum(data).attr("class","line").attr("d",line);
 
-      rotationGroup.selectAll(".dot")
-        .data(data)
-        .join("circle")
+      rotatedGroup.selectAll(".dot")
+        .data(data).join("circle")
           .attr("class","dot")
           .attr("cx",d=>y(d.Nominal))
           .attr("cy",d=>x(d.Minute)+x.bandwidth()/2)
           .attr("r",5);
     }
-
-  }).catch(error => console.error("CSV error:",error));
+  });
 }
 
-// Initial draw
 drawChart();
 window.addEventListener("resize", drawChart);
 </script>
