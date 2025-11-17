@@ -73,13 +73,16 @@ function drawChart() {
 
     if (isMobileDevice()) {
 
-        svg.style.transform = "rotate(90deg)";
-        svg.style.transformOrigin = "top left";
-        svg.style.width = fullHeight + "px"; // swap width/height
-        svg.style.height = fullWidth + "px";
-        svg.style.position = "absolute";
-        svg.style.top = "0";
-        svg.style.left = "0";
+      // Add a <g> container inside the SVG
+      const chartGroup = svg.append("g")
+        .attr("id","chart-group");
+      
+      // On mobile, rotate the <g> instead of the SVG
+      if (window.innerWidth < 600) {
+        chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
+      } else {
+        chartGroup.attr("transform", `translate(${margin.left},${margin.top})`);
+      }
 
     }
     
