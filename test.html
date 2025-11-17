@@ -18,6 +18,8 @@
 
 <script>
 const svg = d3.select("svg");
+// Add a <g> container inside the SVG
+const chartGroup = svg.append("g").attr("id","chart-group");
 const margin = {top:60, right:60, bottom:60, left:80};
 
 function drawChart() {
@@ -72,10 +74,6 @@ function drawChart() {
           .attr("r",5);
 
     if (isMobileDevice()) {
-
-      // Add a <g> container inside the SVG
-      const chartGroup = svg.append("g")
-        .attr("id","chart-group");
       
       // On mobile, rotate the <g> instead of the SVG
       if (window.innerWidth < 600) {
