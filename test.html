@@ -75,12 +75,7 @@ function drawChart() {
 
     if (isMobileDevice()) {
       
-      // On mobile, rotate the <g> instead of the SVG
-      if (window.innerWidth < 600) {
-        chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
-      } else {
-        chartGroup.attr("transform", `translate(${margin.left},${margin.top})`);
-      }
+      chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
 
     }
     
