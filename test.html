@@ -2,11 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rotated Chart with Axes</title>
+<title>Chart with 90° rotation on mobile</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   body, html { margin:0; padding:0; width:100%; height:100%; font-family: Arial; }
-  svg { width:100vw; height:100vh; }
+  svg { width:100vw; height:100vh; transition: transform 0.3s; }
+  
+  /* Mobile rotation */
+  @media (max-width: 600px) {
+    svg {
+      transform: rotate(90deg);
+      transform-origin: top left;
+      /* move it to the right of the screen */
+      position: absolute;
+      top: 0;
+      left: 100vw; 
+    }
+  }
+
   .bar { fill: steelblue; fill-opacity:0.8; }
   .bar:hover { fill-opacity:1; }
   .line { fill:none; stroke:orange; stroke-width:3px; }
@@ -41,75 +54,33 @@ function drawChart() {
       Nominal: +rows[0].Nominal
     }));
 
-    // Function to detect if the user is on a mobile device
-    function isMobileDevice() {
-        return !!/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
-    }
+    const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
+    const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
 
-    if (!isMobileDevice()) {
-      // Desktop horizontal chart
-      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
-      const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
+    chartGroup.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
+    chartGroup.append("g").call(d3.axisLeft(y));
 
-      chartGroup.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
-      chartGroup.append("g").call(d3.axisLeft(y));
+    chartGroup.selectAll(".bar")
+      .data(data).join("rect")
+        .attr("class","bar")
+        .attr("x",d=>x(d.Minute))
+        .attr("y",d=>y(d.Power))
+        .attr("width",x.bandwidth())
+        .attr("height",d=>height - y(d.Power));
 
-      chartGroup.selectAll(".bar")
-        .data(data).join("rect")
-          .attr("class","bar")
-          .attr("x",d=>x(d.Minute))
-          .attr("y",d=>y(d.Power))
-          .attr("width",x.bandwidth())
-          .attr("height",d=>height - y(d.Power));
+    const line = d3.line()
+      .x(d=>x(d.Minute)+x.bandwidth()/2)
+      .y(d=>y(d.Nominal))
+      .curve(d3.curveMonotoneX);
 
-      const line = d3.line()
-        .x(d=>x(d.Minute)+x.bandwidth()/2)
-        .y(d=>y(d.Nominal))
-        .curve(d3.curveMonotoneX);
+    chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
 
-      chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
-
-      chartGroup.selectAll(".dot")
-        .data(data).join("circle")
-          .attr("class","dot")
-          .attr("cx",d=>x(d.Minute)+x.bandwidth()/2)
-          .attr("cy",d=>y(d.Nominal))
-          .attr("r",5);
-
-    } else {
-      // Mobile: rotate entire chart 90deg clockwise
-      // Pivot around top-left corner
-      const rotatedGroup = svg.append("g")
-        .attr("transform", `translate(${margin.left},${margin.top}) rotate(90,0,0)`);
-
-      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,height]).padding(0.2);
-      const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([0,width]);
-
-      rotatedGroup.append("g").attr("transform",`translate(0,0)`).call(d3.axisLeft(y));
-      rotatedGroup.append("g").attr("transform",`translate(0,${width})`).call(d3.axisBottom(x));
-
-      rotatedGroup.selectAll(".bar")
-        .data(data).join("rect")
-          .attr("class","bar")
-          .attr("y",d=>x(d.Minute))
-          .attr("x",0)
-          .attr("height",x.bandwidth())
-          .attr("width",d=>y(d.Power));
-
-      const line = d3.line()
-        .x(d=>y(d.Nominal))
-        .y(d=>x(d.Minute)+x.bandwidth()/2)
-        .curve(d3.curveMonotoneY);
-
-      rotatedGroup.append("path").datum(data).attr("class","line").attr("d",line);
-
-      rotatedGroup.selectAll(".dot")
-        .data(data).join("circle")
-          .attr("class","dot")
-          .attr("cx",d=>y(d.Nominal))
-          .attr("cy",d=>x(d.Minute)+x.bandwidth()/2)
-          .attr("r",5);
-    }
+    chartGroup.selectAll(".dot")
+      .data(data).join("circle")
+        .attr("class","dot")
+        .attr("cx",d=>x(d.Minute)+x.bandwidth()/2)
+        .attr("cy",d=>y(d.Nominal))
+        .attr("r",5);
   });
 }
 
