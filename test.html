@@ -73,52 +73,16 @@ function drawChart() {
           .attr("r",5);
 
     } else {
-         const rotatedGroup = svg.append("g")
-          .attr("transform", `translate(${fullWidth},0) rotate(90)`);
+        const svgElem = document.getElementById("chart");
 
-          // Scales: X = Power/Nominal (horizontal), Y = Minute (vertical)
-          const xRot = d3.scaleLinear()
-              .domain([0, d3.max(data, d => Math.max(d.Power, d.Nominal)) * 1.1])
-              .range([0, width]); // horizontal axis
-        
-          const yRot = d3.scaleBand()
-              .domain(data.map(d => d.Minute))
-              .range([0, height])
-              .padding(0.2); // vertical axis
-        
-          const chartGroup = rotatedGroup.append("g")
-              .attr("transform", `translate(${margin.left},${margin.top})`);
-        
-          // Axes
-          chartGroup.append("g").call(d3.axisTop(xRot)); // horizontal axis (Power)
-          chartGroup.append("g").call(d3.axisLeft(yRot)); // vertical axis (Minute)
-        
-          // Bars
-          chartGroup.selectAll(".bar")
-            .data(data)
-            .join("rect")
-              .attr("class", "bar")
-              .attr("x", 0)               // start from left
-              .attr("y", d => yRot(d.Minute)) // vertical position along new Y
-              .attr("width", d => xRot(d.Power)) // horizontal growth along new X
-              .attr("height", yRot.bandwidth());
-        
-          // Line
-          const line = d3.line()
-              .x(d => xRot(d.Nominal))
-              .y(d => yRot(d.Minute) + yRot.bandwidth()/2)
-              .curve(d3.curveMonotoneY);
-        
-          chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
-        
-          // Dots
-          chartGroup.selectAll(".dot")
-            .data(data)
-            .join("circle")
-              .attr("class","dot")
-              .attr("cx", d => xRot(d.Nominal))
-              .attr("cy", d => yRot(d.Minute) + yRot.bandwidth()/2)
-              .attr("r", 5);
+        svgElem.style.transform = "rotate(90deg)";
+        svgElem.style.transformOrigin = "top left";
+        svgElem.style.width = fullHeight + "px"; // swap width/height
+        svgElem.style.height = fullWidth + "px";
+        svgElem.style.position = "absolute";
+        svgElem.style.top = "0";
+        svgElem.style.left = "0";
+ 
     }
   });
 }
