@@ -11,19 +11,24 @@
   .bar:hover { fill-opacity:1; }
   .line { fill:none; stroke:orange; stroke-width:3px; }
   .dot { fill:orange; }
+  /* Rotate only on mobile (width < 600px) */
+  @media (max-width: 600px) {
+    .box {
+      transform: rotate(90deg);
+      transform-origin: center;
+    }
+  }
 </style>
 </head>
 <body>
-<svg></svg>
+<div class="box"><svg></svg></div>
 
 <script>
 const svg = d3.select("svg");
-// Add a <g> container inside the SVG
-const chartTotal = svg.append("g").attr("id","chart-group");
 const margin = {top:60, right:60, bottom:60, left:80};
 
 function drawChart() {
-  chartTotal.selectAll("*").remove();
+  svg.selectAll("*").remove();
   const width = window.innerWidth - margin.left - margin.right;
   const height = window.innerHeight - margin.top - margin.bottom;
 
@@ -45,7 +50,7 @@ function drawChart() {
     }
 
      // Desktop horizontal chart
-      const chartGroup = chartTotal.attr("transform", `translate(${margin.left},${margin.top})`);
+      const chartGroup = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
       const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
       const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
 
@@ -75,7 +80,7 @@ function drawChart() {
 
     if (isMobileDevice()) {
       
-      chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
+      //chartGroup.attr("transform", `translate(${fullWidth},0) rotate(90)`);
 
     }
     
