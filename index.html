@@ -61,6 +61,7 @@
       </div>
       <button class="next">&#10095;</button>
     </div>
+    <div id="chart"></div>
   </section>
   <!-- ABOUT -->
   <section id="about" class="encart">
@@ -248,5 +249,64 @@
   
   <!-- JavaScript reference -->
   <script src="script.js"></script> 
+  <script>
+        fetch("data.csv")
+            .then(response => response.text())
+            .then(csvText => {
+                const results = Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true
+                });
+
+                const data = results.data;
+
+                const minutes = data.map(row => row.Minute);
+                const nominal = data.map(row => row.Nominal);
+                const power = data.map(row => row.Power);
+
+                const fig = {
+                    data: [
+                        {
+                            x: minutes,
+                            y: nominal,
+                            type: "scatter",
+                            mode: "lines",
+                            name: "Nominal (W)",
+                            line: { width: 3 }
+                        },
+                        {
+                            x: minutes,
+                            y: power,
+                            type: "scatter",
+                            mode: "lines",
+                            name: "Power (W)",
+                            line: { width: 3 }
+                        }
+                    ],
+                    layout: {
+                        title: {
+                            text: "",
+                            font: { size: 16 }
+                        },
+                        margin: { l: 40, r: 20, t: 10, b: 40 },
+                        xaxis: { title: "Minute" },
+                        yaxis: { title: "Power (W)" },
+                        autosize: true
+                    },
+                    config: {
+                        responsive: true,
+                        displayModeBar: false  // cleaner on mobile
+                    }
+                };
+
+                Plotly.newPlot("chart", fig);
+            })
+            .catch(err => console.error("Error loading CSV:", err));
+
+        // Ensure graph resizes when rotating phone
+        window.addEventListener("orientationchange", () => {
+            Plotly.Plots.resize("chart");
+        });
+    </script>
 </body>
 </html>
