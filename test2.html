@@ -1,67 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Real-Time Consumption Graph</title>
-  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-    }
-    #chart {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>CSV Plot Viewer</title>
+
+    <!-- Load Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Load PapaParse for CSV reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
 </head>
 <body>
+    <h2>CSV Plot Viewer</h2>
 
-<div id="chart"></div>
+    <input type="file" id="csvFile" accept=".csv" />
+    <div id="chart" style="width: 100%; height: 600px;"></div>
 
-<script>
-  // Initial empty data
-  let xData = [];
-  let yData = [];
+    <script>
+        document.getElementById('csvFile').addEventListener('change', function (event) {
 
-  // Create the initial Plotly chart
-  Plotly.newPlot("chart", [{
-    x: xData,
-    y: yData,
-    mode: "lines",
-    line: { width: 2 },
-  }], {
-    title: "Real-Time Electric Consumption",
-    xaxis: { title: "Time" },
-    yaxis: { title: "Consumption (W)" },
-    margin: { t: 40, r: 20, b: 40, l: 60 }
-  });
+            const file = event.target.files[0];
 
-  // Add a new data point every second
-  setInterval(() => {
-    const now = new Date();
-    
-    // Simulate consumption value: replace this with real data
-    const consumption = 300 + Math.random() * 200; // e.g., 300–500 Watts
+            Papa.parse(file, {
+                header: true,
+                dynamicTyping: true,
+                complete: function (results) {
+                    const data = results.data;
 
-    xData.push(now);
-    yData.push(consumption);
+                    // Extract columns
+                    const minute = data.map(row => row.Minute);
+                    const nominal = data.map(row => row.Nominal);
+                    const power = data.map(row => row.Power);
 
-    // Keep only the last 60 points (1 minute)
-    if (xData.length > 60) {
-      xData.shift();
-      yData.shift();
-    }
+                    // Plot using Plotly
+                    const fig = {
+                        data: [
+                            {
+                                x: minute,
+                                y: nominal,
+                                type: "scatter",
+                                mode: "lines",
+                                name: "Nominal (W)"
+                            },
+                            {
+                                x: minute,
+                                y: power,
+                                type: "scatter",
+                                mode: "lines",
+                                name: "Power (W)"
+                            }
+                        ],
+                        layout: {
+                            title: "Nominal vs Power Over Time",
+                            xaxis: { title: "Minute" },
+                            yaxis: { title: "Power (W)" }
+                        }
+                    };
 
-    // Update the chart efficiently
-    Plotly.update("chart", {
-      x: [xData],
-      y: [yData]
-    });
-
-  }, 1000); // Update every second
-</script>
-
+                    Plotly.newPlot("chart", fig);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
