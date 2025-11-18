@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const translations = {
     en: {
       menuAbout: "About Us", menuVideos: "Videos", menuContact: "Contact",
-      realisations: "Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor (Dublin, Madrid and Geneva)",
+      realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor (Dublin, Madrid and Geneva)",
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", 
       widget: "We offer a web widget that allows you to visualize a chart displaying your device’s real-time consumption. This component can, of course, be integrated into your web and/or mobile platforms.",
       titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)",
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     fr: {
       menuAbout: "À propos", menuVideos: "Vidéos", menuContact: "Contact",
-      realisations: "Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique (Dublin, Madrid et Genève)",
+      realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique (Dublin, Madrid et Genève)",
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)",
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     es: {
       menuAbout: "Sobre nosotros", menuVideos: "Vídeos", menuContact: "Contacto",
-      realisations: "Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético (Dublín, Madrid y Ginebra)",
+      realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético (Dublín, Madrid y Ginebra)",
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", 
       widget: "Ofrecemos un widget web que permite visualizar un gráfico que muestra el consumo en tiempo real de su dispositivo. Este componente puede, por supuesto, integrarse en sus plataformas web y/o móviles.",
       titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)",
