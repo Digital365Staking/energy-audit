@@ -4,47 +4,65 @@
     <meta charset="UTF-8">
     <title>CSV Plot Viewer</title>
 
-    <!-- Load Plotly and PapaParse -->
+    <!-- Load Plotly -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
-    <!-- Load CSV as a <script> resource -->
-    <script src="data.csv" type="text/csv" id="csvScript"></script>
+    <!-- Load PapaParse for CSV reading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 
 <body>
     <h2>CSV Plot Viewer</h2>
+
     <div id="chart" style="width: 100%; height: 600px;"></div>
 
     <script>
-        // Wait for the CSV <script> to load
-        window.addEventListener("load", function () {
-            // The raw CSV text is in the script tag as its content
-            const csvText = document.getElementById("csvScript").innerHTML.trim();
+        // Load CSV automatically from same folder
+        fetch("data.csv")
+            .then(response => response.text())
+            .then(csvText => {
+                const results = Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true
+                });
 
-            const results = Papa.parse(csvText, {
-                header: true,
-                dynamicTyping: true
+                const data = results.data;
+
+                // Extract columns
+                const minutes = data.map(row => row.Minute);
+                const nominal = data.map(row => row.Nominal);
+                const power = data.map(row => row.Power);
+
+                // Plot using Plotly
+                const fig = {
+                    data: [
+                        {
+                            x: minutes,
+                            y: nominal,
+                            type: "scatter",
+                            mode: "lines",
+                            name: "Nominal (W)"
+                        },
+                        {
+                            x: minutes,
+                            y: power,
+                            type: "scatter",
+                            mode: "lines",
+                            name: "Power (W)"
+                        }
+                    ],
+                    layout: {
+                        title: "Nominal vs Power Over Time",
+                        xaxis: { title: "Minute" },
+                        yaxis: { title: "Power (W)" }
+                    }
+                };
+
+                Plotly.newPlot("chart", fig);
+            })
+            .catch(err => {
+                console.error("Error loading CSV file:", err);
             });
-
-            const data = results.data;
-
-            const minutes = data.map(row => row.Minute);
-            const nominal = data.map(row => row.Nominal);
-            const power = data.map(row => row.Power);
-
-            Plotly.newPlot("chart", {
-                data: [
-                    { x: minutes, y: nominal, type: "scatter", mode: "lines", name: "Nominal (W)" },
-                    { x: minutes, y: power,   type: "scatter", mode: "lines", name: "Power (W)" }
-                ],
-                layout: {
-                    title: "Nominal vs Power Over Time",
-                    xaxis: { title: "Minute" },
-                    yaxis: { title: "Power (W)" }
-                }
-            });
-        });
     </script>
 
 </body>
