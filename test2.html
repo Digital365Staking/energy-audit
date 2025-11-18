@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real-Time Consumption Graph</title>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+    #chart {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+<div id="chart"></div>
+
+<script>
+  // Initial empty data
+  let xData = [];
+  let yData = [];
+
+  // Create the initial Plotly chart
+  Plotly.newPlot("chart", [{
+    x: xData,
+    y: yData,
+    mode: "lines",
+    line: { width: 2 },
+  }], {
+    title: "Real-Time Electric Consumption",
+    xaxis: { title: "Time" },
+    yaxis: { title: "Consumption (W)" },
+    margin: { t: 40, r: 20, b: 40, l: 60 }
+  });
+
+  // Add a new data point every second
+  setInterval(() => {
+    const now = new Date();
+    
+    // Simulate consumption value: replace this with real data
+    const consumption = 300 + Math.random() * 200; // e.g., 300–500 Watts
+
+    xData.push(now);
+    yData.push(consumption);
+
+    // Keep only the last 60 points (1 minute)
+    if (xData.length > 60) {
+      xData.shift();
+      yData.shift();
+    }
+
+    // Update the chart efficiently
+    Plotly.update("chart", {
+      x: [xData],
+      y: [yData]
+    });
+
+  }, 1000); // Update every second
+</script>
+
+</body>
+</html>
