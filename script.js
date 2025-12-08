@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       beforeOferta: "¿Te gusta el estilo de energy-audit.com? ¡Obtén tu propio sitio web con el mismo modelo desde solo ", priceMin: "5 € al mes !",
       adTitle: "Convierta la eficiencia energética en rendimiento.", adFree: "¡ Conozca el consumo exacto de sus dispositivos con un resumen gratuito y sencillo !", 
       adPaid: "¡ Potencia tu rendimiento ! Obtén nuestro informe completo con consejos prácticos de optimización (servicio de pago).",
-      aboutTitle: "Quiénes somos", aboutText: "Especializados en medición y optimización del consumo eléctrico.",
+      aboutTitle: "Quiénes somos", aboutText: "Estamos especializados en medición y optimización del consumo eléctrico.",
       about1: "Monitorización en tiempo real", about2: "Informes de auditoría detallados",
       about3: "Integración con sensores IoT", about4: "Recomendaciones de eficiencia energética",
       sensorTitle: "Sensores y Medición", sensorText: "Utilizamos sensores avanzados para supervisar el consumo energético.",
