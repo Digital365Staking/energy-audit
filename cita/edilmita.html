@@ -207,6 +207,11 @@
       const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
       window.open(url, '_blank');
     }
+     flatpickr("#date", {
+      dateFormat: "d/m/Y",
+      locale: "es",
+      allowInput: true
+    });
   </script>
 </body>
 </html>
