@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-ES">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reservas y Eventos</title>
+
+  <!-- Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
   <style>
     body {
       font-family: "Poppins", Arial, sans-serif;
@@ -30,22 +36,21 @@
     h1 {
       font-size: 1.7rem;
       color: #2c3e50;
-      margin-bottom: 6px;
       text-align: center;
+      margin: 0;
     }
 
     p.subtitle {
       font-size: 0.95rem;
       color: #555;
-      margin-bottom: 22px;
       text-align: center;
+      margin-bottom: 16px;
     }
 
     form {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      text-align: left;
     }
 
     label {
@@ -60,14 +65,23 @@
       border-radius: 10px;
       border: 1px solid #ddd;
       font-size: 0.9rem;
-      outline: none;
       width: 94%;
+      outline: none;
     }
 
-    textarea { resize: none; min-height: 80px; }
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
 
-    .row { display: flex; gap: 12px; }
-    .row > div { flex: 1; }
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .row > div {
+      flex: 1;
+    }
 
     @media (max-width: 480px) {
       .row { flex-direction: column; }
@@ -99,15 +113,15 @@
     <form>
       <div>
         <label>Nombre completo</label>
-        <input type="text" id="name" />
+        <input type="text" id="name" required />
       </div>
 
       <div>
         <label>Teléfono</label>
-        <input type="tel" id="phone" />
+        <input type="tel" id="phone" required />
       </div>
 
-      <div class="row">
+       <div class="row">
         <div>
           <label>Tipo de solicitud</label>
           <select id="type" onchange="toggleType()" style="width:100%">
@@ -135,11 +149,11 @@
       <div class="row">        
         <div>
           <label>Fecha</label>
-          <input type="text" id="date" placeholder="dd/MM/yyyy" inputmode="numeric" style="width:55%"/>
+          <input type="text" id="date" placeholder="dd/MM/yyyy" required style="width:55%"/>
         </div><br><br>
         <div>
           <label>Hora</label>
-          <input type="time" id="time" style="width:35%"/>
+          <input type="time" id="time" required style="width:35%"/>
         </div>
       </div>
 
@@ -160,24 +174,16 @@
       document.getElementById('mesaFields').style.display = type === 'mesa' ? 'block' : 'none';
     }
 
-    function formatDate(dateInput) {
-      if (!dateInput) return '';
-      // Expected format: dd/MM/yyyy
-      const parts = dateInput.split('/');
-      if (parts.length !== 3) return dateInput;
-      return `${parts[0]}/${parts[1]}/${parts[2]}`;
-      }
-
     function sendWhatsApp() {
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const type = document.getElementById('type').value;
       const persons = document.getElementById('persons').value;
-      const date = formatDate(document.getElementById('date').value);
+      const date = document.getElementById('date').value;
       const time = document.getElementById('time').value;
       const notes = document.getElementById('message').value;
 
-      const whatsappNumber = '34624664881';
+      const whatsappNumber = '34685338165';
 
       let text = `*SOLICITUD NUEVA*\n──────────────\n` +
         `• Nombre: ${name}\n` +
@@ -189,12 +195,19 @@
       }
 
       text += `• Fecha: ${date}\n` +
-              `• Hora: ${time}\n──────────────\n` +
+              `• Hora: ${time}\n` +
+              `──────────────\n` +
               `• Notas: ${notes}`;
 
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
       window.open(url, '_blank');
     }
+
+    flatpickr("#date", {
+      dateFormat: "d/m/Y",
+      locale: "es",
+      allowInput: true
+    });
 
     toggleType();
   </script>
