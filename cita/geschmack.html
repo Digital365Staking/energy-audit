@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservas y Eventos</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      color: #2c3e50;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+      outline: none;
+      width: 100%;
+    }
+
+    textarea { resize: none; min-height: 80px; }
+
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+
+    @media (max-width: 480px) {
+      .row { flex-direction: column; }
+    }
+
+    .btn {
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #25d366, #1ebe5d);
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Reservas & Eventos</h1>
+    <p class="subtitle">Envía tu solicitud directamente por WhatsApp</p>
+
+    <form>
+      <div>
+        <label>Nombre completo</label>
+        <input type="text" id="name" />
+      </div>
+
+      <div>
+        <label>Teléfono</label>
+        <input type="tel" id="phone" />
+      </div>
+
+      <div>
+        <label>Tipo de solicitud</label>
+        <select id="type" onchange="toggleType()">
+          <option value="mesa">Reserva de mesa</option>
+          <option value="evento">Registro a evento</option>
+        </select>
+      </div>
+
+      <div id="mesaFields">
+        <label>Número de personas</label>
+        <select id="persons">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value=">10">Más de 10</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Fecha</label>
+          <input type="date" id="date" />
+        </div>
+        <div>
+          <label>Hora</label>
+          <input type="time" id="time" />
+        </div>
+      </div>
+
+      <div>
+        <label>Notas</label>
+        <textarea id="message" placeholder="Si son más de 10 personas, indica el número exacto aquí"></textarea>
+      </div>
+
+      <a href="#" class="btn" onclick="sendWhatsApp(); return false;">Enviar por WhatsApp</a>
+    </form>
+
+    <div class="note">Serás redirigido a WhatsApp con el mensaje preparado.</div>
+  </div>
+
+  <script>
+    function toggleType() {
+      const type = document.getElementById('type').value;
+      document.getElementById('mesaFields').style.display = type === 'mesa' ? 'block' : 'none';
+    }
+
+    function formatDate(dateInput) {
+      if (!dateInput) return '';
+      const [y, m, d] = dateInput.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function sendWhatsApp() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const type = document.getElementById('type').value;
+      const persons = document.getElementById('persons').value;
+      const date = formatDate(document.getElementById('date').value);
+      const time = document.getElementById('time').value;
+      const notes = document.getElementById('message').value;
+
+      const whatsappNumber = '34685338165';
+
+      let text = `*SOLICITUD NUEVA*\n──────────────\n` +
+        `• Nombre: ${name}\n` +
+        `• Teléfono: ${phone}\n` +
+        `• Tipo: ${type === 'mesa' ? 'Reserva de mesa' : 'Registro a evento'}\n`;
+
+      if (type === 'mesa') {
+        text += `• Personas: ${persons}\n`;
+      }
+
+      text += `• Fecha: ${date}\n` +
+              `• Hora: ${time}\n──────────────\n` +
+              `• Notas: ${notes}`;
+
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    toggleType();
+  </script>
+</body>
+</html>
