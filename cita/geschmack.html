@@ -33,6 +33,12 @@
       gap: 16px;
     }
 
+    @media (max-width: 768px) {
+      .mobile-only {
+        display: none;
+      }      
+    }
+
     h1 {
       font-size: 1.7rem;
       color: #2c3e50;
@@ -150,7 +156,8 @@
         <div>
           <label>Fecha</label>
           <input type="text" id="date" placeholder="dd/MM/yyyy" required style="width:55%"/>
-        </div><br><br>
+        </div>
+        <br class="mobile-only">
         <div>
           <label>Hora</label>
           <input type="time" id="time" placeholder="hh:mm" required style="width:35%"/>
