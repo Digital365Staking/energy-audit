@@ -163,8 +163,8 @@
         <textarea id="message" placeholder="Si plus de 10 personnes, merci d’indiquer le nombre exact"></textarea>
       </div>
 
-      <a href="#" class="btn" onclick="sendEmail(); return false;">Envoyer par email</a>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@ilritrovosarl.ch&su=Objet&body=Texte" target="_blank">Envoyer via Gmail</a>
+      <a href="#" onclick="sendGmail(); return false;">Envoyer par email</a>
+      
 
     </form>
 
@@ -177,7 +177,7 @@
       document.getElementById('tableFields').style.display = type === 'table' ? 'block' : 'none';
     }
 
-    function sendEmail() {
+    function getEmail() {
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const type = document.getElementById('type').value;
@@ -205,7 +205,9 @@
               `Notes : ${notes}`;
 
       const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
+
+      window.open(mailtoLink, '_blank');
+      
     }
 
     flatpickr('#date', {
