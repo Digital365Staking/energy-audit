@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cita con la Peluquería</title>
+  <!-- Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
   <style>
     body {
       font-family: "Poppins", Arial, sans-serif;
@@ -147,12 +151,12 @@
       <div class="row">
         <div>
           <label for="date">Fecha preferida</label>
-          <input type="date" id="date" />
+          <input type="text" id="date" placeholder="dd/MM/yyyy" required />
         </div>
         <br><br>
         <div>
           <label for="time">Hora preferida</label>
-          <input type="time" id="time" />
+          <input type="time" id="time" required />
         </div>
       </div>
 
