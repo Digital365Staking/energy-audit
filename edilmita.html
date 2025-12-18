@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cita con la Peluquería</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      color: #2c3e50;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 94%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #27ae60;
+      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.25);
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .row input, .row select {
+      flex: 1;
+    }
+
+    @media (max-width: 480px) {
+      .row {
+        flex-direction: column;
+      }
+    }
+
+    .btn {
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #25d366, #1ebe5d);
+      color: #ffffff;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 20px rgba(37, 211, 102, 0.35);
+      text-align: center;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(37, 211, 102, 0.45);
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: #777;
+      margin-top: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Reservar Cita Con Edilmita</h1>
+    <p class="subtitle">Envía tu solicitud directamente por WhatsApp</p>
+
+    <form>
+      <div>
+        <label for="name">Nombre completo</label>
+        <input type="text" id="name" placeholder="Tu nombre" />
+      </div>
+
+      <div>
+        <label for="phone">Teléfono</label>
+        <input type="tel" id="phone" placeholder="Tu número de teléfono" />
+      </div>
+
+      <div>
+        <label for="service">Servicio</label>
+        <select id="service" style="width:100%">
+          <option value="Corte de pelo">Corte de pelo</option>
+          <option value="Coloración">Coloración</option>
+          <option value="Secado">Secado</option>
+          <option value="Peinado">Peinado</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="date">Fecha preferida</label>
+          <input type="date" id="date" />
+        </div>
+        <br><br>
+        <div>
+          <label for="time">Hora preferida</label>
+          <input type="time" id="time" />
+        </div>
+      </div>
+
+      <div>
+        <label for="message">Notas adicionales</label>
+        <textarea id="message" placeholder="¿Algo que debamos saber?"></textarea>
+      </div>
+
+      <a href="#" class="btn" onclick="sendWhatsApp(); return false;">
+        Reservar por WhatsApp
+      </a>
+    </form>
+
+    <div class="note">
+      Serás redirigido a WhatsApp con el mensaje ya preparado.
+    </div>
+  </div>
+
+  <script>
+    function sendWhatsApp() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const service = document.getElementById('service').value;
+      const dateInput = document.getElementById('date').value;
+
+      let formattedDate = '';
+      if (dateInput) {
+        const parts = dateInput.split('-'); // ["yyyy", "MM", "dd"]
+        formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`; // dd/MM/yyyy
+      }
+      
+      const time = document.getElementById('time').value;
+      const message = document.getElementById('message').value;
+
+      const whatsappNumber = '34685338165'; // Reemplaza con el número de WhatsApp de la peluquería
+
+      let text = `*CITA NUEVA*\n` +
+             `──────────────\n` +
+             `• Nombre: ${name}\n` +
+             `• Teléfono: ${phone}\n` +
+             `• Servicio: ${service}\n` +
+             `• Fecha: ${formattedDate}\n` +
+             `• Hora: ${time}\n` +
+             `──────────────\n` +
+             `• Notas: ${message}`;
+
+      const encodedText = encodeURIComponent(text);
+      const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
