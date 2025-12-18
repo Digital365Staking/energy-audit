@@ -107,33 +107,33 @@
         <input type="tel" id="phone" />
       </div>
 
-      <div>
-        <label>Tipo de solicitud</label>
-        <select id="type" onchange="toggleType()">
-          <option value="mesa">Reserva de mesa</option>
-          <option value="evento">Registro a evento</option>
-        </select>
-      </div>
-
-      <div id="mesaFields">
-        <label>Número de personas</label>
-        <select id="persons" style="width:100%">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value=">10">Más de 10</option>
-        </select>
-      </div>
-
       <div class="row">
         <div>
+          <label>Tipo de solicitud</label>
+          <select id="type" onchange="toggleType()" style="width:100%">
+            <option value="mesa">Reserva de mesa</option>
+            <option value="evento">Registro a evento</option>
+          </select>
+        </div>
+        <div id="mesaFields">
+          <label>Número de personas</label>
+          <select id="persons" style="width:25%">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value=">10">Más de 10</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">        
+        <div style="width:25%">
           <label>Fecha</label>
           <input type="date" id="date" />
         </div><br><br>
