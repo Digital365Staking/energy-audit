@@ -135,7 +135,7 @@
       <div class="row">        
         <div>
           <label>Fecha</label>
-          <input type="date" id="date" style="width:55%"/>
+          <input type="text" id="date" placeholder="dd/MM/yyyy" inputmode="numeric" style="width:55%"/>
         </div><br><br>
         <div>
           <label>Hora</label>
@@ -162,9 +162,11 @@
 
     function formatDate(dateInput) {
       if (!dateInput) return '';
-      const [y, m, d] = dateInput.split('-');
-      return `${d}/${m}/${y}`;
-    }
+      // Expected format: dd/MM/yyyy
+      const parts = dateInput.split('/');
+      if (parts.length !== 3) return dateInput;
+      return `${parts[0]}/${parts[1]}/${parts[2]}`;
+      }
 
     function sendWhatsApp() {
       const name = document.getElementById('name').value;
