@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prendre rendez-vous chez Espace bien-être Oxygène</title>
+
+  <!-- Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #f6c1cc, #e89cab);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-only {
+        display: none;
+      }      
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      color: #2c3e50;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+      width: 94%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #e89cab;
+      box-shadow: 0 0 0 3px rgba(232, 156, 171, 0.3);
+      outline: none;
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ff8fab, #e86b8f);
+      color: #ffffff;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(232, 107, 143, 0.35);
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: #777;
+      margin-top: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Prendre rendez-vous chez Espace bien-être Oxygène</h1>
+    <p class="subtitle">Envoyez votre demande directement via WhatsApp</p>
+
+    <form>
+      <div>
+        <label for="name">Nom complet</label>
+        <input type="text" id="name" placeholder="Votre nom" />
+      </div>
+
+      <div>
+        <label for="phone">Téléphone</label>
+        <input type="tel" id="phone" placeholder="Votre numéro de téléphone" />
+      </div>
+
+      <div>
+        <label for="service">Prestation souhaitée</label>
+        <select id="service" style="width:100%">
+          <option value="Soin du visage">Soin du visage</option>
+          <option value="Manucure / Pédicure">Manucure / Pédicure</option>
+          <option value="Épilation">Épilation</option>
+          <option value="Massage">Massage</option>
+          <option value="Maquillage">Maquillage</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="date">Date souhaitée</label>
+          <input type="text" id="date" placeholder="dd/MM/yyyy" required />
+        </div>
+        <br class="mobile-only">
+        <div>
+          <label for="time">Heure souhaitée</label>
+          <input type="time" id="time" placeholder="hh:mm" required style="width:87%" />
+        </div>
+      </div>
+
+      <div>
+        <label for="message">Informations complémentaires</label>
+        <textarea id="message" placeholder="Allergies, préférences, remarques…"></textarea>
+      </div>
+
+      <a href="#" class="btn" onclick="sendWhatsApp(); return false;">
+        Réserver via WhatsApp
+      </a>
+    </form>
+
+    <div class="note">
+      Vous serez redirigé(e) vers WhatsApp avec le message déjà préparé.
+    </div>
+  </div>
+
+  <script>
+    function sendWhatsApp() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const service = document.getElementById('service').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const message = document.getElementById('message').value;
+
+      const whatsappNumber = '41797169382'; // Numéro WhatsApp de l'institut
+
+      const text =
+        `🌸 *NOUVELLE DEMANDE DE RENDEZ-VOUS* 🌸\n` +
+        `────────────────────\n` +
+        `• Nom : ${name}\n` +
+        `• Téléphone : ${phone}\n` +
+        `• Prestation : ${service}\n` +
+        `• Date : ${date}\n` +
+        `• Heure : ${time}\n` +
+        `────────────────────\n` +
+        `• Notes : ${message}`;
+
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    flatpickr("#date", {
+      dateFormat: "d/m/Y",
+      locale: "fr",
+      allowInput: true
+    });
+
+     flatpickr("#time", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: true,
+      allowInput: true
+      });
+  </script>
+</body>
+</html>
