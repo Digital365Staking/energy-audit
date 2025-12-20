@@ -33,6 +33,12 @@
       gap: 16px;
     }
 
+    @media (max-width: 768px) {
+      .mobile-only {
+        display: none;
+      }      
+    }
+
     h1 {
       font-size: 1.7rem;
       color: #2c3e50;
@@ -123,7 +129,7 @@
 
       <div>
         <label for="service">Prestation souhaitée</label>
-        <select id="service">
+        <select id="service" style="width:100%">
           <option value="Soin du visage">Soin du visage</option>
           <option value="Manucure / Pédicure">Manucure / Pédicure</option>
           <option value="Épilation">Épilation</option>
@@ -136,12 +142,12 @@
       <div class="row">
         <div>
           <label for="date">Date souhaitée</label>
-          <input type="text" id="date" placeholder="jj/mm/aaaa" required />
+          <input type="text" id="date" placeholder="dd/MM/yyyy" required />
         </div>
-
+        <br class="mobile-only">
         <div>
           <label for="time">Heure souhaitée</label>
-          <input type="time" id="time" required />
+          <input type="time" id="time" placeholder="hh:mm" required style="width:87%" />
         </div>
       </div>
 
