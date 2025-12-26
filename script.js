@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setLanguage(lang) {    
 
-    console.log("msgLegal",translations[lang]["rights"]);
+    console.log("msgLegal",translations[lang]["msgLegal"]);
     if (!translations[lang]){ 
       console.log("Translation not found !!!");
       return;    
