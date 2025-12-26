@@ -106,13 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setLanguage(lang) {    
 
-    console.log("msgLegal",translations[lang]["msgLegal"]);
+    // console.log("msgLegal",translations[lang]["msgLegal"]);
     if (!translations[lang]){ 
       console.log("Translation not found !!!");
       return;    
     }
     
-    document.querySelectorAll("[data-key]:not(span)").forEach(el => {
+    document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
       const val = translations[lang][key];
       // Find the iframe by its data-key
@@ -126,20 +126,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-    document.querySelectorAll("span[data-key]").forEach(el => {
-      const key = el.dataset.key;
-      const val = translations[lang][key];
-      // Find the iframe by its data-key
-      if (key.startsWith("urlYTB")) {
-        el.src = val;
-      } else if (typeof val === "string") {
-        if (val.includes("<")) {
-          el.innerHTML = val;   // for itText, etc.
-        } else {
-          el.textContent = val; // for msgLegal, rights, labels
-        }
+
+    setTimeout(() => {
+      const el = document.querySelector("span[data-key='msgLegal']");
+      if (el) {
+        el.textContent = translations[currentLang].msgLegal;
       }
-    });
+    }, 200);
+    
     if (DEBUG) console.log("Language set:", lang);
   }
 
