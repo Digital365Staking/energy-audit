@@ -583,6 +583,7 @@ footer {
   display: flex;
   gap: 12px;
   flex-shrink: 0;
+  margin-left:-20px;
 }
 
 /* Base Button */
