@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Translation not found !!!");
       return;    
     }
+    document.getElementById("msgLegal").textContent = translations[lang]["msgLegal"];
     document.querySelectorAll("[data-key]:not(span)").forEach(el => {
       const key = el.dataset.key;
       const val = translations[lang][key];
