@@ -105,10 +105,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setLanguage(lang) {    
+
+    console.log("msgLegal",translations[lang]["msgLegal"]);
     if (!translations[lang]){ 
       console.log("Translation not found !!!");
       return;    
     }
+    
     document.getElementById("msgLegal").textContent = translations[lang]["msgLegal"];
     document.querySelectorAll("[data-key]:not(span)").forEach(el => {
       const key = el.dataset.key;
