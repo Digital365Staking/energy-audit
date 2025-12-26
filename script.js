@@ -105,8 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setLanguage(lang) {
-    if (!translations[lang]) return;
     document.querySelector('[data-key="msgLegal"]').textContent = translations.en.msgLegal;
+    if (!translations[lang]) return;    
     document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
       const val = translations[lang][key];
