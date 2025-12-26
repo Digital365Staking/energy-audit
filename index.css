@@ -540,3 +540,106 @@ footer {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Cookie Banner Container */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Text */
+.cookie-banner p {
+  margin: 0;
+  color: #1f2937; /* dark slate */
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+.cookie-banner a {
+  color: #0f766e; /* energy green */
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.cookie-banner a:hover {
+  opacity: 0.85;
+}
+
+/* Buttons Container */
+.cookie-banner .buttons {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Base Button */
+.cookie-banner button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Accept Button (Primary) */
+.cookie-banner button:nth-child(1) {
+  background-color: #0f766e; /* green-teal */
+  color: #ffffff;
+}
+
+.cookie-banner button:nth-child(1):hover {
+  background-color: #115e59;
+}
+
+/* Reject Button (Secondary) */
+.cookie-banner button:nth-child(2) {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.cookie-banner button:nth-child(2):hover {
+  background-color: #f3f4f6;
+}
+
+/* Customize Button (Tertiary) */
+.cookie-banner button:nth-child(3) {
+  background-color: transparent;
+  color: #0f766e;
+  border: 1px solid transparent;
+}
+
+.cookie-banner button:nth-child(3):hover {
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cookie-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cookie-banner .buttons {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+
