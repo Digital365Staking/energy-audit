@@ -273,7 +273,45 @@
   <footer>
     &copy; 2025 DIGITAL ENERGY AUDIT LIMITED — <span data-key="rights">Tous droits réservés.</span>
   </footer>
-  
+  <div id="cookie-banner" class="cookie-banner">
+    <p>
+      Ce site utilise des cookies nécessaires et, avec votre accord,
+      des cookies de mesure d’audience.
+      <a href="https://docs.google.com/document/d/1NAW7cTzRG4sCgDKNhWxIzSaqLq--t29V8y0RzALfVjc/edit?usp=sharing">En savoir plus</a>
+    </p>
+    <div class="buttons">
+      <button onclick="acceptAll()">Tout accepter</button>
+      <button onclick="rejectAll()">Tout refuser</button>
+      <button onclick="openSettings()">Personnaliser</button>
+    </div>
+  </div>
+  <script>
+    function acceptAll() {
+      localStorage.setItem("cookieConsent", "all");
+      enableAnalytics();
+      hideBanner();
+    }
+    
+    function rejectAll() {
+      localStorage.setItem("cookieConsent", "none");
+      hideBanner();
+    }
+    
+    function hideBanner() {
+      document.getElementById("cookie-banner").style.display = "none";
+    }
+    
+    function enableAnalytics() {
+      // Charger Google Analytics ou autre outil ici
+    }
+    
+    window.onload = function () {
+      if (localStorage.getItem("cookieConsent")) {
+        hideBanner();
+      }
+    };
+    </script>
+
   <!-- JavaScript reference -->
   <script src="script.js"></script> 
   <script>
@@ -335,5 +373,6 @@
             Plotly.Plots.resize("chart");
         });
     </script>
+  
 </body>
 </html>
