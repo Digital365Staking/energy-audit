@@ -28,7 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
       itTitle: "IoT Data Management and Analysis", itText: "Our team has strong IT expertise that enables us to efficiently manage, analyze, and leverage data collected from IoT sensors. Using advanced technologies such as the Home Assistant platform (see demonstration below), we are able to centralize, visualize, and automate data collection processes. We also use programming languages like Python, in a Linux Ubuntu environment, to produce customized and automated audit reports, directly integrated into the final deliverables.<br /><br />In addition, our expertise extends to Microsoft environments, with a solid command of C# .NET, React, Power Automate, PowerApps, and SharePoint Online (Microsoft 365), ensuring seamless integration within existing ecosystems. Finally, we place great emphasis on clear and impactful reporting, using PowerPoint, Word, and Excel professionally to deliver concise, engaging, and fully tailored results.",
       teamTitle: "Our Team", videosTitle: "Discover Our Projects",
       nif: "NIF12345678A", address: "Address", rights: "All rights reserved.",
-      msgLegal: "This website uses necessary cookies and, with your consent, audience measurement cookies.", moreInfo: "View details", allOK: "Accept all", allNOK: "Reject all", custom: "Customize"
+      msgLegal: "This website uses necessary cookies and, with your consent, audience measurement cookies.", moreInfo: "View details", allOK: "Accept all", allNOK: "Reject all", custom: "Customize",
+      esp321: "The ESP32 WROOM-32 DevKit V1 is a microcontroller board for IoT prototyping with ESPHome and Home Assistant.",
+      esp322: "It features the ESP32 chip and multiple GPIO, ADC, I2C, SPI, and UART pins for connecting sensors and actuators."
     },
     fr: {
       menuAbout: "À propos", menuVideos: "Vidéos", menuContact: "Contact",
@@ -52,7 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
       itTitle: "Gestion et analyse des données IoT", itText: "Notre équipe dispose d’une solide expertise informatique lui permettant de gérer, analyser et valoriser efficacement les données issues des capteurs IoT. Grâce à des technologies avancées telles que la plateforme Home Assistant (voir démonstration ci-dessous), nous sommes en mesure de centraliser, visualiser et automatiser la collecte d’informations. Nous exploitons également des langages de programmation comme Python, sous environnement Linux Ubuntu, pour produire des reportings d’audit personnalisés et automatisés, intégrés directement dans les comptes rendus finaux.<br /><br />Par ailleurs, notre savoir-faire s’étend aux environnements Microsoft, avec une parfaite maîtrise de C# .NET, React, Power Automate, PowerApps et SharePoint Online (Microsoft 365), garantissant une intégration fluide dans les écosystèmes existants. Enfin, nous mettons un soin particulier à la présentation et la communication des résultats, en utilisant de manière professionnelle les outils PowerPoint, Word et Excel pour des reportings clairs, impactants et adaptés à vos besoins.",
       teamTitle: "Notre Équipe", videosTitle: "Découvrez Nos Projets",
       nif: "NIF12345678A", address: "Adresse", rights: "Tous droits réservés.",
-      msgLegal: "Ce site utilise des cookies nécessaires et, avec votre accord, des cookies de mesure d’audience.", moreInfo: "En savoir plus", allOK: "Tout accepter", allNOK: "Tout refuser", custom: "Personnaliser"
+      msgLegal: "Ce site utilise des cookies nécessaires et, avec votre accord, des cookies de mesure d’audience.", moreInfo: "En savoir plus", allOK: "Tout accepter", allNOK: "Tout refuser", custom: "Personnaliser",
+      esp321: "L’ESP32 WROOM-32 DevKit V1 est une carte microcontrôleur pour le prototypage IoT avec ESPHome et Home Assistant.",
+      esp322: "Il intègre la puce ESP32 et plusieurs broches GPIO, ADC, I2C, SPI et UART pour connecter des capteurs et des actionneurs."
     },
     es: {
       menuAbout: "Sobre nosotros", menuVideos: "Vídeos", menuContact: "Contacto",
@@ -76,7 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
       itTitle: "Gestión y análisis de datos IoT", itText: "Nuestro equipo cuenta con una sólida experiencia informática que nos permite gestionar, analizar y aprovechar eficazmente los datos procedentes de los sensores IoT. Gracias a tecnologías avanzadas como la plataforma Home Assistant (ver demostración más abajo), somos capaces de centralizar, visualizar y automatizar la recopilación de información. También utilizamos lenguajes de programación como Python, en un entorno Linux Ubuntu, para generar informes de auditoría personalizados y automatizados, integrados directamente en los informes finales.<br /><br />Además, nuestra experiencia se extiende a los entornos de Microsoft, con un dominio total de C# .NET, React, Power Automate, PowerApps y SharePoint Online (Microsoft 365), lo que garantiza una integración fluida en los ecosistemas existentes. Finalmente, prestamos especial atención a la presentación y comunicación de los resultados, utilizando de manera profesional herramientas como PowerPoint, Word y Excel para ofrecer informes claros, impactantes y adaptados a sus necesidades.",
       teamTitle: "Nuestro Equipo", videosTitle: "Descubre Nuestros Proyectos",
       nif: "NIF12345678A", address: "Dirección", rights: "Todos los derechos reservados.",
-      msgLegal: "Este sitio utiliza cookies necesarias y, con su consentimiento, cookies de medición de audiencia.", moreInfo: "Más información", allOK: "Aceptar todo", allNOK: "Rechazar todo", custom: "Personalizar"
+      msgLegal: "Este sitio utiliza cookies necesarias y, con su consentimiento, cookies de medición de audiencia.", moreInfo: "Más información", allOK: "Aceptar todo", allNOK: "Rechazar todo", custom: "Personalizar",
+      esp321: "El ESP32 WROOM-32 DevKit V1 es una placa microcontroladora para prototipos IoT con ESPHome y Home Assistant.",
+      esp322: "Integra el chip ESP32 y múltiples pines GPIO, ADC, I2C, SPI y UART para conectar sensores y actuadores."
     }
   };
 
