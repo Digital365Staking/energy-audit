@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       teamTitle: "Notre Équipe", videosTitle: "Découvrez Nos Projets",
       nif: "NIF12345678A", address: "Adresse", rights: "Tous droits réservés.",
       msgLegal: "Ce site utilise des cookies nécessaires et, avec votre accord, des cookies de mesure d’audience.", moreInfo: "En savoir plus", allOK: "Tout accepter", allNOK: "Tout refuser", custom: "Personnaliser",
-      esp321: "L’ESP32 WROOM-32 DevKit V1 est une carte microcontrôleur pour le prototypage IoT avec ESPHome et Home Assistant.",
+      esp321: "L’ESP32 WROOM-32 DevKit V1 est une carte microcontrôleur<br>pour le prototypage IoT avec ESPHome et Home Assistant.",
       esp322: "Il intègre la puce ESP32 et plusieurs broches GPIO, ADC, I2C, SPI et UART pour connecter des capteurs et des actionneurs."
     },
     es: {
