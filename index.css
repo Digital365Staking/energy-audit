@@ -461,7 +461,7 @@ footer {
 /* === ENCADRE CONTACT === */
 .encart {
   width: 95%;
-  margin: 20px auto;
+  margin: 10px auto;
   background-image: linear-gradient(
     23deg,
     hsl(120, 100%, 75%) 0%, 
@@ -473,7 +473,7 @@ footer {
   );
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,.35);
-  padding: 24px;
+  padding: 14px;
 }
 
 /* === CONTACT SECTION === */
