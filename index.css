@@ -311,6 +311,10 @@ footer {
 /* Mobile view adjustments */
 @media (max-width: 600px) {
 
+  body {
+    zoom: 1.1;
+  }
+  
   .carousel-item img {
     margin-top: -30px;
   }
