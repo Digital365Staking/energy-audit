@@ -312,7 +312,7 @@ footer {
 @media (max-width: 600px) {
 
   body {
-    zoom: 0.8;
+    zoom: 0.75;
   }
   
   .carousel-item img {
