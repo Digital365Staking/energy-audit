@@ -38,11 +38,6 @@
       margin-bottom: 16px;
     }
 
-    ul {
-      margin-bottom: 20px;
-      padding-left: 20px;
-    }
-
     .highlight {
       background: #e6f7ff;
       padding: 15px;
@@ -57,6 +52,7 @@
       justify-content: center;
     }
 
+    /* Tweet Card */
     .tweet-card {
       border-radius: 16px;
       overflow: hidden;
@@ -77,28 +73,31 @@
         0 20px 40px rgba(0,0,0,0.18);
     }
 
-    /* Responsive iframe */
-    .tweet-card iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      display: block;
-    }
-
-    /* Fallback link */
-    .tweet-fallback {
+    .tweet-content {
       padding: 20px;
-      text-align: center;
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
 
-    .tweet-fallback a {
-      color: #1d9bf0;
+    .tweet-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      font-size: 0.9rem;
+    }
+
+    .handle {
+      color: #657786;
+    }
+
+    .tweet-link {
       text-decoration: none;
+      color: #1d9bf0;
       font-weight: bold;
     }
 
-    .tweet-fallback a:hover {
+    .tweet-link:hover {
       text-decoration: underline;
     }
 
@@ -142,34 +141,37 @@
     <h1>Bitcoin Arrives on Cardano Without Bridges or Wrapping</h1>
 
     <p>
-      A new breakthrough in blockchain interoperability suggests that Bitcoin can now interact directly with Cardano without relying on bridges or wrapped assets.
+      A major breakthrough in blockchain interoperability has emerged: Bitcoin can now interact directly with Cardano without relying on bridges or wrapped assets.
     </p>
 
     <div class="highlight">
-      <strong>Key insight:</strong> Cryptographic proofs replace bridges for trustless asset movement.
+      <strong>Key insight:</strong> Cryptographic proofs replace traditional bridges, enabling a more secure and trustless way to move value across chains.
     </div>
 
     <h2>Two-Way Interoperability</h2>
 
     <p>
-      Cardano native tokens can move toward Bitcoin, potentially eliminating isolated liquidity across blockchains.
+      The new Charms protocol enables seamless communication between Bitcoin and Cardano. This innovation could unlock new liquidity flows and eliminate fragmentation across ecosystems.
     </p>
 
-    <!-- ✅ Robust Tweet Embed -->
+    <!-- ✅ Clean Tweet Preview Card -->
     <div class="video-container">
       <div class="tweet-card">
 
-        <!-- Primary embed -->
-        <iframe 
-          src="https://twitframe.com/show?url=https://twitter.com/DiarioBitcoin/status/2036443463974093281"
-          loading="lazy">
-        </iframe>
+        <div class="tweet-content">
+          Bitcoin arrives on Cardano without bridges or wrapping using the Charms protocol 🚀
+        </div>
 
-        <!-- Fallback (always visible if iframe blocked) -->
-        <div class="tweet-fallback">
-          Unable to load tweet preview.<br>
-          👉 <a href="https://twitter.com/DiarioBitcoin/status/2036443463974093281" target="_blank">
-            View it directly on X
+        <div class="tweet-footer">
+          <div>
+            <strong>DiarioBitcoin</strong><br>
+            <span class="handle">@DiarioBitcoin</span>
+          </div>
+
+          <a href="https://x.com/DiarioBitcoin/status/2036443463974093281" 
+             target="_blank" 
+             class="tweet-link">
+            View on X →
           </a>
         </div>
 
@@ -179,7 +181,7 @@
     <h2>Future Outlook</h2>
 
     <p>
-      Cardano is positioning itself as a highly connected blockchain ecosystem, but adoption remains key.
+      Cardano is positioning itself as a highly interoperable blockchain ecosystem. While the technology is promising, real-world adoption will determine its long-term success.
     </p>
 
     <div class="ad-section">
