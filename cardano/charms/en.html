@@ -91,8 +91,30 @@
     .tweet-card {
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      background: white;
+      background: #ffffff;
+
+      /* Softer, more layered shadow */
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,0.08),
+        0 12px 30px rgba(0,0,0,0.12);
+
+      /* Subtle border for definition */
+      border: 1px solid rgba(0,0,0,0.06);
+
+      /* Smooth hover interaction */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      /* Optional: constrain width for better readability */
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Hover effect (feels more "alive") */
+    .tweet-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 8px 20px rgba(0,0,0,0.12),
+        0 20px 40px rgba(0,0,0,0.18);
     }
   </style>
 </head>
@@ -156,8 +178,8 @@
       If successful, this could eliminate the concept of isolated liquidity across blockchains.
     </p>
 
-    <div class="video-container">
-      <blockquote class="twitter-tweet">
+    <div class="video-container twitter-card">
+      <blockquote>
         <a href="https://x.com/DiarioBitcoin/status/2036443463974093281?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E2036443463974093281%7Ctwgr%5Eebde10fce0c7b6b2d8ff3eb856a427bef10d84f7%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fcardanoproject.blog%2F2026%2F03%2F25%2Fbitcoin-arrives-on-cardano-without-bridges-or-wrapping-using-the-charms-protocol%2F"></a>
       </blockquote>
     </div>
