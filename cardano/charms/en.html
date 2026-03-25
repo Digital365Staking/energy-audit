@@ -53,6 +53,8 @@
 
     .video-container {
       margin: 30px 0;
+      display: flex;
+      justify-content: center;
     }
 
     .tweet-card {
@@ -65,8 +67,7 @@
       border: 1px solid rgba(0,0,0,0.06);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       max-width: 600px;
-      margin: 0 auto;
-      padding: 10px;
+      width: 100%;
     }
 
     .tweet-card:hover {
@@ -76,9 +77,29 @@
         0 20px 40px rgba(0,0,0,0.18);
     }
 
-    /* Center embedded tweet */
-    .twitter-tweet {
-      margin: 0 auto !important;
+    /* Responsive iframe */
+    .tweet-card iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      display: block;
+    }
+
+    /* Fallback link */
+    .tweet-fallback {
+      padding: 20px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .tweet-fallback a {
+      color: #1d9bf0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .tweet-fallback a:hover {
+      text-decoration: underline;
     }
 
     .ad-section {
@@ -121,81 +142,50 @@
     <h1>Bitcoin Arrives on Cardano Without Bridges or Wrapping</h1>
 
     <p>
-      A new breakthrough in blockchain interoperability suggests that Bitcoin can now interact directly with Cardano without relying on bridges or wrapped assets. This innovation is powered by the Charms protocol.
+      A new breakthrough in blockchain interoperability suggests that Bitcoin can now interact directly with Cardano without relying on bridges or wrapped assets.
     </p>
 
     <div class="highlight">
-      <strong>Key insight:</strong> Instead of bridges, cryptographic proofs enable trustless asset movement between Bitcoin and Cardano.
-    </div>
-
-    <h2>Why Cardano Was the First Integrated Network</h2>
-
-    <p>
-      Cardano was not chosen randomly. Its Extended UTXO (EUTXO) model expands Bitcoin’s UTXO system by allowing outputs to include multiple assets, metadata, and smart contract conditions.
-    </p>
-
-    <p>
-      This architecture made Cardano a natural foundation for Charms, which builds on this concept with what is called “enchanted UTXO.”
-    </p>
-
-    <p>
-      Tokens entering Cardano can be minted as native assets and burned when exiting, all governed by the network’s ledger rules.
-    </p>
-
-    <h2>Implications for DeFi</h2>
-
-    <p>
-      If Bitcoin can circulate as a native asset on Cardano, BTC holders gain access to decentralized finance without using wrapped tokens.
-    </p>
-
-    <ul>
-      <li>Decentralized exchanges</li>
-      <li>Lending protocols</li>
-      <li>Liquidity pools</li>
-      <li>Perpetual trading markets</li>
-    </ul>
-
-    <div class="highlight">
-      This could significantly increase liquidity on Cardano while unlocking Bitcoin capital for programmable finance.
+      <strong>Key insight:</strong> Cryptographic proofs replace bridges for trustless asset movement.
     </div>
 
     <h2>Two-Way Interoperability</h2>
 
     <p>
-      The system also allows Cardano native tokens to move toward Bitcoin, potentially reaching a much larger user base.
+      Cardano native tokens can move toward Bitcoin, potentially eliminating isolated liquidity across blockchains.
     </p>
 
-    <p>
-      If successful, this could eliminate the concept of isolated liquidity across blockchains.
-    </p>
-
-    <!-- ✅ Correct Tweet Embed -->
+    <!-- ✅ Robust Tweet Embed -->
     <div class="video-container">
       <div class="tweet-card">
+
+        <!-- Primary embed -->
         <iframe 
           src="https://twitframe.com/show?url=https://twitter.com/DiarioBitcoin/status/2036443463974093281"
-          width="100%" 
-          height="500"
-          frameborder="0"
-          scrolling="no">
+          loading="lazy">
         </iframe>
+
+        <!-- Fallback (always visible if iframe blocked) -->
+        <div class="tweet-fallback">
+          Unable to load tweet preview.<br>
+          👉 <a href="https://twitter.com/DiarioBitcoin/status/2036443463974093281" target="_blank">
+            View it directly on X
+          </a>
+        </div>
+
       </div>
     </div>
 
     <h2>Future Outlook</h2>
 
     <p>
-      The roadmap includes integrations with multiple ecosystems, scaling improvements, and new financial tools. Cardano is positioning itself as a highly connected blockchain ecosystem.
-    </p>
-
-    <p>
-      However, real-world adoption and production-level resilience remain key challenges.
+      Cardano is positioning itself as a highly connected blockchain ecosystem, but adoption remains key.
     </p>
 
     <div class="ad-section">
       <h3>🚀 Do you know what staking is?</h3>
       <p>
-        Staking on the blockchain refers to locking cryptocurrency to support network operations and earn rewards.
+        Staking allows users to lock crypto assets to support blockchain operations and earn rewards.
       </p>
 
       <p style="font-weight:bold;">STAKING PARTNERS :</p>
@@ -208,9 +198,6 @@
     </div>
 
   </div>
-
-  <!-- ✅ Script at end for better performance -->
-  <script async src="https://platform.twitter.com/widgets.js"></script>
 
 </body>
 </html>
