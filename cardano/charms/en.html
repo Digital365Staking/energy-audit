@@ -38,6 +38,11 @@
       margin-bottom: 16px;
     }
 
+    ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
     .highlight {
       background: #e6f7ff;
       padding: 15px;
@@ -48,9 +53,32 @@
 
     .video-container {
       margin: 30px 0;
-      border-radius: 12px;
+    }
+
+    .tweet-card {
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      background: #ffffff;
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,0.08),
+        0 12px 30px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    .tweet-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 8px 20px rgba(0,0,0,0.12),
+        0 20px 40px rgba(0,0,0,0.18);
+    }
+
+    /* Center embedded tweet */
+    .twitter-tweet {
+      margin: 0 auto !important;
     }
 
     .ad-section {
@@ -59,10 +87,6 @@
       background: linear-gradient(135deg, #0b3c5d, #1d6fa5);
       color: white;
       border-radius: 12px;
-    }
-
-    .ad-section h3 {
-      margin-top: 0;
     }
 
     .cta {
@@ -86,35 +110,6 @@
 
     .cta:hover {
       background: #e6f7ff;
-    }
-
-    .tweet-card {
-      border-radius: 16px;
-      overflow: hidden;
-      background: #ffffff;
-
-      /* Softer, more layered shadow */
-      box-shadow: 
-        0 4px 12px rgba(0,0,0,0.08),
-        0 12px 30px rgba(0,0,0,0.12);
-
-      /* Subtle border for definition */
-      border: 1px solid rgba(0,0,0,0.06);
-
-      /* Smooth hover interaction */
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-      /* Optional: constrain width for better readability */
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Hover effect (feels more "alive") */
-    .tweet-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 
-        0 8px 20px rgba(0,0,0,0.12),
-        0 20px 40px rgba(0,0,0,0.18);
     }
   </style>
 </head>
@@ -153,10 +148,6 @@
       If Bitcoin can circulate as a native asset on Cardano, BTC holders gain access to decentralized finance without using wrapped tokens.
     </p>
 
-    <p>
-      This includes:
-    </p>
-
     <ul>
       <li>Decentralized exchanges</li>
       <li>Lending protocols</li>
@@ -178,13 +169,14 @@
       If successful, this could eliminate the concept of isolated liquidity across blockchains.
     </p>
 
-    <div class="video-container twitter-card">
-      <blockquote class="twitter-tweet">
-        <a href="https://x.com/DiarioBitcoin/status/2036443463974093281"></a>
-      </blockquote>
+    <!-- ✅ Correct Tweet Embed -->
+    <div class="video-container">
+      <div class="tweet-card">
+        <blockquote class="twitter-tweet">
+          <a href="https://x.com/DiarioBitcoin/status/2036443463974093281"></a>
+        </blockquote>
+      </div>
     </div>
-
-    <script async src="https://platform.twitter.com/widgets.js"></script>
 
     <h2>Future Outlook</h2>
 
@@ -199,14 +191,11 @@
     <div class="ad-section">
       <h3>🚀 Do you know what staking is?</h3>
       <p>
-        Staking on the blockchain refers to the process where participants lock up a certain amount of cryptocurrency to support the operations and security of a blockchain network.
+        Staking on the blockchain refers to locking cryptocurrency to support network operations and earn rewards.
       </p>
-      <p>
-        In return, they earn rewards, typically in the form of additional cryptocurrency. Staking is often associated with proof-of-stake (PoS) or similar consensus mechanisms used by many blockchains.
-      </p>
-      <p style="font-weight:bold;">
-        STAKING PARTNERS :
-      </p>
+
+      <p style="font-weight:bold;">STAKING PARTNERS :</p>
+
       <div class="cta-group">
         <a href="http://www.meria.com/r/pvKKfbZ5" class="cta">Meria.com</a>
         <a href="https://crypto.com/app/h7abaynxen" class="cta">Crypto.com</a>
@@ -215,6 +204,9 @@
     </div>
 
   </div>
+
+  <!-- ✅ Script at end for better performance -->
+  <script async src="https://platform.twitter.com/widgets.js"></script>
 
 </body>
 </html>
