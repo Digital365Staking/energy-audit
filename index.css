@@ -492,6 +492,13 @@ footer {
   margin-top: 30px;
 }
 
+.contact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+    0 8px 20px rgba(0,0,0,0.12),
+    0 20px 40px rgba(0,0,0,0.18);
+}
+
 .contact-card h2 {
   font-size: 1.8rem;
   margin-bottom: 20px;
