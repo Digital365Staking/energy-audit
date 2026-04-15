@@ -130,20 +130,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // Find the iframe by its data-key
       if (key.startsWith("urlYTB") || key === "srcBas") {
         el.src = val;
-      
       } else if (typeof val === "string") {
-      
-        const trimmedVal = val.trim();
-      
-        const looksLikeHTML =
-          trimmedVal.startsWith("<") && trimmedVal.includes(">");
-      
-        if (looksLikeHTML) {
-          el.innerHTML = trimmedVal; // intentional HTML content
+        if (val.includes("<")) {
+          el.innerHTML = val;   // for itText, etc.
         } else {
-          el.textContent = trimmedVal; // safe plain text
+          el.textContent = val; // for msgLegal, rights, labels
         }
-      }
+      }   
     });
 
     setTimeout(() => {
