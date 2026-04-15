@@ -126,17 +126,28 @@ document.addEventListener("DOMContentLoaded", () => {
     
     document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
-      const val = translations[lang][key];
-      // Find the iframe by its data-key
+    
+      const val = translations?.[lang]?.[key];
+      if (val == null) return; // safety guard
+    
+      // Handle iframe / image sources
       if (key.startsWith("urlYTB") || key === "srcBas") {
-        el.src = val;
-      } else if (typeof val === "string") {
-        if (val.includes("<")) {
-          el.innerHTML = val;   // for itText, etc.
-        } else {
-          el.textContent = val; // for msgLegal, rights, labels
+        if ("src" in el) {
+          el.src = val;
         }
-      }   
+        return;
+      }
+    
+      // If value contains HTML tags
+      const isHTML = /<\/?[a-z][\s\S]*>/i.test(val);
+    
+      if (typeof val === "string") {
+        if (isHTML) {
+          el.innerHTML = val;   // HTML content (careful with XSS if external input)
+        } else {
+          el.textContent = val; // plain text
+        }
+      }
     });
 
     setTimeout(() => {
