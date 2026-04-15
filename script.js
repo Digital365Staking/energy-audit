@@ -7,8 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
      ------------------------- */
   const translations = {
     en: {
-      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact",
-      realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor (Dublin, Madrid and Geneva)",
+      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs",
+      headerCECB: "Preparation for the official building energy assessment certification (Swiss CECB or equivalent to the French DPE).",
+      headerFree: "✔ Free section • ✔ No access fees • ✔ Ideal for beginners",
+      headerBases: "📘 Fundamentals", srcBas:"basEN.png", headerKnowledge1: "Objective :", headerKnowledge2: "Understand up to 80% of the core fundamentals of the profession",
+      realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor ( Geneva, Luxembourg and Madrid )",
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", urlYTB3: "https://www.youtube.com/embed/blwY1Coui_s",
       widget: "We offer a web widget that allows you to visualize a chart displaying your device’s real-time consumption. This component can, of course, be integrated into your web and/or mobile platforms.",
       titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)",
@@ -33,8 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "It features the ESP32 chip and multiple GPIO, ADC, I2C, SPI, and UART pins for connecting sensors and actuators."
     },
     fr: {
-      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact",
-      realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique (Dublin, Madrid et Genève)",
+      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs",
+      headerCECB: "Préparation à la certification officielle d’évaluation énergétique des bâtiments (CECB Suisse ou équivalent du DPE français).",
+      headerFree: "✔ Partie gratuite • ✔ Aucun frais d’accès • ✔ Idéal pour débutants",
+      headerBases: "📘 Bases fondamentales", srcBas:"basFR.png", headerKnowledge1: "Objectif :", headerKnowledge2: "Comprendre jusqu’à 80% des fondamentaux du métier",
+      realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique ( Genève, Luxembourg et Madrid )",
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", urlYTB3: "https://www.youtube.com/embed/J3OWF06gfxU",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)",
@@ -59,8 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "Il intègre la puce ESP32 et plusieurs broches GPIO, ADC, I2C, SPI et UART pour connecter des capteurs et des actionneurs."
     },
     es: {
-      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto",
-      realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético (Dublín, Madrid y Ginebra)",
+      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs",
+      headerCECB: "Preparación para la certificación oficial de evaluación energética de edificios (CECB suizo o equivalente al DPE francés).",
+      headerFree: "✔ Sección gratuita • ✔ Sin costes de acceso • ✔ Ideal para principiantes",
+      headerBases: "📘 Bases fundamentales", srcBas:"basES.png", headerKnowledge1: "Objetivo :", headerKnowledge2: "Comprender hasta el 80% de los fundamentos del oficio",
+      realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético ( Ginebra, Luxemburgo y Madrid )",
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", urlYTB3: "https://www.youtube.com/embed/AHtkPiBwkt4",
       widget: "Ofrecemos un widget web que permite visualizar un gráfico que muestra el consumo en tiempo real de su dispositivo. Este componente puede, por supuesto, integrarse en sus plataformas web y/o móviles.",
       titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)",
@@ -120,16 +129,43 @@ document.addEventListener("DOMContentLoaded", () => {
     
     document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
-      const val = translations[lang][key];
-      // Find the iframe by its data-key
-      if (key.startsWith("urlYTB")) {
-        el.src = val;
-      } else if (typeof val === "string") {
-        if (val.includes("<")) {
-          el.innerHTML = val;   // for itText, etc.
-        } else {
-          el.textContent = val; // for msgLegal, rights, labels
+      const val = translations[lang]?.[key];
+    
+      if (val == null) {
+        console.warn(`Missing translation: lang="${lang}" key="${key}"`);
+        return;
+      }
+    
+      // FIX: check tag name explicitly instead of "src" in el —
+      // every element inherits src from the prototype, making
+      // the original check always true
+      const tag = el.tagName.toLowerCase();
+      if (key.startsWith("urlYTB") || key === "srcBas") {
+        if (tag === "iframe" || tag === "img" || tag === "video" || tag === "audio") {
+          el.src = val;
         }
+        return;
+      }
+
+      
+    
+      // FIX: tighten the HTML detection regex to require a proper closing
+      // bracket immediately after the tag name/attributes, reducing false
+      // positives on strings with stray < or > characters
+      const isHTML = /<[a-z][^>]*>/i.test(val);
+      if (isHTML) {
+        el.innerHTML = val;
+      } else {
+        const tag = el.tagName.toLowerCase();
+        // -----------------------------
+        // 2. LINK SUPPORT (NEW)
+        // -----------------------------
+        if (tag === "a" && (key.startsWith("link") || key.startsWith("url") || el.dataset.href === "true")) {
+          el.href = val;
+          return;
+        }else{
+          el.textContent = val;
+        }        
       }
     });
 
