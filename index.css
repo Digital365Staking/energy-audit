@@ -15,6 +15,10 @@ body {
   color: var(--text);
 }
 
+.train-button:hover {
+  text-decoration: none; /* removes underline on hover */
+}
+
 .train-button {
   display: inline-block;
   padding: 10px 16px;
