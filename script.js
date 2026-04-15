@@ -126,27 +126,32 @@ document.addEventListener("DOMContentLoaded", () => {
     
     document.querySelectorAll("[data-key]").forEach(el => {
       const key = el.dataset.key;
+      const val = translations[lang]?.[key];
     
-      const val = translations?.[lang]?.[key];
-      if (val == null) return; // safety guard
+      if (val == null) {
+        console.warn(`Missing translation: lang="${lang}" key="${key}"`);
+        return;
+      }
     
-      // Handle iframe / image sources
+      // FIX: check tag name explicitly instead of "src" in el —
+      // every element inherits src from the prototype, making
+      // the original check always true
+      const tag = el.tagName.toLowerCase();
       if (key.startsWith("urlYTB") || key === "srcBas") {
-        if ("src" in el) {
+        if (tag === "iframe" || tag === "img" || tag === "video" || tag === "audio") {
           el.src = val;
         }
         return;
       }
     
-      // If value contains HTML tags
-      const isHTML = /<\/?[a-z][\s\S]*>/i.test(val);
-    
-      if (typeof val === "string") {
-        if (isHTML) {
-          el.innerHTML = val;   // HTML content (careful with XSS if external input)
-        } else {
-          el.textContent = val; // plain text
-        }
+      // FIX: tighten the HTML detection regex to require a proper closing
+      // bracket immediately after the tag name/attributes, reducing false
+      // positives on strings with stray < or > characters
+      const isHTML = /<[a-z][^>]*>/i.test(val);
+      if (isHTML) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
       }
     });
 
