@@ -146,6 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return;
       }
+
+      const tag = el.tagName.toLowerCase();
+      // -----------------------------
+      // 2. LINK SUPPORT (NEW)
+      // -----------------------------
+      if (tag === "a" && (key.startsWith("link") || key.startsWith("url") || el.dataset.href === "true")) {
+        el.href = val;
+        return;
+      }
     
       // FIX: tighten the HTML detection regex to require a proper closing
       // bracket immediately after the tag name/attributes, reducing false
