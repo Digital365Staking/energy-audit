@@ -15,6 +15,15 @@ body {
   color: var(--text);
 }
 
+.train-button {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
 .offer-container {
   display: flex;
   flex-direction: column;
