@@ -26,8 +26,11 @@ body {
   font-size: xx-large;
 }
 
-a.train-button:hover {
-  text-decoration: none; /* removes underline on hover */
+a.train-button,
+a.train-button:hover,
+a.train-button:visited,
+a.train-button:active {
+  text-decoration: none !important;
 }
 
 
