@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const translations = {
     en: {
       menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs",
+      headerCECB: "Preparation for the official building energy assessment certification (Swiss CECB or equivalent to the French DPE).",
       realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor ( Geneva, Luxembourg and Madrid )",
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", urlYTB3: "https://www.youtube.com/embed/blwY1Coui_s",
       widget: "We offer a web widget that allows you to visualize a chart displaying your device’s real-time consumption. This component can, of course, be integrated into your web and/or mobile platforms.",
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     fr: {
       menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs",
+      headerCECB: "Préparation à la certification officielle d’évaluation énergétique des bâtiments (CECB Suisse ou équivalent du DPE français).",
       realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique ( Genève, Luxembourg et Madrid )",
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", urlYTB3: "https://www.youtube.com/embed/J3OWF06gfxU",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
@@ -60,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     es: {
       menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs",
+      headerCECB: "Preparación para la certificación oficial de evaluación energética de edificios (CECB suizo o equivalente al DPE francés).",
       realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético ( Ginebra, Luxemburgo y Madrid )",
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", urlYTB3: "https://www.youtube.com/embed/AHtkPiBwkt4",
       widget: "Ofrecemos un widget web que permite visualizar un gráfico que muestra el consumo en tiempo real de su dispositivo. Este componente puede, por supuesto, integrarse en sus plataformas web y/o móviles.",
