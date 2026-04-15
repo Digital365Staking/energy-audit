@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     en: {
       menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs",
       headerCECB: "Preparation for the official building energy assessment certification (Swiss CECB or equivalent to the French DPE).",
+      headerFree: "✔ Free section • ✔ No access fees • ✔ Ideal for beginners",
       headerBases: "📘 Fundamentals", srcBas:"basEN.png", headerKnowledge1: "Objective :", headerKnowledge2: "Understand up to 80% of the core fundamentals of the profession",
       realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor ( Geneva, Luxembourg and Madrid )",
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", urlYTB3: "https://www.youtube.com/embed/blwY1Coui_s",
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fr: {
       menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs",
       headerCECB: "Préparation à la certification officielle d’évaluation énergétique des bâtiments (CECB Suisse ou équivalent du DPE français).",
+      headerFree: "✔ Partie gratuite • ✔ Aucun frais d’accès • ✔ Idéal pour débutants",
       headerBases: "📘 Bases fondamentales", srcBas:"basFR.png", headerKnowledge1: "Objectif :", headerKnowledge2: "Comprendre jusqu’à 80% des fondamentaux du métier",
       realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique ( Genève, Luxembourg et Madrid )",
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", urlYTB3: "https://www.youtube.com/embed/J3OWF06gfxU",
@@ -65,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     es: {
       menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs",
       headerCECB: "Preparación para la certificación oficial de evaluación energética de edificios (CECB suizo o equivalente al DPE francés).",
+      headerFree: "✔ Sección gratuita • ✔ Sin costes de acceso • ✔ Ideal para principiantes",
       headerBases: "📘 Bases fundamentales", srcBas:"basES.png", headerKnowledge1: "Objetivo :", headerKnowledge2: "Comprender hasta el 80% de los fundamentos del oficio",
       realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético ( Ginebra, Luxemburgo y Madrid )",
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", urlYTB3: "https://www.youtube.com/embed/AHtkPiBwkt4",
