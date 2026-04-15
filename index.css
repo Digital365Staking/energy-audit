@@ -15,7 +15,7 @@ body {
   color: var(--text);
 }
 
-.train-button:hover {
+a.train-button:hover {
   text-decoration: none; /* removes underline on hover */
 }
 
