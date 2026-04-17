@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
      ------------------------- */
   const translations = {
     en: {
-      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs",
+      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs", headESP32: "What is the ESP32 ?", descESP32: "The ESP32 is a highly popular microcontroller used to create smart and connected electronic devices. Developed by Espressif Systems, it stands out for its built-in Wi-Fi and Bluetooth, allowing easy communication with the Internet or other devices without additional modules. Compact, powerful, and affordable, the ESP32 is widely used in Internet of Things (IoT) projects, home automation, robotics, and rapid prototyping. It can read sensors, control actuators, and execute programs in real time, making it an ideal solution for both beginners and experienced engineers.",
       headerCECB: "Preparation for the official building energy assessment certification (Swiss CECB or equivalent to the French DPE).",
       headerFree: "✔ Free section • ✔ No access fees • ✔ Ideal for beginners", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/en",
       headerBases: "📘 Fundamentals", srcBas:"basEN.png", headerKnowledge1: "Objective :", headerKnowledge2: "Understand up to 80% of the core fundamentals of the profession",
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "It features the ESP32 chip and multiple GPIO, ADC, I2C, SPI, and UART pins for connecting sensors and actuators."
     },
     fr: {
-      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs",
+      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs", headESP32: "Qu’est-ce que l’ESP32 ?", descESP32: "L’**ESP32** est un microcontrôleur très populaire utilisé pour créer des objets électroniques intelligents et connectés. Développé par l’entreprise Espressif Systems, il se distingue par l’intégration native du Wi-Fi et du Bluetooth, ce qui permet de communiquer facilement avec Internet ou d’autres appareils sans modules supplémentaires. Compact, puissant et peu coûteux, l’ESP32 est largement utilisé dans les projets d’Internet des objets (IoT), la domotique, la robotique et le prototypage rapide. Il peut lire des capteurs, contrôler des actionneurs et exécuter des programmes en temps réel, ce qui en fait une solution idéale aussi bien pour les débutants que pour les ingénieurs expérimentés.",
       headerCECB: "Préparation à la certification officielle d’évaluation énergétique des bâtiments (CECB Suisse ou équivalent du DPE français).",
       headerFree: "✔ Partie gratuite • ✔ Aucun frais d’accès • ✔ Idéal pour débutants", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/fr",
       headerBases: "📘 Bases fondamentales", srcBas:"basFR.png", headerKnowledge1: "Objectif :", headerKnowledge2: "Comprendre jusqu’à 80% des fondamentaux du métier",
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "Il intègre la puce ESP32 et plusieurs broches GPIO, ADC, I2C, SPI et UART pour connecter des capteurs et des actionneurs."
     },
     es: {
-      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs",
+      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs", headESP32: "¿ Qué es el ESP32 ?", descESP32: "El **ESP32** es un microcontrolador muy popular utilizado para crear dispositivos electrónicos inteligentes y conectados. Desarrollado por la empresa Espressif Systems, se distingue por la integración nativa de Wi-Fi y Bluetooth, lo que permite comunicarse fácilmente con Internet u otros dispositivos sin necesidad de módulos adicionales. Compacto, potente y económico, el ESP32 se utiliza ampliamente en proyectos de Internet de las cosas (IoT), domótica, robótica y prototipado rápido. Puede leer sensores, controlar actuadores y ejecutar programas en tiempo real, lo que lo convierte en una solución ideal tanto para principiantes como para ingenieros experimentados.",
       headerCECB: "Preparación para la certificación oficial de evaluación energética de edificios (CECB suizo o equivalente al DPE francés).",
       headerFree: "✔ Sección gratuita • ✔ Sin costes de acceso • ✔ Ideal para principiantes", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/es",
       headerBases: "📘 Bases fundamentales", srcBas:"basES.png", headerKnowledge1: "Objetivo :", headerKnowledge2: "Comprender hasta el 80% de los fundamentos del oficio",
