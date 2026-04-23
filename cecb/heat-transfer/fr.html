@@ -5,48 +5,87 @@
   <title>Transferts Thermiques - Secteur Énergétique</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #b0e2ff;
-      color: #1a1a1a;
-      line-height: 1.6;
-    }   
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #b0e2ff;
+    color: #1a1a1a;
+    line-height: 1.6;
+
+    /* améliore lisibilité mobile */
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0b3c5d;
+  }
+
+  h2 {
+    margin-top: 30px;
+    color: #0b3c5d;
+    font-size: 1.6rem;
+  }
+
+  p {
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+
+  .highlight {
+    background: #e6f7ff;
+    padding: 15px;
+    border-left: 5px solid #1890ff;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 1rem;
+  }
+
+  /* 🔥 MOBILE RESPONSIVE */
+  @media (max-width: 768px) {
 
     .container {
-      max-width: 1000px;
-      margin: 0px auto 40px auto;
-      background: white;
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 1;
+      padding: 20px;
+      margin: 0 10px 30px 10px;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: #0b3c5d;
+      font-size: 1.8rem;
+      line-height: 1.2;
     }
 
     h2 {
-      margin-top: 30px;
-      color: #0b3c5d;
+      font-size: 1.3rem;
     }
 
-    p {
-      margin-bottom: 16px;
+    p, .highlight {
+      font-size: 1.05rem; /* important pour lisibilité mobile */
+    }
+  }
+
+  /* 🔥 très petits écrans (iPhone SE etc.) */
+  @media (max-width: 400px) {
+    h1 {
+      font-size: 1.6rem;
     }
 
-    .highlight {
-      background: #e6f7ff;
+    .container {
       padding: 15px;
-      border-left: 5px solid #1890ff;
-      border-radius: 8px;
-      margin: 20px 0;
     }
-  </style>
+  }
+</style>
 </head>
 
 <body>
