@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
      ------------------------- */
   const translations = {
     en: {
-      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs",
+      menuAbout: "About Us", menuHome: "Home", menuContact: "Contact", menuBlogs : "Blogs", headESP32: "What is the ESP32 ?", descESP32: "The <b>ESP32</b> is a highly popular microcontroller used to create smart and connected electronic devices. Developed by Espressif Systems, it stands out for its built-in Wi-Fi and Bluetooth, allowing easy communication with the Internet or other devices without additional modules. Compact, powerful, and affordable, the <b>ESP32</b> is widely used in Internet of <b>Things (IoT) projects, home automation, robotics, and rapid prototyping</b>. It can read sensors, control actuators, and execute programs in real time, making it an ideal solution for both beginners and experienced engineers.",
       headerCECB: "Preparation for the official building energy assessment certification (Swiss CECB or equivalent to the French DPE).",
       headerFree: "✔ Free section • ✔ No access fees • ✔ Ideal for beginners", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/en",
       headerBases: "📘 Fundamentals", srcBas:"basEN.png", headerKnowledge1: "Objective :", headerKnowledge2: "Understand up to 80% of the core fundamentals of the profession",
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       realisations: "🎬 Our Achievements", titleAdrien: "Adrien, AI Engineer & Energy Auditor ( Geneva, Luxembourg and Madrid )",
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", urlYTB3: "https://www.youtube.com/embed/blwY1Coui_s",
       widget: "We offer a web widget that allows you to visualize a chart displaying your device’s real-time consumption. This component can, of course, be integrated into your web and/or mobile platforms.",
-      titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)", launchTrain: "Start the training program",
+      titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)", launchTrain: "Start the training program",      
       office: "( Representative Office )",
       titleDona: "Dona, Marketing Director (Geneva)",
       titleDiana: "Diana, Marketing Assistant (Geneva)",
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "It features the ESP32 chip and multiple GPIO, ADC, I2C, SPI, and UART pins for connecting sensors and actuators."
     },
     fr: {
-      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs",
+      menuAbout: "À propos", menuHome: "Accueil", menuContact: "Contact", menuBlogs : "Blogs", headESP32: "Qu’est-ce que l’ESP32 ?", descESP32: "L’<b>ESP32</b> est un microcontrôleur très populaire utilisé pour créer des objets électroniques intelligents et connectés. Développé par l’entreprise Espressif Systems, il se distingue par l’intégration native du Wi-Fi et du Bluetooth, ce qui permet de communiquer facilement avec Internet ou d’autres appareils sans modules supplémentaires. Compact, puissant et peu coûteux, l’<b>ESP32</b> est largement utilisé dans les projets d’<b>Internet des objets (IoT), la domotique, la robotique et le prototypage rapide</b>. Il peut lire des capteurs, contrôler des actionneurs et exécuter des programmes en temps réel, ce qui en fait une solution idéale aussi bien pour les débutants que pour les ingénieurs expérimentés.",
       headerCECB: "Préparation à la certification officielle d’évaluation énergétique des bâtiments (CECB Suisse ou équivalent du DPE français).",
       headerFree: "✔ Partie gratuite • ✔ Aucun frais d’accès • ✔ Idéal pour débutants", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/fr",
       headerBases: "📘 Bases fondamentales", srcBas:"basFR.png", headerKnowledge1: "Objectif :", headerKnowledge2: "Comprendre jusqu’à 80% des fondamentaux du métier",
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
       realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique ( Genève, Luxembourg et Madrid )",
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", urlYTB3: "https://www.youtube.com/embed/J3OWF06gfxU",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
-      titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)", launchTrain: "Commencer la formation",
+      titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)", launchTrain: "Commencer la formation",      
       office: "( Bureau de Représentation )",
       titleDona: "Dona, Directrice marketing (Genève)",
       titleDiana: "Diana, Assistante marketing (Genève)",
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       esp322: "Il intègre la puce ESP32 et plusieurs broches GPIO, ADC, I2C, SPI et UART pour connecter des capteurs et des actionneurs."
     },
     es: {
-      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs",
+      menuAbout: "Sobre nosotros", menuHome: "Inicio", menuContact: "Contacto", menuBlogs : "Blogs", headESP32: "¿ Qué es el ESP32 ?", descESP32: "El <b>ESP32</b> es un microcontrolador muy popular utilizado para crear dispositivos electrónicos inteligentes y conectados. Desarrollado por la empresa Espressif Systems, se distingue por la integración nativa de Wi-Fi y Bluetooth, lo que permite comunicarse fácilmente con Internet u otros dispositivos sin necesidad de módulos adicionales. Compacto, potente y económico, el <b>ESP32</b> se utiliza ampliamente en proyectos de <b>Internet de las cosas (IoT), domótica, robótica y prototipado rápido</b>. Puede leer sensores, controlar actuadores y ejecutar programas en tiempo real, lo que lo convierte en una solución ideal tanto para principiantes como para ingenieros experimentados.",
       headerCECB: "Preparación para la certificación oficial de evaluación energética de edificios (CECB suizo o equivalente al DPE francés).",
       headerFree: "✔ Sección gratuita • ✔ Sin costes de acceso • ✔ Ideal para principiantes", linkStartCECB: "https://digitalenergyaudit.com/cecb/physic-building/es",
       headerBases: "📘 Bases fundamentales", srcBas:"basES.png", headerKnowledge1: "Objetivo :", headerKnowledge2: "Comprender hasta el 80% de los fundamentos del oficio",
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       realisations: "🎬 Nuestros Logros", titleAdrien: "Adrien, Ingeniero en inteligencia artificial y Auditor energético ( Ginebra, Luxemburgo y Madrid )",
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", urlYTB3: "https://www.youtube.com/embed/AHtkPiBwkt4",
       widget: "Ofrecemos un widget web que permite visualizar un gráfico que muestra el consumo en tiempo real de su dispositivo. Este componente puede, por supuesto, integrarse en sus plataformas web y/o móviles.",
-      titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)", launchTrain: "Iniciar la formación", 
+      titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)", launchTrain: "Iniciar la formación",      
       office: "( Oficina de Representación )",
       titleDona: "Dona, Directora de marketing (Ginebra)",
       titleDiana: "Diana, Asistente de marketing (Ginebra)",

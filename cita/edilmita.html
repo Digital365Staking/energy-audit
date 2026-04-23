@@ -285,51 +285,53 @@
   </div>
 
   <script>
-    function sendWhatsApp() {
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const service = document.getElementById('service').value;
-      const dateInput = document.getElementById('date').value;
+  // Store Flatpickr instances
+  const datePicker = flatpickr("#date", {
+    dateFormat: "d/m/Y",
+    locale: "es",
+    allowInput: true
+  });
 
-      let formattedDate = '';
-      if (dateInput) {
-        const parts = dateInput.split('-'); // ["yyyy", "MM", "dd"]
-        formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`; // dd/MM/yyyy
-      }
-      
-      const time = document.getElementById('time').value;
-      const message = document.getElementById('message').value;
+  const timePicker = flatpickr("#time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true,
+    allowInput: true
+  });
 
-      const whatsappNumber = '34685338165'; // Reemplaza con el número de WhatsApp de la peluquería
+  function sendWhatsApp() {
+    const name    = document.getElementById('name').value;
+    const phone   = document.getElementById('phone').value;
+    const service = document.getElementById('service').value;
+    const message = document.getElementById('message').value;
 
-      let text = `*CITA NUEVA*\n` +
-             `──────────────\n` +
-             `• Nombre: ${name}\n` +
-             `• Teléfono: ${phone}\n` +
-             `• Servicio: ${service}\n` +
-             `• Fecha: ${formattedDate}\n` +
-             `• Hora: ${time}\n` +
-             `──────────────\n` +
-             `• Notas: ${message}`;
+    // ✅ Date: already formatted as dd/mm/yyyy by Flatpickr
+    const formattedDate = document.getElementById('date').value || 'No indicada';
 
-      const encodedText = encodeURIComponent(text);
-      const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
-      window.open(url, '_blank');
-    }
-     flatpickr("#date", {
-      dateFormat: "d/m/Y",
-      locale: "es",
-      allowInput: true
-    });
+    // ✅ Time: read from the Flatpickr instance to avoid undefined
+    const selectedTime = timePicker.selectedDates[0];
+    const formattedTime = selectedTime
+      ? selectedTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false })
+      : 'No indicada';
 
-    flatpickr("#time", {
-      enableTime: true,
-      noCalendar: true,
-      dateFormat: "H:i",
-      time_24hr: true,
-      allowInput: true
-      });
-  </script>
+    const whatsappNumber = '34685338165';
+
+    const text = `*CITA NUEVA*\n` +
+      `──────────────\n` +
+      `• Nombre: ${name}\n` +
+      `• Teléfono: ${phone}\n` +
+      `• Servicio: ${service}\n` +
+      `• Fecha: ${formattedDate}\n` +
+      `• Hora: ${formattedTime}\n` +
+      `──────────────\n` +
+      `• Notas: ${message}`;
+
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+</script>
+
   <div id="cookie-banner" class="cookie-banner">
     <p>
       <span data-key="msgLegal">
