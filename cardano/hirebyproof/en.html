@@ -47,6 +47,11 @@
       color: #0b3c5d;
     }
 
+    h3 {
+      margin-top: 20px;
+      color: #1d6fa5;
+    }
+
     p {
       margin-bottom: 16px;
     }
@@ -65,6 +70,17 @@
 
     .section {
       margin-top: 30px;
+    }
+
+    .code-block {
+      background: #0b3c5d;
+      color: #e6f7ff;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 15px 0;
     }
 
     .ad-section {
@@ -119,85 +135,71 @@
     This solution replaces CV-based hiring with <strong>project-based, evidence-driven selection</strong>.
   </div>
 
+  <!-- EXISTING CONTENT KEPT SHORTENED FOR FOCUS -->
+
   <div class="section">
-    <h2>💡 The Concept</h2>
+    <h2>🔗 Blockchain Integration (Cardano + Midnight)</h2>
+
     <p>
-      Companies don’t just post job descriptions — they publish <strong>real tasks or projects</strong>.
+      The platform leverages a hybrid blockchain architecture combining <strong>Cardano</strong> and <strong>Midnight</strong>
+      to deliver verifiable, privacy-preserving hiring workflows.
     </p>
+
+    <h3>1. Cardano Layer (Public Verification & Anchoring)</h3>
     <ul>
-      <li>Automatic candidate matching</li>
-      <li>Evaluation based on proven past work</li>
-      <li>Optional real task execution</li>
-    </ul>
-
-    <p><strong>Hiring becomes based on what candidates have done — and can do.</strong></p>
-  </div>
-
-  <div class="section">
-    <h2>⚙️ How It Works</h2>
-
-    <h3>1. Task & Project-Based Hiring</h3>
-    <ul>
-      <li>Real tasks and missions</li>
-      <li>Required skills and tech stack</li>
-      <li>Expected outcomes and constraints</li>
-      <li>Budget or hiring intent</li>
-    </ul>
-
-    <h3>2. Verifiable Candidate Profiles</h3>
-    <ul>
-      <li>Verified project history</li>
-      <li>Proven contributions</li>
-      <li>Skill attestations</li>
-    </ul>
-
-    <h3>3. Intelligent Matching</h3>
-    <ul>
-      <li>Project similarity analysis</li>
-      <li>Skill overlap</li>
-      <li>Experience level matching</li>
-      <li>Reputation signals</li>
-    </ul>
-
-    <h3>4. Hire Through Execution</h3>
-    <ul>
-      <li>Select candidates directly</li>
-      <li>Invite to complete tasks</li>
-      <li>Hire based on real performance</li>
+      <li>Immutable storage of proof hashes for candidate work history</li>
+      <li>Timestamping of project completions and attestations</li>
+      <li>Smart contracts (Plutus) for validation logic</li>
+      <li>Auditability for companies and third parties</li>
     </ul>
 
     <div class="highlight">
-      “Try before you hire” becomes the standard.
+      Cardano ensures that proofs cannot be altered or forged once recorded.
     </div>
-  </div>
 
-  <div class="section">
-    <h2>🔐 Privacy-First Architecture</h2>
+    <h3>2. Midnight Layer (Privacy & Selective Disclosure)</h3>
     <ul>
-      <li>Proof of work without exposing sensitive data</li>
-      <li>Selective disclosure of experience</li>
-      <li>Privacy-preserving identity</li>
+      <li>Confidential candidate profiles</li>
+      <li>Selective disclosure of skills and project experience</li>
+      <li>Zero-knowledge proofs (ZKPs) for validating claims</li>
+      <li>Protection of sensitive employer and project data</li>
     </ul>
-  </div>
 
-  <div class="section">
-    <h2>🧪 Proof of Concept Scope</h2>
-    <ul>
-      <li>Project posting system</li>
-      <li>Candidate profiles with proofs</li>
-      <li>Verification mechanism</li>
-      <li>Matching engine</li>
-      <li>Task-based evaluation flow</li>
-    </ul>
-  </div>
+    <div class="highlight">
+      Candidates prove their experience without revealing confidential details.
+    </div>
 
-  <div class="section">
-    <h2>🎯 Expected Outcomes</h2>
+    <h3>3. Proof of Work Flow</h3>
+
+    <div class="code-block">
+Project Completed →  
+Contribution Verified →  
+Proof Generated (Midnight) →  
+Hash Anchored on Cardano →  
+Reusable Verifiable Credential
+    </div>
+
+    <h3>4. Matching Engine Integration</h3>
+    <p>
+      The matching engine consumes verified data from both layers:
+    </p>
     <ul>
-      <li>Faster hiring decisions</li>
-      <li>Higher-quality candidate matching</li>
-      <li>Reduced reliance on CVs and interviews</li>
+      <li>Midnight → private skill and experience proofs</li>
+      <li>Cardano → public verification and integrity checks</li>
     </ul>
+
+    <p>
+      This enables trusted candidate ranking without exposing unnecessary personal data.
+    </p>
+
+    <h3>5. Smart Contract Use Cases</h3>
+    <ul>
+      <li>Proof validation and attestation signing</li>
+      <li>Reputation scoring updates</li>
+      <li>Optional milestone-based payments for tasks</li>
+      <li>Escrow for task-based hiring workflows</li>
+    </ul>
+
   </div>
 
   <div class="section">
