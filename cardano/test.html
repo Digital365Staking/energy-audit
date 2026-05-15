@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireByProof — Trust Infrastructure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #070b14;
+      color: #f3f4f6;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1280px;
+      margin: auto;
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      backdrop-filter: blur(16px);
+      background: rgba(7,11,20,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 1000;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 12px;
+      display: inline-block;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: white;
+      box-shadow: 0 0 30px rgba(79,70,229,0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #e5e7eb;
+    }
+
+    section {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(79,70,229,0.22), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(16,185,129,0.08), transparent 25%),
+        #070b14;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: #818cf8;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 4rem;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      font-weight: 800;
+      max-width: 700px;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      font-size: 1.15rem;
+      margin-bottom: 34px;
+      max-width: 640px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-preview {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    }
+
+    .score-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .score {
+      font-size: 4rem;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    .mini-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .mini-card h4 {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: #e5e7eb;
+    }
+
+    .mini-card p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .section-title h2 {
+      font-size: 2.8rem;
+      margin-bottom: 18px;
+    }
+
+    .section-title p {
+      color: #94a3b8;
+      max-width: 760px;
+      margin: auto;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 22px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(79,70,229,0.4);
+    }
+
+    .card h3 {
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+    }
+
+    .card ul {
+      list-style: none;
+      margin-top: 18px;
+    }
+
+    .card ul li {
+      color: #cbd5e1;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 24px;
+    }
+
+    .timeline-step {
+      position: relative;
+      padding: 28px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .timeline-step span {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: #818cf8;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .feature-list {
+      margin-top: 26px;
+    }
+
+    .feature-list div {
+      margin-bottom: 16px;
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .trust-profile {
+      background: rgba(255,255,255,0.03);
+      border-radius: 28px;
+      padding: 40px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .trust-score {
+      font-size: 5rem;
+      font-weight: 800;
+      color: #10b981;
+      margin-bottom: 16px;
+    }
+
+    .badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .badge {
+      background: rgba(79,70,229,0.15);
+      border: 1px solid rgba(79,70,229,0.3);
+      color: #c7d2fe;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 32px;
+    }
+
+    .footer-grid h4 {
+      margin-bottom: 16px;
+    }
+
+    .footer-grid p,
+    .footer-grid li {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+      list-style: none;
+    }
+
+    @media(max-width: 1024px){
+      .hero-grid,
+      .split,
+      .grid-4,
+      .timeline,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <div class="logo">HireByProof</div>
+
+    <div class="nav-links">
+      <a href="#trust-stack">Trust Stack</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#cardano">Cardano</a>
+      <a href="#midnight">Midnight</a>
+      <a href="#profiles">Trust Profiles</a>
+    </div>
+
+    <a href="#contact" class="btn btn-primary">Request Assessment</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container hero-grid">
+
+    <div>
+      <div class="eyebrow">Trust Infrastructure • OSINT Intelligence • Privacy Layer</div>
+
+      <h1>Build Trust Before Risk Exists</h1>
+
+      <p>
+        OSINT intelligence, reputation scoring, verifiable credentials and privacy-preserving trust infrastructure powered by Cardano and Midnight.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary">Request Intelligence Assessment</a>
+        <a href="#trust-stack" class="btn btn-secondary">Explore Trust Infrastructure</a>
+      </div>
+    </div>
+
+    <div class="dashboard-preview">
+
+      <div class="score-box">
+        <div>
+          <small style="color:#94a3b8;">Global Trust Score</small>
+          <div class="score">87</div>
+        </div>
+
+        <div>
+          <small style="color:#94a3b8;">Monitoring</small>
+          <p style="color:#10b981;font-weight:700;">Active</p>
+        </div>
+      </div>
+
+      <div class="mini-card-grid">
+
+        <div class="mini-card">
+          <h4>Reputation Layer</h4>
+          <p>Dynamic trust scoring & entity graph analysis.</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>Cardano Verification</h4>
+          <p>Immutable proofs and trust attestations.</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>Midnight Privacy</h4>
+          <p>Selective disclosure & sovereign identity.</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>Continuous Monitoring</h4>
+          <p>Executive exposure and risk intelligence.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section id="trust-stack">
+  <div class="container">
+
+    <div class="section-title">
+      <h2>The Infrastructure Layer For Digital Trust</h2>
+      <p>
+        HireByProof evolves from OSINT intelligence into a programmable trust infrastructure combining verification, reputation and privacy-preserving credentials.
+      </p>
+    </div>
+
+    <div class="grid-4">
+
+      <div class="card">
+        <h3>Intelligence Layer</h3>
+        <ul>
+          <li>Digital footprint analysis</li>
+          <li>Executive intelligence</li>
+          <li>Threat exposure monitoring</li>
+          <li>OSINT investigations</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Trust Layer</h3>
+        <ul>
+          <li>Dynamic trust scoring</li>
+          <li>Entity graph engine</li>
+          <li>Reputation infrastructure</li>
+          <li>Continuous monitoring</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Verification Layer</h3>
+        <ul>
+          <li>Immutable audit proofs</li>
+          <li>Cryptographic attestations</li>
+          <li>Verifiable credentials</li>
+          <li>Trust history anchoring</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Privacy Layer</h3>
+        <ul>
+          <li>Selective disclosure</li>
+          <li>Sovereign identity</li>
+          <li>Confidential verification</li>
+          <li>Private reputation layer</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="container">
+
+    <div class="section-title">
+      <h2>Strategic Evolution</h2>
+      <p>
+        The platform progressively evolves from intelligence services into a global programmable trust economy.
+      </p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-step">
+        <span>Phase 1</span>
+        <h3>OSINT Intelligence</h3>
+        <p>
+          Sell truth through executive intelligence, exposure analysis and digital risk reporting.
+        </p>
+      </div>
+
+      <div class="timeline-step">
+        <span>Phase 2</span>
+        <h3>Trust SaaS</h3>
+        <p>
+          Structure truth through dynamic trust scores, entity graphs and verifiable credentials.
+        </p>
+      </div>
+
+      <div class="timeline-step">
+        <span>Phase 3</span>
+        <h3>Trust Marketplace</h3>
+        <p>
+          Exchange truth through portable reputation, due diligence and verification marketplaces.
+        </p>
+      </div>
+
+      <div class="timeline-step">
+        <span>Phase 4</span>
+        <h3>Trust Economy</h3>
+        <p>
+          Financialize trust through programmable reputation and sovereign identity infrastructure.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section id="cardano">
+  <div class="container split">
+
+    <div>
+      <div class="eyebrow">Cardano Infrastructure</div>
+      <h2>Why Cardano</h2>
+
+      <p style="color:#94a3b8;margin-top:20px;">
+        Cardano provides the immutable verification layer powering trust anchoring, auditability and long-term reputation infrastructure.
+      </p>
+
+      <div class="feature-list">
+
+        <div>
+          <strong>Immutable Audit Proofs</strong>
+          <p>Hash reports, certifications and attestations on-chain.</p>
+        </div>
+
+        <div>
+          <strong>Trust Settlement Layer</strong>
+          <p>Create verifiable and persistent trust history.</p>
+        </div>
+
+        <div>
+          <strong>Governance Infrastructure</strong>
+          <p>Enable scalable decentralized trust coordination.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dashboard-preview">
+      <h3 style="margin-bottom:22px;">Verification Infrastructure</h3>
+
+      <div class="mini-card" style="margin-bottom:16px;">
+        <h4>Credential Verification</h4>
+        <p>Cryptographic validation of trust credentials and certifications.</p>
+      </div>
+
+      <div class="mini-card" style="margin-bottom:16px;">
+        <h4>Immutable History</h4>
+        <p>Reputation and audit history permanently anchored.</p>
+      </div>
+
+      <div class="mini-card">
+        <h4>Trust Ledger</h4>
+        <p>Long-term infrastructure for digital trust coordination.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="midnight">
+  <div class="container split">
+
+    <div class="dashboard-preview">
+      <div class="eyebrow">Privacy Infrastructure</div>
+      <h2 style="margin-bottom:24px;">Privacy Is The Missing Layer Of Trust</h2>
+
+      <p style="color:#94a3b8;">
+        Midnight enables selective disclosure, confidential verification and sovereign identity.
+      </p>
+
+      <div class="badges">
+        <div class="badge">Selective Disclosure</div>
+        <div class="badge">Sovereign Identity</div>
+        <div class="badge">Confidential Trust</div>
+        <div class="badge">Private Reputation</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Midnight Privacy Layer</div>
+
+      <h2>Prove Trust Without Exposing Sensitive Data</h2>
+
+      <div class="feature-list">
+
+        <div>
+          <strong>Executive Verification</strong>
+          <p>Verify identities and credentials without revealing private information.</p>
+        </div>
+
+        <div>
+          <strong>Private Due Diligence</strong>
+          <p>Share compliance and trust signals confidentially.</p>
+        </div>
+
+        <div>
+          <strong>Portable Trust Identity</strong>
+          <p>Build reusable and interoperable reputation credentials.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="profiles">
+  <div class="container">
+
+    <div class="section-title">
+      <h2>Dynamic Trust Profiles</h2>
+      <p>
+        Every organization or executive can maintain a continuously updated trust profile powered by OSINT intelligence and cryptographic verification.
+      </p>
+    </div>
+
+    <div class="trust-profile">
+
+      <small style="color:#94a3b8;">Executive Trust Profile</small>
+
+      <div class="trust-score">92</div>
+
+      <p style="color:#cbd5e1;max-width:700px;">
+        Dynamic reputation score calculated from digital exposure, verification history, entity relationships, monitoring signals and trust credentials.
+      </p>
+
+      <div class="badges">
+        <div class="badge">Verified Identity</div>
+        <div class="badge">Low Exposure Risk</div>
+        <div class="badge">Cardano Anchored</div>
+        <div class="badge">Midnight Privacy</div>
+        <div class="badge">Continuous Monitoring</div>
+      </div>
+
+      <div style="margin-top:40px;">
+        <a href="#contact" class="btn btn-primary">View Example Trust Profile</a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <div class="section-title">
+      <h2>Toward A Programmable Trust Economy</h2>
+
+      <p>
+        A future where reputation becomes capital, identity becomes sovereign and trust becomes programmable.
+      </p>
+    </div>
+
+    <div class="grid-4">
+
+      <div class="card">
+        <h3>Trust Capital</h3>
+        <p>
+          Reputation evolves into an economic asset enabling access, credibility and financial coordination.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Programmable Reputation</h3>
+        <p>
+          Trust becomes measurable, portable and verifiable across ecosystems.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Sovereign Identity</h3>
+        <p>
+          Users control their credentials, disclosures and reputation layer.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Privacy-preserving Finance</h3>
+        <p>
+          Risk, verification and economic coordination operate without exposing sensitive data.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="container footer-grid">
+
+    <div>
+      <h4>HireByProof</h4>
+      <p>
+        Infrastructure for programmable digital trust powered by OSINT intelligence, Cardano verification and Midnight privacy.
+      </p>
+    </div>
+
+    <div>
+      <h4>Infrastructure</h4>
+      <ul>
+        <li>Trust Intelligence</li>
+        <li>Cardano Verification</li>
+        <li>Midnight Privacy Layer</li>
+        <li>Verifiable Credentials</li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Solutions</h4>
+      <ul>
+        <li>Executive Intelligence</li>
+        <li>Reputation Infrastructure</li>
+        <li>Trust Monitoring</li>
+        <li>Due Diligence</li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li>Confidential Assessments</li>
+        <li>Enterprise Access</li>
+        <li>Strategic Partnerships</li>
+        <li>Trust Infrastructure Consulting</li>
+      </ul>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>
