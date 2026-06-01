@@ -55,6 +55,26 @@
       font-size: 0.9rem;
       color: #555;
     }
+
+    .ad-section {
+      margin-top: 40px;
+      padding: 20px;
+      background: #f0f8ff;
+      border-radius: 12px;
+    }
+
+    .cta-group {
+      margin-top: 10px;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #1890ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
   </style>
 </head>
 
@@ -63,7 +83,7 @@
 <div class="container">
 
   <h1>🔵 ATOM Monthly Staking Dashboard</h1>
-  <p>Real-time staking + rewards + EUR valuation</p>
+  <p>Real-time staking + rewards + EUR valuation (current month only)</p>
 
   <div class="grid">
 
@@ -90,15 +110,16 @@
     </div>
 
   </div>
-   <div class="ad-section">
-      <h3>🚀 Do you know what staking is ?</h3>
-      <p>
-        Staking allows users to lock crypto assets to support blockchain operations and earn rewards.
-      </p>
-      <div class="cta-group">
-        <a href="http://www.meria.com/r/pvKKfbZ5" class="cta">I want to stake</a>
-      </div>
-   </div>
+
+  <div class="ad-section">
+    <h3>🚀 Do you know what staking is?</h3>
+    <p>
+      Staking allows users to lock crypto assets to support blockchain operations and earn rewards.
+    </p>
+    <div class="cta-group">
+      <a href="http://www.meria.com/r/pvKKfbZ5" class="cta">I want to stake</a>
+    </div>
+  </div>
 
 </div>
 
@@ -108,6 +129,12 @@ const workerURL = "https://meria-worker.digital365staking.workers.dev/";
 const coingeckoURL = "https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur";
 
 let atomPrice = 0;
+
+function isCurrentMonth(dateStr) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+}
 
 async function loadPrice() {
   const res = await fetch(coingeckoURL);
@@ -122,18 +149,44 @@ async function loadStaking() {
   const res = await fetch(workerURL);
   const data = await res.json();
 
-  console.log(data);
+  console.log("API DATA:", data);
 
-  // ⚠️ adapte selon structure réelle API Meria
-  const staked = data?.data?.amount || 0;
-  const rewards = data?.data?.reward || 0;
+  let staked = 0;
+  let rewards = 0;
+
+  // Try to support both possible API shapes
+
+  const txs =
+    data?.data?.transactions ||
+    data?.data?.history ||
+    data?.data?.operations ||
+    null;
+
+  if (Array.isArray(txs)) {
+    // Monthly filtering mode
+    txs.forEach(tx => {
+      const date = tx.date || tx.timestamp || tx.createdAt;
+
+      const amount = Number(tx.amount || 0);
+      const reward = Number(tx.reward || 0);
+
+      if (date && isCurrentMonth(date)) {
+        staked += amount;
+        rewards += reward;
+      }
+    });
+  } else {
+    // Fallback (if API is already aggregated)
+    staked = data?.data?.amount || 0;
+    rewards = data?.data?.reward || 0;
+  }
 
   const stakedEur = staked * atomPrice;
   const rewardsEur = rewards * atomPrice;
   const totalEur = rewardsEur;
 
-  document.getElementById("stakedAtom").innerText = staked;
-  document.getElementById("rewardsAtom").innerText = rewards;
+  document.getElementById("stakedAtom").innerText = staked.toFixed(6);
+  document.getElementById("rewardsAtom").innerText = rewards.toFixed(6);
 
   document.getElementById("stakedEur").innerText =
     stakedEur.toFixed(2) + " €";
