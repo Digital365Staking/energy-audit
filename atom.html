@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Meria ATOM Analytics</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Meria ATOM Dashboard</title>
 
   <style>
     body {
@@ -13,19 +11,22 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 800px;
       margin: 40px auto;
       background: white;
       padding: 40px;
       border-radius: 16px;
     }
 
-    h1 { color: #0b3c5d; }
+    h1 {
+      color: #0b3c5d;
+    }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
+      margin-top: 20px;
     }
 
     .card {
@@ -36,31 +37,14 @@
     }
 
     .value {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: bold;
       color: #0b3c5d;
     }
 
-    canvas {
-      margin-top: 40px;
-    }
-
-    /* AD SECTION */
-    .ad-section {
-      margin-top: 40px;
-      padding: 20px;
-      background: #f0f8ff;
-      border-radius: 12px;
-    }
-
-    .cta {
-      display: inline-block;
-      padding: 10px 16px;
-      background: #1890ff;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      margin-top: 10px;
+    .label {
+      font-size: 0.9rem;
+      color: #555;
     }
   </style>
 </head>
@@ -69,43 +53,20 @@
 
 <div class="container">
 
-  <h1>🔵 ATOM Staking Analytics</h1>
+  <h1>🔵 ATOM Staking Dashboard</h1>
 
   <div class="grid">
 
     <div class="card">
-      <div>Total Staked (ATOM)</div>
+      <div class="label">Total Staked (ATOM)</div>
       <div id="staked" class="value">...</div>
     </div>
 
     <div class="card">
-      <div>Earnings This Month (ATOM)</div>
+      <div class="label">Earnings This Month (ATOM)</div>
       <div id="earned" class="value">...</div>
     </div>
 
-    <div class="card">
-      <div>Earned (EUR)</div>
-      <div id="earnedEur" class="value">...</div>
-    </div>
-
-    <div class="card">
-      <div>ATOM Price (EUR)</div>
-      <div id="price" class="value">...</div>
-    </div>
-
-  </div>
-
-  <canvas id="chart"></canvas>
-
-  <!-- 🔥 AD SECTION (RESTORED) -->
-  <div class="ad-section">
-    <h3>🚀 Do you know what staking is?</h3>
-    <p>
-      Staking allows users to lock crypto assets to support blockchain operations and earn rewards.
-    </p>
-    <a href="http://www.meria.com/r/pvKKfbZ5" class="cta">
-      I want to stake
-    </a>
   </div>
 
 </div>
@@ -117,14 +78,6 @@ const WALLET = "YOUR_WALLET_HERE";
 const stakingURL =
   "https://staking-api.meria.com/v1/stakings/ATOM";
 
-const earningsURL = (beg, end) =>
-  `https://staking-api.meria.com/v1/reporting/earnings/by-day/by-wallet?begDate=${beg}&endDate=${end}&wallet=${WALLET}`;
-
-const priceURL =
-  "https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur";
-
-let atomPrice = 0;
-
 function getStartOfMonth() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
@@ -134,17 +87,14 @@ function getToday() {
   return new Date().toISOString().split("T")[0];
 }
 
-// PRICE
-async function loadPrice() {
-  const res = await fetch(priceURL);
-  const data = await res.json();
-  atomPrice = data.cosmos.eur;
+const earningsURL =
+  `https://staking-api.meria.com/v1/reporting/earnings/by-day/by-wallet`;
 
-  document.getElementById("price").innerText =
-    atomPrice.toFixed(2) + " €";
+function buildEarningsURL() {
+  return `${earningsURL}?begDate=${getStartOfMonth()}&endDate=${getToday()}&wallet=${WALLET}`;
 }
 
-// STAKED
+// ---------------- STAKED ----------------
 async function loadStaked() {
   const res = await fetch(stakingURL);
   const data = await res.json();
@@ -155,56 +105,29 @@ async function loadStaked() {
     staked.toFixed(6);
 }
 
-// EARNINGS
+// ---------------- EARNINGS ----------------
 async function loadEarnings() {
-
-  const res = await fetch(
-    earningsURL(getStartOfMonth(), getToday())
-  );
-
+  const res = await fetch(buildEarningsURL());
   const data = await res.json();
 
   let total = 0;
-  let labels = [];
-  let values = [];
 
   const earnings = data?.[0]?.earnings || [];
 
   earnings.forEach(asset => {
     if (asset.stakingIdentifier === "ATOM") {
-
       asset.rewardsByDay.forEach(day => {
-        const val = Number(day.rewards || 0);
-        total += val;
-
-        labels.push(day.date);
-        values.push(val);
+        total += Number(day.rewards || 0);
       });
     }
   });
 
   document.getElementById("earned").innerText =
     total.toFixed(6);
-
-  document.getElementById("earnedEur").innerText =
-    (total * atomPrice).toFixed(2) + " €";
-
-  new Chart(document.getElementById("chart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Daily Earnings (ATOM)",
-        data: values,
-        fill: true
-      }]
-    }
-  });
 }
 
-// INIT
+// ---------------- INIT ----------------
 async function init() {
-  await loadPrice();
   await loadStaked();
   await loadEarnings();
 }
