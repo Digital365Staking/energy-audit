@@ -1,140 +1,497 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Meria ATOM Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ATOM Monthly Staking Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2333;
+      --border: #30363d;
+      --accent: #2f81f7;
+      --accent2: #3fb950;
+      --accent3: #e3b341;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --atom-blue: #6f42c1;
+    }
+
     body {
-      margin: 0;
-      font-family: Arial;
-      background: #b0e2ff;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px;
     }
 
     .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: white;
-      padding: 40px;
-      border-radius: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .atom-dot {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2f81f7, #6f42c1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
     }
 
     h1 {
-      color: #0b3c5d;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+      margin-left: 54px;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent2);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.loading { background: var(--accent3); animation: none; }
+    .status-dot.error { background: #f85149; animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
     .card {
-      background: #e6f7ff;
-      border-left: 5px solid #1890ff;
-      padding: 20px;
-      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
     }
 
-    .value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #0b3c5d;
+    .card:hover { border-color: var(--accent); }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
     }
 
-    .label {
-      font-size: 0.9rem;
-      color: #555;
+    .card.blue::before   { background: var(--accent); }
+    .card.green::before  { background: var(--accent2); }
+    .card.yellow::before { background: var(--accent3); }
+    .card.purple::before { background: var(--atom-blue); }
+
+    .card-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .card-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+      min-height: 2.2rem;
+    }
+
+    .card-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .card-sub .eur-val {
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      height: 1em;
+      width: 80%;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .total-card {
+      background: linear-gradient(135deg, #1c2333 0%, #1a2040 100%);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .total-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .total-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .total-breakdown {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-top: 4px;
+    }
+
+    .promo {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .promo-text h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .promo-text p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+
+    .cta:hover { opacity: 0.85; }
+
+    .last-updated {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-top: 12px;
+    }
+
+    .error-msg {
+      background: rgba(248, 81, 73, 0.1);
+      border: 1px solid rgba(248, 81, 73, 0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #f85149;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .total-card { flex-direction: column; align-items: flex-start; }
+      .promo { flex-direction: column; }
+      h1 { font-size: 1.2rem; }
+      .card-value { font-size: 1.5rem; }
+      .total-value { font-size: 1.8rem; }
     }
   </style>
 </head>
-
 <body>
 
 <div class="container">
 
-  <h1>🔵 ATOM Staking Dashboard</h1>
+  <header>
+    <div class="atom-dot">⚛</div>
+    <h1>ATOM Staking Dashboard</h1>
+  </header>
+  <p class="subtitle">Current month · Live rewards · EUR valuation</p>
+
+  <div class="status-bar">
+    <div class="status-dot loading" id="statusDot"></div>
+    <span id="statusText">Connecting…</span>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
 
   <div class="grid">
 
-    <div class="card">
-      <div class="label">Total Staked (ATOM)</div>
-      <div id="staked" class="value">...</div>
+    <div class="card blue">
+      <div class="card-label">Staked this month</div>
+      <div class="card-value" id="stakedAtom"><div class="skeleton"></div></div>
+      <div class="card-sub">≈ <span class="eur-val" id="stakedEur">—</span> EUR</div>
     </div>
 
-    <div class="card">
-      <div class="label">Earnings This Month (ATOM)</div>
-      <div id="earned" class="value">...</div>
+    <div class="card green">
+      <div class="card-label">Rewards earned</div>
+      <div class="card-value" id="rewardsAtom"><div class="skeleton"></div></div>
+      <div class="card-sub">≈ <span class="eur-val" id="rewardsEur">—</span> EUR</div>
+    </div>
+
+    <div class="card yellow">
+      <div class="card-label">ATOM / EUR price</div>
+      <div class="card-value" id="price"><div class="skeleton"></div></div>
+      <div class="card-sub" id="priceSource">via CoinGecko</div>
+    </div>
+
+    <div class="card purple">
+      <div class="card-label">Effective APR (est.)</div>
+      <div class="card-value" id="apr"><div class="skeleton"></div></div>
+      <div class="card-sub">based on rewards / staked</div>
     </div>
 
   </div>
 
+  <!-- TOTAL CARD — staked EUR + rewards EUR combined -->
+  <div class="total-card">
+    <div>
+      <div class="total-label">💶 Total portfolio value (EUR)</div>
+      <div class="total-value" id="totalEur">—</div>
+      <div class="total-breakdown" id="totalBreakdown">staked + rewards</div>
+    </div>
+  </div>
+
+  <div class="promo">
+    <div class="promo-text">
+      <h3>🚀 New to staking?</h3>
+      <p>Staking lets you lock crypto assets to support blockchain operations and earn passive rewards. Start earning on Cosmos today.</p>
+    </div>
+    <a href="http://www.meria.com/r/pvKKfbZ5" class="cta" target="_blank" rel="noopener">Start staking →</a>
+  </div>
+
+  <div class="last-updated" id="lastUpdated"></div>
+
 </div>
 
 <script>
+  const WORKER_URL   = "https://meria-worker.digital365staking.workers.dev/";
+  // CoinGecko free API — may block browser requests; fallback price used if needed
+  const CG_URL       = "https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur";
+  const REFRESH_MS   = 15000;
 
-const WALLET = "YOUR_WALLET_HERE";
+  let atomPrice  = 0;
+  let isRunning  = false;   // guard: prevent overlapping refreshes
 
-const stakingURL =
-  "https://staking-api.meria.com/v1/stakings/ATOM";
+  // ── Helpers ────────────────────────────────────────────────────────────────
 
-function getStartOfMonth() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
-}
+  function isCurrentMonth(dateStr) {
+    if (!dateStr) return false;
+    const d   = new Date(dateStr);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }
 
-function getToday() {
-  return new Date().toISOString().split("T")[0];
-}
+  function fmt(n, decimals = 6) {
+    return Number(n).toLocaleString('de-DE', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
 
-const earningsURL =
-  `https://staking-api.meria.com/v1/reporting/earnings/by-day/by-wallet`;
+  function fmtEur(n) {
+    return Number(n).toLocaleString('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
 
-function buildEarningsURL() {
-  return `${earningsURL}?begDate=${getStartOfMonth()}&endDate=${getToday()}&wallet=${WALLET}`;
-}
+  function setStatus(state, text) {
+    const dot = document.getElementById('statusDot');
+    dot.className = 'status-dot ' + (state === 'ok' ? '' : state);
+    document.getElementById('statusText').textContent = text;
+  }
 
-// ---------------- STAKED ----------------
-async function loadStaked() {
-  const res = await fetch(stakingURL);
-  const data = await res.json();
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
 
-  const staked = Number(data?.amount || 0);
+  function clearError() {
+    document.getElementById('errorMsg').style.display = 'none';
+  }
 
-  document.getElementById("staked").innerText =
-    staked.toFixed(6);
-}
+  // ── Price loader ───────────────────────────────────────────────────────────
 
-// ---------------- EARNINGS ----------------
-async function loadEarnings() {
-  const res = await fetch(buildEarningsURL());
-  const data = await res.json();
-
-  let total = 0;
-
-  const earnings = data?.[0]?.earnings || [];
-
-  earnings.forEach(asset => {
-    if (asset.stakingIdentifier === "ATOM") {
-      asset.rewardsByDay.forEach(day => {
-        total += Number(day.rewards || 0);
-      });
+  async function loadPrice() {
+    try {
+      const res  = await fetch(CG_URL);
+      if (!res.ok) throw new Error('CoinGecko HTTP ' + res.status);
+      const data = await res.json();
+      atomPrice  = data?.cosmos?.eur;
+      if (!atomPrice || isNaN(atomPrice)) throw new Error('Invalid price data');
+      document.getElementById('priceSource').textContent = 'via CoinGecko (live)';
+    } catch (err) {
+      // Fallback: keep last known price or use a placeholder
+      console.warn('Price fetch failed:', err.message);
+      if (!atomPrice) {
+        // If we have no price at all, show a warning but don't break the UI
+        document.getElementById('priceSource').textContent = '⚠ Price unavailable';
+        atomPrice = 0;
+      } else {
+        document.getElementById('priceSource').textContent = 'via CoinGecko (cached)';
+      }
     }
-  });
+    document.getElementById('price').textContent =
+      atomPrice ? fmtEur(atomPrice) + ' €' : 'N/A';
+  }
 
-  document.getElementById("earned").innerText =
-    total.toFixed(6);
-}
+  // ── Staking loader ─────────────────────────────────────────────────────────
 
-// ---------------- INIT ----------------
-async function init() {
-  await loadStaked();
-  await loadEarnings();
-}
+  async function loadStaking() {
+    const res  = await fetch(WORKER_URL);
+    if (!res.ok) throw new Error('Worker HTTP ' + res.status);
+    const data = await res.json();
 
-init();
-setInterval(init, 60000);
+    console.log('Worker response:', data);
 
+    let staked  = 0;
+    let rewards = 0;
+
+    // Support multiple possible API shapes from the worker
+    const txs =
+      data?.data?.transactions ||
+      data?.data?.history      ||
+      data?.data?.operations   ||
+      null;
+
+    if (Array.isArray(txs)) {
+      txs.forEach(tx => {
+        const date   = tx.date || tx.timestamp || tx.createdAt;
+        const amount = parseFloat(tx.amount ?? tx.staked ?? 0)  || 0;
+        const reward = parseFloat(tx.reward ?? tx.rewards ?? 0) || 0;
+
+        if (isCurrentMonth(date)) {
+          staked  += amount;
+          rewards += reward;
+        }
+      });
+    } else {
+      // Aggregated API — already a single object
+      staked  = parseFloat(data?.data?.amount  ?? data?.data?.staked  ?? 0) || 0;
+      rewards = parseFloat(data?.data?.reward  ?? data?.data?.rewards ?? 0) || 0;
+    }
+
+    // EUR conversions
+    const stakedEur  = staked  * atomPrice;
+    const rewardsEur = rewards * atomPrice;
+    const totalEur   = stakedEur + rewardsEur;   // ← FIXED: was only rewardsEur
+
+    // Estimated APR: (rewards / staked) * 12 months * 100  (rough, monthly basis)
+    const aprEst = (staked > 0) ? ((rewards / staked) * 12 * 100) : null;
+
+    // Populate
+    document.getElementById('stakedAtom').textContent  = fmt(staked)  + ' ATOM';
+    document.getElementById('rewardsAtom').textContent = fmt(rewards) + ' ATOM';
+    document.getElementById('stakedEur').textContent   = fmtEur(stakedEur);
+    document.getElementById('rewardsEur').textContent  = fmtEur(rewardsEur);
+    document.getElementById('totalEur').textContent    = fmtEur(totalEur) + ' €';
+
+    document.getElementById('totalBreakdown').textContent =
+      fmtEur(stakedEur) + ' € staked + ' + fmtEur(rewardsEur) + ' € rewards';
+
+    document.getElementById('apr').textContent =
+      aprEst !== null ? aprEst.toFixed(2) + ' %' : 'N/A';
+  }
+
+  // ── Main refresh loop ──────────────────────────────────────────────────────
+
+  async function refresh() {
+    if (isRunning) return;   // don't stack calls on slow networks
+    isRunning = true;
+    setStatus('loading', 'Refreshing…');
+    clearError();
+
+    try {
+      await loadPrice();
+      await loadStaking();
+      setStatus('ok', 'Live · auto-refresh every 15 s');
+      document.getElementById('lastUpdated').textContent =
+        'Last updated: ' + new Date().toLocaleTimeString('es-ES');
+    } catch (err) {
+      console.error('Refresh error:', err);
+      setStatus('error', 'Update failed');
+      showError('Could not load staking data: ' + err.message);
+    } finally {
+      isRunning = false;
+    }
+  }
+
+  refresh();
+  setInterval(refresh, REFRESH_MS);
 </script>
 
 </body>
