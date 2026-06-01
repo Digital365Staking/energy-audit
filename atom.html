@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ATOM Staking Live</title>
+  <title>ATOM Monthly Staking Dashboard</title>
 
   <style>
     body {
@@ -9,7 +9,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #b0e2ff;
       color: #1a1a1a;
-      line-height: 1.6;
     }
 
     .container {
@@ -22,93 +21,37 @@
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
       color: #0b3c5d;
+      margin-bottom: 10px;
     }
 
-    h2 {
-      margin-top: 40px;
-      color: #0b3c5d;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 30px;
     }
 
-    p {
-      margin-bottom: 16px;
-    }
-
-    .highlight {
-      background: #e6f7ff;
-      padding: 15px;
-      border-left: 5px solid #1890ff;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-
-    .video-container {
-      margin: 30px 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
-
-    .ad-section {
-      margin-top: 50px;
-      padding: 25px;
-      background: linear-gradient(135deg, #0b3c5d, #1d6fa5);
-      color: white;
-      border-radius: 12px;
-    }
-
-    .ad-section h3 {
-      margin-top: 0;
-    }
-
-    .cta {
-      margin-top: 15px;
-      display: inline-block;
-      padding: 10px 20px;
-      background: #ffffff;
-      color: #0b3c5d;
-      border-radius: 25px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .cta-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
-
-    .cta:hover {
-      background: #e6f7ff;
-    }
-
-    /* 🔵 STAKING CARD */
-    .staking-box {
+    .card {
       background: #e6f7ff;
       border-left: 5px solid #1890ff;
       padding: 20px;
       border-radius: 10px;
-      margin-top: 20px;
+    }
+
+    .label {
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
     .value {
       font-size: 1.8rem;
       font-weight: bold;
       color: #0b3c5d;
+    }
+
+    .small {
       margin-top: 5px;
-    }
-
-    .label {
-      margin-top: 10px;
-      font-weight: 600;
-    }
-
-    .refresh {
-      margin-top: 20px;
       font-size: 0.9rem;
       color: #555;
     }
@@ -119,75 +62,88 @@
 
 <div class="container">
 
-  <h1>🔵 ATOM Staking Dashboard</h1>
+  <h1>🔵 ATOM Monthly Staking Dashboard</h1>
+  <p>Real-time staking + rewards + EUR valuation</p>
 
-  <p>
-    Live dashboard displaying your Cosmos (ATOM) staking rewards in real time via Cloudflare Worker API.
-  </p>
+  <div class="grid">
 
-  <div class="highlight">
-    🚀 This data is fetched in real-time from your secure Cloudflare Worker proxy.
-  </div>
-
-  <!-- STAKING SECTION -->
-  <h2>Your Staking Overview</h2>
-
-  <div class="staking-box">
-    <div class="label">Total staked ATOM</div>
-    <div id="staked" class="value">Loading...</div>
-
-    <div class="label">Rewards earned</div>
-    <div id="rewards" class="value">Loading...</div>
-
-    <div class="refresh" id="refresh">Last update: ...</div>
-  </div>
-
-  <!-- OPTIONAL SECTION -->
-  <h2>Insights</h2>
-  <p>
-    This dashboard can be extended to include APY tracking, reward history, and multi-asset staking.
-  </p>
-
-  <div class="ad-section">
-    <h3>💡 Upgrade your staking strategy</h3>
-    <p>Track multiple assets (ATOM, ADA, DOT) and optimize your rewards in real time.</p>
-
-    <div class="cta-group">
-      <a class="cta" href="#">View portfolio</a>
-      <a class="cta" href="#">Add asset</a>
+    <div class="card">
+      <div class="label">💰 Staking this month (ATOM)</div>
+      <div id="stakedAtom" class="value">...</div>
+      <div class="small" id="stakedEur">...</div>
     </div>
+
+    <div class="card">
+      <div class="label">🌱 Rewards earned (ATOM)</div>
+      <div id="rewardsAtom" class="value">...</div>
+      <div class="small" id="rewardsEur">...</div>
+    </div>
+
+    <div class="card">
+      <div class="label">💶 ATOM price (EUR)</div>
+      <div id="price" class="value">...</div>
+    </div>
+
+    <div class="card">
+      <div class="label">💵 Total earned (EUR)</div>
+      <div id="totalEur" class="value">...</div>
+    </div>
+
   </div>
 
 </div>
 
 <script>
-async function loadStaking() {
-  try {
-    const res = await fetch("https://meria-worker.digital365staking.workers.dev/");
-    const data = await res.json();
 
-    console.log(data);
+const workerURL = "https://meria-worker.digital365staking.workers.dev/";
+const coingeckoURL = "https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur";
 
-    // ⚠️ adapte si structure différente
-    document.getElementById("staked").innerText =
-      data?.data?.amount ?? "N/A";
+let atomPrice = 0;
 
-    document.getElementById("rewards").innerText =
-      data?.data?.reward ?? "N/A";
+async function loadPrice() {
+  const res = await fetch(coingeckoURL);
+  const data = await res.json();
+  atomPrice = data.cosmos.eur;
 
-    document.getElementById("refresh").innerText =
-      "Last update: " + new Date().toLocaleTimeString();
-
-  } catch (e) {
-    console.error(e);
-  }
+  document.getElementById("price").innerText =
+    atomPrice.toFixed(2) + " €";
 }
 
-// initial load
-loadStaking();
+async function loadStaking() {
+  const res = await fetch(workerURL);
+  const data = await res.json();
 
-// refresh every 15 seconds
-setInterval(loadStaking, 15000);
+  console.log(data);
+
+  // ⚠️ adapte selon structure réelle API Meria
+  const staked = data?.data?.amount || 0;
+  const rewards = data?.data?.reward || 0;
+
+  const stakedEur = staked * atomPrice;
+  const rewardsEur = rewards * atomPrice;
+  const totalEur = rewardsEur;
+
+  document.getElementById("stakedAtom").innerText = staked;
+  document.getElementById("rewardsAtom").innerText = rewards;
+
+  document.getElementById("stakedEur").innerText =
+    stakedEur.toFixed(2) + " €";
+
+  document.getElementById("rewardsEur").innerText =
+    rewardsEur.toFixed(2) + " €";
+
+  document.getElementById("totalEur").innerText =
+    totalEur.toFixed(2) + " €";
+}
+
+async function refresh() {
+  await loadPrice();
+  await loadStaking();
+}
+
+refresh();
+setInterval(refresh, 15000);
+
 </script>
 
 </body>
