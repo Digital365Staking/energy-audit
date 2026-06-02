@@ -82,88 +82,6 @@
 
     .cta:hover { background: #e6f7ff; }
 
-    .setup-fields {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .field-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field-row label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #0b3c5d;
-    }
-
-    .input-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .input-group input {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    input[type="text"], input[type="password"], input[type="month"] {
-      background: #f7fbff;
-      border: 1px solid #cfe8f7;
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: #1a1a1a;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 0.95rem;
-      width: 100%;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #1890ff;
-      box-shadow: 0 0 0 3px rgba(24,144,255,0.15);
-    }
-
-    input::placeholder { color: #6b7a89; }
-
-    .btn {
-      padding: 10px 22px;
-      border: none;
-      border-radius: 8px;
-      background: #1890ff;
-      color: #fff;
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 0.92rem;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .btn:hover { opacity: 0.88; }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .btn-ghost {
-      background: #f0f7fc;
-      color: #0b3c5d;
-      border: 1px solid #cfe8f7;
-    }
-
-    .btn-ghost:hover {
-      background: #e6f7ff;
-      opacity: 1;
-    }
-
-    #dashboard { display: none; }
-
     .dash-header {
       display: flex;
       align-items: center;
@@ -236,22 +154,6 @@
     }
 
     .status-sep { color: #c9dcec; }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 22px;
-      flex-wrap: wrap;
-    }
-
-    .controls label {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #0b3c5d;
-    }
-
-    .controls input[type="month"] { width: auto; }
 
     .err-banner {
       background: rgba(239,68,68,.08);
@@ -579,22 +481,6 @@
 </head>
 <body>
   <div class="container">
-    <div class="setup-fields" id="setupPanel">
-      <div class="field-row">
-        <label>Worker URL</label>
-        <div class="input-group">
-          <input type="text" id="workerUrl" placeholder="https://meria-worker.your-subdomain.workers.dev/" value="https://meria-worker.digital365staking.workers.dev/"/>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <label>Wallet address <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — leave blank for all wallets)</span></label>
-        <div class="input-group">
-          <input type="text" id="walletInput" placeholder="cosmos1abc… or leave blank"/>
-        </div>
-      </div>
-    </div>
-
     <div id="dashboard">
       <div class="dash-header">
         <div class="dash-title">
@@ -614,12 +500,6 @@
 
       <div class="err-banner" id="errBanner"></div>
       <div class="warn-banner" id="warnBanner"></div>
-
-      <div class="controls">
-        <label>📅 Period:</label>
-        <input type="month" id="monthPicker" onchange="refresh()"/>
-        <button class="btn btn-ghost" style="font-size:.8rem;padding:7px 14px" onclick="goCurrentMonth()">This month</button>
-      </div>
 
       <div class="grid-4">
         <div class="card c-blue">
@@ -696,13 +576,13 @@
   <div class="tooltip" id="tooltip"></div>
 
   <script>
-    let WORKER_URL  = '';
-    let WALLET      = '';
-    let atomPrice   = 0;
-    let isRunning   = false;
-    let timer       = null;
-    const CG_URL    = 'https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur';
-    const REFRESH   = 60_000;
+    let WORKER_URL = 'https://meria-worker.digital365staking.workers.dev/';
+    let WALLET = '';
+    let atomPrice = 0;
+    let isRunning = false;
+    let timer = null;
+    const CG_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur';
+    const REFRESH = 60_000;
 
     const locale = 'de-DE';
 
@@ -719,32 +599,22 @@
       const [y, m] = str.split('-').map(Number);
       return new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'long', year: 'numeric' });
     }
-
     function currentMonthStr() {
       const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     }
-
-    function goCurrentMonth() {
-      document.getElementById('monthPicker').value = currentMonthStr();
-      refresh();
-    }
-
     function setStatus(state, text) {
       document.getElementById('statusDot').className = `pulse ${state}`;
       document.getElementById('statusText').textContent = text;
     }
-
     function showErr(msg) {
       const el = document.getElementById('errBanner');
       el.textContent = msg;
       el.style.display = 'block';
     }
-
     function clearErr() {
       document.getElementById('errBanner').style.display = 'none';
     }
-
     function showWarn(msgs) {
       const el = document.getElementById('warnBanner');
       if (!msgs?.length) {
@@ -754,7 +624,6 @@
       el.textContent = '⚠ Partial data — ' + msgs.join(' · ');
       el.style.display = 'block';
     }
-
     function setSkel(id) {
       document.getElementById(id).innerHTML = '<div class="skel skel-val"></div>';
     }
@@ -825,9 +694,11 @@
         });
         bar.addEventListener('mousemove', e => {
           tooltip.style.left = (e.clientX + 14) + 'px';
-          tooltip.style.top  = (e.clientY - 10) + 'px';
+          tooltip.style.top = (e.clientY - 10) + 'px';
         });
-        bar.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+        bar.addEventListener('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
 
         const label = document.createElement('div');
         label.className = 'bar-day';
@@ -845,7 +716,7 @@
       setStatus('loading', 'Refreshing…');
       clearErr();
 
-      const monthStr = document.getElementById('monthPicker').value || currentMonthStr();
+      const monthStr = currentMonthStr();
 
       ['stakedAtom','rewardsAtom','priceVal','aprVal'].forEach(setSkel);
       document.getElementById('totalEur').textContent = '…';
@@ -871,7 +742,6 @@
         document.getElementById('rewardsAtom').textContent = fmtAtom(totalRewards) + ' ATOM';
         document.getElementById('stakedEur').textContent = fmtEur(stakedEur);
         document.getElementById('rewardsEur').textContent = fmtEur(rewardsEur);
-
         document.getElementById('aprVal').textContent = aprPercent !== null ? fmtPct(aprPercent) : 'N/A';
 
         document.getElementById('totalEur').textContent = fmtEur(totalEur) + ' €';
@@ -891,11 +761,8 @@
           : '—';
 
         document.getElementById('metaToken').textContent = data.token ?? '—';
-        document.getElementById('metaWallet').textContent = data.wallet
-          ? data.wallet.slice(0,14) + '…' + data.wallet.slice(-6)
-          : 'all wallets';
-        document.getElementById('metaRange').textContent =
-          data.dateRange ? `${data.dateRange.beg} → ${data.dateRange.end}` : '—';
+        document.getElementById('metaWallet').textContent = data.wallet ? 'all wallets' : 'all wallets';
+        document.getElementById('metaRange').textContent = data.dateRange ? `${data.dateRange.beg} → ${data.dateRange.end}` : '—';
         document.getElementById('metaDays').textContent = days;
         document.getElementById('metaAvg').textContent =
           fmtAtom(avgDaily) + ' ATOM  ≈  ' + fmtEur(avgDaily * atomPrice) + ' €';
@@ -913,34 +780,12 @@
       }
     }
 
-    function initDashboard() {
-      WORKER_URL = document.getElementById('workerUrl').value.trim().replace(/\/?$/, '/');
-      WALLET = document.getElementById('walletInput').value.trim();
-
-      if (!WORKER_URL) {
-        showErr('Please enter the Worker URL.');
-        return;
-      }
-
-      document.getElementById('setupPanel').style.display = 'block';
-      document.getElementById('dashboard').style.display = 'block';
-      document.getElementById('dashSubtitle').textContent = WALLET
-        ? `Wallet ${WALLET.slice(0,10)}… · current month · EUR valuation`
-        : 'All wallets · current month · EUR valuation';
-
-      document.getElementById('monthPicker').value = currentMonthStr();
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('dashSubtitle').textContent = 'All wallets · current month · EUR valuation';
       clearInterval(timer);
       refresh();
       timer = setInterval(refresh, REFRESH);
-    }
-
-    ['workerUrl','walletInput'].forEach(id => {
-      document.getElementById(id).addEventListener('keydown', e => {
-        if (e.key === 'Enter') initDashboard();
-      });
     });
-
-    document.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 </html>
