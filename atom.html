@@ -1,498 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ATOM Monthly Staking Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>ATOM Staking Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
   <style>
+    /* ── Reset & tokens ──────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #1c2333;
-      --border: #30363d;
-      --accent: #2f81f7;
-      --accent2: #3fb950;
-      --accent3: #e3b341;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --atom-blue: #6f42c1;
+      --bg:       #0a0e17;
+      --bg2:      #0f1420;
+      --surface:  #141924;
+      --surface2: #1a2133;
+      --border:   #252d40;
+      --border2:  #2e3a55;
+
+      --blue:     #3b82f6;
+      --blue-dim: #1d4ed8;
+      --green:    #22c55e;
+      --yellow:   #f59e0b;
+      --purple:   #8b5cf6;
+      --red:      #ef4444;
+
+      --text:     #e2e8f0;
+      --text2:    #94a3b8;
+      --text3:    #64748b;
+
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+
+      --radius: 14px;
+      --radius-sm: 8px;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--sans);
       min-height: 100vh;
-      padding: 40px 20px;
+      padding: 36px 20px 60px;
+      line-height: 1.5;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+    .page { max-width: 980px; margin: 0 auto; }
 
-    header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 8px;
+    /* ── Setup panel ─────────────────────────────────────────────────────────── */
+    .setup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      margin-bottom: 32px;
     }
-
-    .atom-dot {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2f81f7, #6f42c1);
+    .setup-logo {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    }
+    .setup-logo .dot {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .setup-logo h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.3px; }
+    .setup-logo p  { font-size: 0.82rem; color: var(--text2); margin-top: 2px; }
+
+    .setup-fields { display: flex; flex-direction: column; gap: 14px; }
+    .field-row    { display: flex; flex-direction: column; gap: 6px; }
+    .field-row label { font-size: 0.78rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; }
+
+    .input-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .input-group input { flex: 1; min-width: 220px; }
+
+    input[type="text"], input[type="password"], input[type="month"] {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    input:focus { outline: none; border-color: var(--blue); }
+    input::placeholder { color: var(--text3); }
+
+    .btn {
+      padding: 10px 22px; border: none; border-radius: var(--radius-sm);
+      background: var(--blue); color: #fff; font-family: var(--sans);
+      font-weight: 600; font-size: 0.88rem; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s; white-space: nowrap;
       flex-shrink: 0;
     }
-
-    h1 {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.5px;
+    .btn:hover   { opacity: 0.88; }
+    .btn:active  { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-ghost {
+      background: var(--surface2); color: var(--text2);
+      border: 1px solid var(--border);
     }
+    .btn-ghost:hover { color: var(--text); border-color: var(--border2); opacity: 1; }
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 32px;
-      margin-left: 54px;
+    /* ── Dashboard ───────────────────────────────────────────────────────────── */
+    #dashboard { display: none; }
+
+    /* header */
+    .dash-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 6px; flex-wrap: wrap;
     }
+    .dash-title { display: flex; align-items: center; gap: 14px; }
+    .dash-dot {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; flex-shrink: 0;
+    }
+    .dash-title h1 { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.5px; }
+    .dash-subtitle  { color: var(--text2); font-size: 0.83rem; margin-bottom: 24px; margin-left: 56px; }
 
+    /* status bar */
     .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 24px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .pulse.live    { background: var(--green); animation: blink 2s ease-in-out infinite; }
+    .pulse.loading { background: var(--yellow); }
+    .pulse.error   { background: var(--red); }
+    .pulse.idle    { background: var(--text3); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .status-text { font-family: var(--mono); font-size: 0.75rem; color: var(--text2); }
+    .status-sep  { color: var(--border2); }
+
+    /* controls row */
+    .controls {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px; flex-wrap: wrap;
+    }
+    .controls label { font-size: 0.78rem; font-weight: 600; color: var(--text2); }
+    .controls input[type="month"] { width: auto; }
+
+    /* error banner */
+    .err-banner {
+      background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.25);
+      border-radius: var(--radius-sm); padding: 10px 16px;
+      font-size: 0.82rem; color: #fca5a5;
+      margin-bottom: 16px; display: none;
+    }
+    /* worker errors (partial) */
+    .warn-banner {
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2);
+      border-radius: var(--radius-sm); padding: 10px 16px;
+      font-size: 0.78rem; color: #fcd34d;
+      margin-bottom: 16px; display: none;
     }
 
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent2);
-      animation: pulse 2s infinite;
-    }
-
-    .status-dot.loading { background: var(--accent3); animation: none; }
-    .status-dot.error { background: #f85149; animation: none; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    .grid {
+    /* ── Metric cards ─────────────────────────────────────────────────────────── */
+    .grid-4 {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
     }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
+      border-radius: var(--radius);
+      padding: 20px 22px;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.15s;
     }
-
-    .card:hover { border-color: var(--accent); }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
+    .card:hover { border-color: var(--border2); transform: translateY(-1px); }
+    .card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      border-radius: var(--radius) var(--radius) 0 0;
     }
-
-    .card.blue::before   { background: var(--accent); }
-    .card.green::before  { background: var(--accent2); }
-    .card.yellow::before { background: var(--accent3); }
-    .card.purple::before { background: var(--atom-blue); }
+    .card.c-blue::after   { background: var(--blue); }
+    .card.c-green::after  { background: var(--green); }
+    .card.c-yellow::after { background: var(--yellow); }
+    .card.c-purple::after { background: var(--purple); }
 
     .card-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 12px;
+      font-size: 0.7rem; font-weight: 600; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px;
     }
-
     .card-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.9rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 8px;
-      min-height: 2.2rem;
+      font-family: var(--mono); font-size: 1.55rem; font-weight: 700;
+      color: var(--text); line-height: 1.1; margin-bottom: 6px;
+      min-height: 1.9rem;
     }
+    .card-sub { font-family: var(--mono); font-size: 0.75rem; color: var(--text3); }
+    .card-sub .hi { font-weight: 700; color: var(--green); }
 
-    .card-sub {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .card-sub .eur-val {
-      color: var(--accent2);
-      font-weight: 600;
-    }
-
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 4px;
-      height: 1em;
-      width: 80%;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .total-card {
-      background: linear-gradient(135deg, #1c2333 0%, #1a2040 100%);
-      border: 1px solid var(--accent);
-      border-radius: 12px;
+    /* ── Total hero card ──────────────────────────────────────────────────────── */
+    .hero-card {
+      background: linear-gradient(135deg, #0f1e3a 0%, #0d1730 50%, #12142b 100%);
+      border: 1px solid #1e3a6e;
+      border-radius: var(--radius);
       padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .hero-left {}
+    .hero-label { font-size: 0.72rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+    .hero-value { font-family: var(--mono); font-size: 2.6rem; font-weight: 700; color: var(--blue); line-height: 1; }
+    .hero-breakdown { font-family: var(--mono); font-size: 0.72rem; color: var(--text3); margin-top: 6px; }
+    .hero-breakdown span { color: var(--text2); }
+
+    .hero-right { text-align: right; }
+    .hero-badge {
+      display: inline-block; padding: 6px 14px;
+      background: rgba(59,130,246,.12); border: 1px solid rgba(59,130,246,.25);
+      border-radius: 20px; font-family: var(--mono); font-size: 0.78rem;
+      color: var(--blue); font-weight: 700;
+    }
+    .hero-badge-label { font-size: 0.7rem; color: var(--text3); margin-top: 5px; }
+
+    /* ── Chart ────────────────────────────────────────────────────────────────── */
+    .chart-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px 24px; margin-bottom: 14px;
+    }
+    .chart-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 18px; gap: 12px; flex-wrap: wrap;
+    }
+    .chart-title { font-size: 0.72rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
+    .chart-total { font-family: var(--mono); font-size: 0.82rem; color: var(--text2); }
+    .chart-total strong { color: var(--green); }
+
+    .chart-bars {
+      height: 110px; display: flex; align-items: flex-end;
+      gap: 3px; overflow: hidden;
+    }
+    .bar-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 5px; min-width: 0;
+    }
+    .bar-rect {
+      width: 100%; border-radius: 3px 3px 0 0;
+      background: var(--blue); opacity: .55; min-height: 2px;
+      transition: opacity .15s;
+      position: relative; cursor: default;
+    }
+    .bar-rect:hover { opacity: 1; }
+    .bar-day { font-size: 0.58rem; color: var(--text3); font-family: var(--mono); }
+
+    .chart-empty {
+      width: 100%; display: flex; align-items: center; justify-content: center;
+      color: var(--text3); font-size: 0.85rem; height: 110px;
     }
 
-    .total-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-weight: 600;
-      margin-bottom: 6px;
+    /* tooltip */
+    .tooltip {
+      position: fixed; background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 6px; padding: 6px 10px; font-family: var(--mono);
+      font-size: 0.72rem; color: var(--text); pointer-events: none;
+      z-index: 100; display: none; white-space: nowrap; line-height: 1.6;
     }
 
-    .total-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: var(--accent);
+    /* ── Bottom row ───────────────────────────────────────────────────────────── */
+    .bottom-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 14px;
     }
 
-    .total-breakdown {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      margin-top: 4px;
+    /* date range card */
+    .info-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 22px;
     }
+    .info-card h3 { font-size: 0.7rem; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+    .info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .info-row:last-child { border-bottom: none; }
+    .info-key  { font-size: 0.78rem; color: var(--text2); }
+    .info-val  { font-family: var(--mono); font-size: 0.78rem; color: var(--text); }
 
-    .promo {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+    /* promo */
+    .promo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 22px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
     }
-
-    .promo-text h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .promo-text p {
-      font-size: 0.85rem;
-      color: var(--muted);
-      max-width: 480px;
-      line-height: 1.5;
-    }
-
+    .promo-card h3 { font-size: 0.98rem; font-weight: 600; margin-bottom: 5px; }
+    .promo-card p  { font-size: 0.82rem; color: var(--text2); line-height: 1.55; }
     .cta {
-      display: inline-block;
-      padding: 10px 20px;
-      background: var(--accent);
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.88rem;
-      white-space: nowrap;
-      transition: opacity 0.2s;
-      flex-shrink: 0;
+      display: inline-block; padding: 10px 20px;
+      background: var(--blue); color: #fff; text-decoration: none;
+      border-radius: var(--radius-sm); font-weight: 600; font-size: 0.86rem;
+      transition: opacity .15s; align-self: flex-start;
     }
+    .cta:hover { opacity: .85; }
 
-    .cta:hover { opacity: 0.85; }
-
-    .last-updated {
-      text-align: right;
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      margin-top: 12px;
+    /* footer */
+    .footer {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 10px; margin-top: 10px; flex-wrap: wrap;
     }
+    .footer-note { font-size: 0.72rem; color: var(--text3); font-family: var(--mono); }
 
-    .error-msg {
-      background: rgba(248, 81, 73, 0.1);
-      border: 1px solid rgba(248, 81, 73, 0.3);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      color: #f85149;
-      margin-bottom: 16px;
-      display: none;
+    /* ── Skeleton ─────────────────────────────────────────────────────────────── */
+    .skel {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 300% 100%; animation: shimmer 1.6s infinite;
+      border-radius: 4px;
     }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skel-val  { height: 1.55rem; width: 75%; }
+    .skel-sub  { height: 0.9rem;  width: 55%; margin-top: 6px; }
 
+    /* ── Responsive ───────────────────────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .grid-4      { grid-template-columns: repeat(2,1fr); }
+    }
     @media (max-width: 600px) {
-      .grid { grid-template-columns: 1fr; }
-      .total-card { flex-direction: column; align-items: flex-start; }
-      .promo { flex-direction: column; }
-      h1 { font-size: 1.2rem; }
-      .card-value { font-size: 1.5rem; }
-      .total-value { font-size: 1.8rem; }
+      .grid-4      { grid-template-columns: 1fr; }
+      .bottom-row  { grid-template-columns: 1fr; }
+      .hero-value  { font-size: 2rem; }
+      .dash-title h1 { font-size: 1.1rem; }
+      .setup       { padding: 22px 18px; }
     }
   </style>
 </head>
 <body>
+<div class="page">
 
-<div class="container">
-
-  <header>
-    <div class="atom-dot">⚛</div>
-    <h1>ATOM Staking Dashboard</h1>
-  </header>
-  <p class="subtitle">Current month · Live rewards · EUR valuation</p>
-
-  <div class="status-bar">
-    <div class="status-dot loading" id="statusDot"></div>
-    <span id="statusText">Connecting…</span>
-  </div>
-
-  <div class="error-msg" id="errorMsg"></div>
-
-  <div class="grid">
-
-    <div class="card blue">
-      <div class="card-label">Staked this month</div>
-      <div class="card-value" id="stakedAtom"><div class="skeleton"></div></div>
-      <div class="card-sub">≈ <span class="eur-val" id="stakedEur">—</span> EUR</div>
+  <!-- ══ SETUP PANEL ══════════════════════════════════════════════════════════ -->
+  <div class="setup" id="setupPanel">
+    <div class="setup-logo">
+      <div class="dot">⚛</div>
+      <div>
+        <h1>ATOM Staking Dashboard</h1>
+        <p>Powered by Meria Staking API</p>
+      </div>
     </div>
 
-    <div class="card green">
-      <div class="card-label">Rewards earned</div>
-      <div class="card-value" id="rewardsAtom"><div class="skeleton"></div></div>
-      <div class="card-sub">≈ <span class="eur-val" id="rewardsEur">—</span> EUR</div>
-    </div>
-
-    <div class="card yellow">
-      <div class="card-label">ATOM / EUR price</div>
-      <div class="card-value" id="price"><div class="skeleton"></div></div>
-      <div class="card-sub" id="priceSource">via CoinGecko</div>
-    </div>
-
-    <div class="card purple">
-      <div class="card-label">Effective APR (est.)</div>
-      <div class="card-value" id="apr"><div class="skeleton"></div></div>
-      <div class="card-sub">based on rewards / staked</div>
-    </div>
-
-  </div>
-
-  <!-- TOTAL CARD — staked EUR + rewards EUR combined -->
-  <div class="total-card">
-    <div>
-      <div class="total-label">💶 Total portfolio value (EUR)</div>
-      <div class="total-value" id="totalEur">—</div>
-      <div class="total-breakdown" id="totalBreakdown">staked + rewards</div>
+    <div class="setup-fields">
+      <div class="field-row">
+        <label>Worker URL</label>
+        <div class="input-group">
+          <input type="text" id="workerUrl"
+            placeholder="https://meria-worker.your-subdomain.workers.dev/"
+            value="https://meria-worker.digital365staking.workers.dev/"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <label>Wallet address <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — leave blank for all wallets)</span></label>
+        <div class="input-group">
+          <input type="text" id="walletInput" placeholder="cosmos1abc… or leave blank"/>
+          <button class="btn" onclick="onLoad()">Load Dashboard</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="promo">
-    <div class="promo-text">
-      <h3>🚀 New to staking?</h3>
-      <p>Staking lets you lock crypto assets to support blockchain operations and earn passive rewards. Start earning on Cosmos today.</p>
+  <!-- ══ DASHBOARD ════════════════════════════════════════════════════════════ -->
+  <div id="dashboard">
+
+    <div class="dash-header">
+      <div class="dash-title">
+        <div class="dash-dot">⚛</div>
+        <h1>ATOM Staking Dashboard</h1>
+      </div>
+      <button class="btn btn-ghost" style="font-size:.8rem;padding:7px 14px" onclick="showSetup()">⚙ Settings</button>
     </div>
-    <a href="http://www.meria.com/r/pvKKfbZ5" class="cta" target="_blank" rel="noopener">Start staking →</a>
-  </div>
+    <p class="dash-subtitle" id="dashSubtitle">All wallets · current month · EUR valuation</p>
 
-  <div class="last-updated" id="lastUpdated"></div>
+    <div class="status-bar">
+      <div class="pulse idle" id="statusDot"></div>
+      <span class="status-text" id="statusText">Connecting…</span>
+      <span class="status-sep">·</span>
+      <span class="status-text" id="lastUpdated">—</span>
+    </div>
 
-</div>
+    <div class="err-banner"  id="errBanner"></div>
+    <div class="warn-banner" id="warnBanner"></div>
+
+    <!-- Month controls -->
+    <div class="controls">
+      <label>📅 Period:</label>
+      <input type="month" id="monthPicker" onchange="refresh()"/>
+      <button class="btn btn-ghost" style="font-size:.8rem;padding:7px 14px" onclick="goCurrentMonth()">This month</button>
+    </div>
+
+    <!-- 4-up metric cards -->
+    <div class="grid-4">
+      <div class="card c-blue">
+        <div class="card-label">Staked (ATOM)</div>
+        <div class="card-value" id="stakedAtom"><div class="skel skel-val"></div></div>
+        <div class="card-sub">≈ <span class="hi" id="stakedEur">—</span> EUR</div>
+      </div>
+      <div class="card c-green">
+        <div class="card-label">Rewards this month</div>
+        <div class="card-value" id="rewardsAtom"><div class="skel skel-val"></div></div>
+        <div class="card-sub">≈ <span class="hi" id="rewardsEur">—</span> EUR</div>
+      </div>
+      <div class="card c-yellow">
+        <div class="card-label">ATOM price (EUR)</div>
+        <div class="card-value" id="priceVal"><div class="skel skel-val"></div></div>
+        <div class="card-sub" id="priceSource">via CoinGecko</div>
+      </div>
+      <div class="card c-purple">
+        <div class="card-label">Live APR</div>
+        <div class="card-value" id="aprVal"><div class="skel skel-val"></div></div>
+        <div class="card-sub">via Meria Yield API</div>
+      </div>
+    </div>
+
+    <!-- Total hero -->
+    <div class="hero-card">
+      <div class="hero-left">
+        <div class="hero-label">💶 Total portfolio value (EUR)</div>
+        <div class="hero-value" id="totalEur">—</div>
+        <div class="hero-breakdown" id="totalBreakdown">&nbsp;</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-badge" id="aprBadge">— %</div>
+        <div class="hero-badge-label">Current APR</div>
+      </div>
+    </div>
+
+    <!-- Daily chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <span class="chart-title">Daily rewards — <span id="chartPeriodLabel"></span></span>
+        <span class="chart-total">Total: <strong id="chartTotal">—</strong></span>
+      </div>
+      <div class="chart-bars" id="chartBars">
+        <div class="chart-empty">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Bottom row: meta info + promo -->
+    <div class="bottom-row">
+      <div class="info-card">
+        <h3>📋 Period details</h3>
+        <div class="info-row"><span class="info-key">Token</span>        <span class="info-val" id="metaToken">—</span></div>
+        <div class="info-row"><span class="info-key">Wallet</span>       <span class="info-val" id="metaWallet">—</span></div>
+        <div class="info-row"><span class="info-key">Date range</span>   <span class="info-val" id="metaRange">—</span></div>
+        <div class="info-row"><span class="info-key">Days with rewards</span><span class="info-val" id="metaDays">—</span></div>
+        <div class="info-row"><span class="info-key">Avg daily reward</span> <span class="info-val" id="metaAvg">—</span></div>
+        <div class="info-row"><span class="info-key">Data fetched at</span>  <span class="info-val" id="metaFetchedAt">—</span></div>
+      </div>
+      <div class="promo-card">
+        <div>
+          <h3>🚀 New to staking?</h3>
+          <p>Staking lets you lock crypto assets to support blockchain operations and earn passive rewards daily. Start earning on the Cosmos network today through Meria.</p>
+        </div>
+        <a href="http://www.meria.com/r/pvKKfbZ5" class="cta" target="_blank" rel="noopener">Start staking →</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-note" id="footerNote">Auto-refresh every 60 s</span>
+      <span class="footer-note">Prices: CoinGecko · Staking data: Meria API</span>
+    </div>
+
+  </div><!-- /dashboard -->
+
+</div><!-- /page -->
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
 
 <script>
-  const WORKER_URL   = "https://meria-worker.digital365staking.workers.dev/";
-  // CoinGecko free API — may block browser requests; fallback price used if needed
-  const CG_URL       = "https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur";
-  const REFRESH_MS   = 15000;
+// ══ State ════════════════════════════════════════════════════════════════════
+let WORKER_URL  = '';
+let WALLET      = '';
+let atomPrice   = 0;
+let isRunning   = false;
+let timer       = null;
+const CG_URL    = 'https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eur';
+const REFRESH   = 60_000;
 
-  let atomPrice  = 0;
-  let isRunning  = false;   // guard: prevent overlapping refreshes
+// ══ Format helpers ═══════════════════════════════════════════════════════════
+const locale = 'de-DE';  // period thousands, comma decimals (standard EU)
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+function fmtAtom(n, d = 6) {
+  return Number(n).toLocaleString(locale, { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtEur(n, d = 2) {
+  return Number(n).toLocaleString(locale, { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtPct(n) {
+  return Number(n).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+}
+function monthLabel(str) {   // "2026-06" → "June 2026"
+  const [y, m] = str.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleString('en-GB', { month: 'long', year: 'numeric' });
+}
 
-  function isCurrentMonth(dateStr) {
-    if (!dateStr) return false;
-    const d   = new Date(dateStr);
-    const now = new Date();
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }
+// ══ Month helpers ═════════════════════════════════════════════════════════════
+function currentMonthStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function goCurrentMonth() {
+  document.getElementById('monthPicker').value = currentMonthStr();
+  refresh();
+}
 
-  function fmt(n, decimals = 6) {
-    return Number(n).toLocaleString('de-DE', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    });
-  }
+// ══ Status / UI helpers ═══════════════════════════════════════════════════════
+function setStatus(state, text) {
+  document.getElementById('statusDot').className = `pulse ${state}`;
+  document.getElementById('statusText').textContent = text;
+}
+function showErr(msg) {
+  const el = document.getElementById('errBanner');
+  el.textContent = msg; el.style.display = 'block';
+}
+function clearErr() { document.getElementById('errBanner').style.display = 'none'; }
+function showWarn(msgs) {
+  const el = document.getElementById('warnBanner');
+  if (!msgs?.length) { el.style.display = 'none'; return; }
+  el.textContent = '⚠ Partial data — ' + msgs.join(' · ');
+  el.style.display = 'block';
+}
+function setSkel(id) {
+  document.getElementById(id).innerHTML = '<div class="skel skel-val"></div>';
+}
+function showSetup() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('setupPanel').style.display = 'block';
+}
 
-  function fmtEur(n) {
-    return Number(n).toLocaleString('de-DE', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-
-  function setStatus(state, text) {
-    const dot = document.getElementById('statusDot');
-    dot.className = 'status-dot ' + (state === 'ok' ? '' : state);
-    document.getElementById('statusText').textContent = text;
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('errorMsg');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-
-  function clearError() {
-    document.getElementById('errorMsg').style.display = 'none';
-  }
-
-  // ── Price loader ───────────────────────────────────────────────────────────
-
-  async function loadPrice() {
-    try {
-      const res  = await fetch(CG_URL);
-      if (!res.ok) throw new Error('CoinGecko HTTP ' + res.status);
-      const data = await res.json();
-      atomPrice  = data?.cosmos?.eur;
-      if (!atomPrice || isNaN(atomPrice)) throw new Error('Invalid price data');
+// ══ Price (CoinGecko, graceful fallback) ══════════════════════════════════════
+async function fetchPrice() {
+  try {
+    const r = await fetch(CG_URL);
+    const d = await r.json();
+    const p = d?.cosmos?.eur;
+    if (p && !isNaN(p)) {
+      atomPrice = p;
       document.getElementById('priceSource').textContent = 'via CoinGecko (live)';
-    } catch (err) {
-      // Fallback: keep last known price or use a placeholder
-      console.warn('Price fetch failed:', err.message);
-      if (!atomPrice) {
-        // If we have no price at all, show a warning but don't break the UI
-        document.getElementById('priceSource').textContent = '⚠ Price unavailable';
-        atomPrice = 0;
-      } else {
-        document.getElementById('priceSource').textContent = 'via CoinGecko (cached)';
-      }
-    }
-    document.getElementById('price').textContent =
-      atomPrice ? fmtEur(atomPrice) + ' €' : 'N/A';
+    } else throw new Error();
+  } catch {
+    document.getElementById('priceSource').textContent =
+      atomPrice ? 'via CoinGecko (cached)' : '⚠ unavailable';
+  }
+  document.getElementById('priceVal').textContent =
+    atomPrice ? fmtEur(atomPrice) + ' €' : 'N/A';
+}
+
+// ══ Worker fetch ═══════════════════════════════════════════════════════════════
+async function fetchWorker(monthStr) {
+  let url = WORKER_URL;
+  const params = new URLSearchParams();
+  if (WALLET)    params.set('wallet', WALLET);
+  if (monthStr)  params.set('month',  monthStr);
+  const qs = params.toString();
+  if (qs) url += (url.includes('?') ? '&' : '?') + qs;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    throw new Error(`Worker HTTP ${res.status}${txt ? ': ' + txt.slice(0,120) : ''}`);
+  }
+  return res.json();
+}
+
+// ══ Chart ════════════════════════════════════════════════════════════════════
+function renderChart(rewardsByDay) {
+  const wrap = document.getElementById('chartBars');
+  const entries = Object.entries(rewardsByDay).sort((a,b) => a[0].localeCompare(b[0]));
+
+  if (!entries.length) {
+    wrap.innerHTML = '<div class="chart-empty">No daily reward data for this period</div>';
+    return;
   }
 
-  // ── Staking loader ─────────────────────────────────────────────────────────
+  const max = Math.max(...entries.map(e => e[1]));
+  wrap.innerHTML = '';
+  const tooltip = document.getElementById('tooltip');
 
-  async function loadStaking() {
-    const res  = await fetch(WORKER_URL);
-    if (!res.ok) throw new Error('Worker HTTP ' + res.status);
-    const data = await res.json();
+  entries.forEach(([date, val]) => {
+    const pct    = max > 0 ? Math.max((val / max) * 100, 2) : 2;
+    const day    = date.split('-')[2];
+    const eurVal = val * atomPrice;
 
-    console.log('Worker response:', data);
+    const wrap2 = document.createElement('div');
+    wrap2.className = 'bar-wrap';
 
-    let staked  = 0;
-    let rewards = 0;
+    const bar = document.createElement('div');
+    bar.className = 'bar-rect';
+    bar.style.height = pct + '%';
 
-    // Support multiple possible API shapes from the worker
-    const txs =
-      data?.data?.transactions ||
-      data?.data?.history      ||
-      data?.data?.operations   ||
-      null;
+    // tooltip
+    bar.addEventListener('mouseenter', e => {
+      tooltip.innerHTML =
+        `<b>${date}</b><br>` +
+        `${fmtAtom(val, 6)} ATOM<br>` +
+        `≈ ${fmtEur(eurVal)} €`;
+      tooltip.style.display = 'block';
+    });
+    bar.addEventListener('mousemove', e => {
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top  = (e.clientY - 10) + 'px';
+    });
+    bar.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
 
-    if (Array.isArray(txs)) {
-      txs.forEach(tx => {
-        const date   = tx.date || tx.timestamp || tx.createdAt;
-        const amount = parseFloat(tx.amount ?? tx.staked ?? 0)  || 0;
-        const reward = parseFloat(tx.reward ?? tx.rewards ?? 0) || 0;
+    const label = document.createElement('div');
+    label.className = 'bar-day';
+    label.textContent = day;
 
-        if (isCurrentMonth(date)) {
-          staked  += amount;
-          rewards += reward;
-        }
-      });
-    } else {
-      // Aggregated API — already a single object
-      staked  = parseFloat(data?.data?.amount  ?? data?.data?.staked  ?? 0) || 0;
-      rewards = parseFloat(data?.data?.reward  ?? data?.data?.rewards ?? 0) || 0;
-    }
+    wrap2.appendChild(bar);
+    wrap2.appendChild(label);
+    wrap.appendChild(wrap2);
+  });
+}
 
-    // EUR conversions
-    const stakedEur  = staked  * atomPrice;
-    const rewardsEur = rewards * atomPrice;
-    const totalEur   = stakedEur + rewardsEur;   // ← FIXED: was only rewardsEur
+// ══ Main refresh ═══════════════════════════════════════════════════════════════
+async function refresh() {
+  if (isRunning) return;
+  isRunning = true;
+  setStatus('loading', 'Refreshing…');
+  clearErr();
 
-    // Estimated APR: (rewards / staked) * 12 months * 100  (rough, monthly basis)
-    const aprEst = (staked > 0) ? ((rewards / staked) * 12 * 100) : null;
+  const monthStr = document.getElementById('monthPicker').value || currentMonthStr();
 
-    // Populate
-    document.getElementById('stakedAtom').textContent  = fmt(staked)  + ' ATOM';
-    document.getElementById('rewardsAtom').textContent = fmt(rewards) + ' ATOM';
+  // Show skeletons while loading
+  ['stakedAtom','rewardsAtom','priceVal','aprVal'].forEach(setSkel);
+  document.getElementById('totalEur').textContent   = '…';
+  document.getElementById('totalBreakdown').textContent = '';
+  document.getElementById('aprBadge').textContent   = '— %';
+  document.getElementById('chartBars').innerHTML    = '<div class="chart-empty">Loading…</div>';
+
+  try {
+    // Fire price + worker in parallel
+    const [_, data] = await Promise.all([fetchPrice(), fetchWorker(monthStr)]);
+
+    // ── Worker partial-error warnings ─────────────────────────────────────
+    showWarn(data.meta?.errors);
+
+    // ── Extract values from worker payload ────────────────────────────────
+    // payload: { token, wallet, month, dateRange:{beg,end},
+    //            staking:{stakedAmount}, earnings:{totalRewards, rewardsByDay},
+    //            yield:{aprPercent}, meta:{fetchedAt, errors?} }
+    const stakedAmount  = parseFloat(data.staking?.stakedAmount  ?? 0) || 0;
+    const totalRewards  = parseFloat(data.earnings?.totalRewards ?? 0) || 0;
+    const rewardsByDay  = data.earnings?.rewardsByDay ?? {};
+    const aprPercent    = data.yield?.aprPercent ?? null;
+
+    // ── EUR conversions ───────────────────────────────────────────────────
+    const stakedEur  = stakedAmount * atomPrice;
+    const rewardsEur = totalRewards * atomPrice;
+    const totalEur   = stakedEur + rewardsEur;
+
+    // ── Metric cards ──────────────────────────────────────────────────────
+    document.getElementById('stakedAtom').textContent  = fmtAtom(stakedAmount) + ' ATOM';
+    document.getElementById('rewardsAtom').textContent = fmtAtom(totalRewards) + ' ATOM';
     document.getElementById('stakedEur').textContent   = fmtEur(stakedEur);
     document.getElementById('rewardsEur').textContent  = fmtEur(rewardsEur);
-    document.getElementById('totalEur').textContent    = fmtEur(totalEur) + ' €';
 
-    document.getElementById('totalBreakdown').textContent =
-      fmtEur(stakedEur) + ' € staked + ' + fmtEur(rewardsEur) + ' € rewards';
+    document.getElementById('aprVal').textContent =
+      aprPercent !== null ? fmtPct(aprPercent) : 'N/A';
 
-    document.getElementById('apr').textContent =
-      aprEst !== null ? aprEst.toFixed(2) + ' %' : 'N/A';
+    // ── Hero ──────────────────────────────────────────────────────────────
+    document.getElementById('totalEur').textContent = fmtEur(totalEur) + ' €';
+    document.getElementById('totalBreakdown').innerHTML =
+      `<span>${fmtEur(stakedEur)} €</span> staked &nbsp;+&nbsp; <span>${fmtEur(rewardsEur)} €</span> rewards`;
+    document.getElementById('aprBadge').textContent =
+      aprPercent !== null ? fmtPct(aprPercent) : '— %';
+
+    // ── Chart ─────────────────────────────────────────────────────────────
+    renderChart(rewardsByDay);
+    document.getElementById('chartPeriodLabel').textContent = monthLabel(monthStr);
+    document.getElementById('chartTotal').textContent =
+      fmtAtom(totalRewards) + ' ATOM  ≈  ' + fmtEur(rewardsEur) + ' €';
+
+    // ── Meta / period details ─────────────────────────────────────────────
+    const days       = Object.keys(rewardsByDay).length;
+    const avgDaily   = days > 0 ? totalRewards / days : 0;
+    const fetchedAt  = data.meta?.fetchedAt
+      ? new Date(data.meta.fetchedAt).toLocaleTimeString('es-ES')
+      : '—';
+
+    document.getElementById('metaToken').textContent    = data.token ?? '—';
+    document.getElementById('metaWallet').textContent   = data.wallet
+      ? data.wallet.slice(0,14) + '…' + data.wallet.slice(-6)
+      : 'all wallets';
+    document.getElementById('metaRange').textContent    =
+      data.dateRange ? `${data.dateRange.beg} → ${data.dateRange.end}` : '—';
+    document.getElementById('metaDays').textContent     = days;
+    document.getElementById('metaAvg').textContent      =
+      fmtAtom(avgDaily) + ' ATOM  ≈  ' + fmtEur(avgDaily * atomPrice) + ' €';
+    document.getElementById('metaFetchedAt').textContent = fetchedAt;
+
+    // ── Status ────────────────────────────────────────────────────────────
+    setStatus('live', 'Live');
+    document.getElementById('lastUpdated').textContent =
+      'Updated ' + new Date().toLocaleTimeString('es-ES');
+
+  } catch (err) {
+    console.error(err);
+    setStatus('error', 'Failed');
+    showErr('Could not load data: ' + err.message);
+  } finally {
+    isRunning = false;
   }
+}
 
-  // ── Main refresh loop ──────────────────────────────────────────────────────
+// ══ Init ═════════════════════════════════════════════════════════════════════
+function onLoad() {
+  WORKER_URL = document.getElementById('workerUrl').value.trim().replace(/\/?$/, '/');
+  WALLET     = document.getElementById('walletInput').value.trim();
 
-  async function refresh() {
-    if (isRunning) return;   // don't stack calls on slow networks
-    isRunning = true;
-    setStatus('loading', 'Refreshing…');
-    clearError();
+  if (!WORKER_URL) { alert('Please enter the Worker URL.'); return; }
 
-    try {
-      await loadPrice();
-      await loadStaking();
-      setStatus('ok', 'Live · auto-refresh every 15 s');
-      document.getElementById('lastUpdated').textContent =
-        'Last updated: ' + new Date().toLocaleTimeString('es-ES');
-    } catch (err) {
-      console.error('Refresh error:', err);
-      setStatus('error', 'Update failed');
-      showError('Could not load staking data: ' + err.message);
-    } finally {
-      isRunning = false;
-    }
-  }
+  document.getElementById('setupPanel').style.display  = 'none';
+  document.getElementById('dashboard').style.display   = 'block';
+  document.getElementById('monthPicker').value = currentMonthStr();
 
+  document.getElementById('dashSubtitle').textContent = WALLET
+    ? `Wallet ${WALLET.slice(0,10)}… · current month · EUR valuation`
+    : 'All wallets · current month · EUR valuation';
+
+  clearInterval(timer);
   refresh();
-  setInterval(refresh, REFRESH_MS);
-</script>
+  timer = setInterval(refresh, REFRESH);
+}
 
+// Enter key on inputs
+['workerUrl','walletInput'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') onLoad();
+  });
+});
+</script>
 </body>
 </html>
