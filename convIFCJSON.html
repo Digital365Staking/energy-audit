@@ -162,6 +162,7 @@ renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputEncoding=THREE.sRGBEncoding;
 renderer.setClearColor(0x0D1117);
+
 const scene=new THREE.Scene();
 scene.fog=new THREE.FogExp2(0x0D1117,.004);
 const camera=new THREE.PerspectiveCamera(45,1,.01,2000);
@@ -169,6 +170,7 @@ camera.position.set(20,20,20);
 camera.lookAt(0,0,0);
 const controls=new THREE.OrbitControls(camera,canvas);
 controls.enableDamping=true;
+
 scene.add(new THREE.AmbientLight(0xffffff,.55));
 const sun=new THREE.DirectionalLight(0xffffff,.8);
 sun.position.set(50,80,60);
@@ -179,10 +181,27 @@ const fill=new THREE.DirectionalLight(0x8ab4f8,.25);
 fill.position.set(-40,-20,-40);
 scene.add(fill);
 scene.add(new THREE.GridHelper(200,40,0x21262D,0x161B22));
-function resizeRenderer(){const vp=canvas.parentElement,w=vp.clientWidth,h=vp.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
-window.addEventListener('resize',resizeRenderer);resizeRenderer();
-(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();
-setTimeout(()=>{const o=document.getElementById('init-overlay');o.classList.add('fade');setTimeout(()=>o.remove(),500)},600);
+
+function resizeRenderer(){
+  const vp=canvas.parentElement,w=vp.clientWidth,h=vp.clientHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize',resizeRenderer);
+resizeRenderer();
+
+(function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+})();
+
+setTimeout(()=>{
+  const o=document.getElementById('init-overlay');
+  o.classList.add('fade');
+  setTimeout(()=>o.remove(),500);
+},600);
 
 function parseIFCStep(text){
   const entities={};
@@ -200,7 +219,8 @@ function parseIFCStep(text){
       const c=raw[i];
       if(c==='(') depth++;
       else if(c===')') depth=Math.max(0,depth-1);
-      if(c===','&&depth===0){args.push(cur.trim());cur='';} else cur+=c;
+      if(c===','&&depth===0){args.push(cur.trim());cur='';}
+      else cur+=c;
     }
     if(cur.trim()) args.push(cur.trim());
     return args;
@@ -221,9 +241,44 @@ function parseIFCStep(text){
   return entities;
 }
 
-const IFC_SCHEMA={IFCPROJECT:['globalId','ownerHistory','name','description','objectType','longName','phase','representationContexts','unitsInContext'],IFCSITE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','refLatitude','refLongitude','refElevation','landTitleNumber'],IFCBUILDING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','isExternal','elevation','referenceElevation'],IFCBUILDINGSTOREY:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','elevation'],IFCWALL:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCWALLSTANDARDCASE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCSLAB:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','predefinedType'],IFCCOLUMN:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCBEAM:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCROOF:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCSTAIR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCDOOR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],IFCWINDOW:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],IFCSPACE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','interiorOrExteriorSpace','elevation'],IFCFURNISHINGELEMENT:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCPRODUCTDEFINITIONSHAPE:['name','description','representations'],IFCSHAPEREPRESENTATION:['contextOfItems','representationIdentifier','representationType','items'],IFCMAPPEDITEM:['mappingSource','mappingTarget'],IFCREPRESENTATIONMAP:['mappingOrigin','mappedRepresentation'],IFCEXTRUDEDAREASOLID:['sweptArea','position','extrudedDirection','depth'],IFCREVOLVEDAREASOLID:['sweptArea','position','axis','angle'],IFCRECTANGLEPROFILEDEF:['profileType','profileName','position','xDim','yDim'],IFCCIRCLEPROFILEDEF:['profileType','profileName','position','radius'],IFCARBITRARYCLOSEDPROFILEDEF:['profileType','profileName','outerCurve'],IFCPOLYLINE:['points'],IFCLOCALPLACEMENT:['placementRelTo','relativePlacement'],IFCAXIS2PLACEMENT3D:['location','axis','refDirection'],IFCAXIS2PLACEMENT2D:['location','refDirection'],IFCCARTESIANPOINT:['coordinates'],IFCDIRECTION:['directionRatios'],IFCOWNERHISTORY:['owningUser','owningApplication','state','changeAction','lastModifiedDate','lastModifyingUser','lastModifyingApplication','creationDate'],IFCGEOMETRICREPRESENTATIONCONTEXT:['contextIdentifier','contextType','coordinateSpaceDimension','precision','worldCoordinateSystem','trueNorth']};
+const IFC_SCHEMA={
+  IFCPROJECT:['globalId','ownerHistory','name','description','objectType','longName','phase','representationContexts','unitsInContext'],
+  IFCSITE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','refLatitude','refLongitude','refElevation','landTitleNumber'],
+  IFCBUILDING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','isExternal','elevation','referenceElevation'],
+  IFCBUILDINGSTOREY:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','elevation'],
+  IFCWALL:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCWALLSTANDARDCASE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCSLAB:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','predefinedType'],
+  IFCCOLUMN:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCBEAM:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCROOF:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCSTAIR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCDOOR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],
+  IFCWINDOW:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],
+  IFCSPACE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','interiorOrExteriorSpace','elevation'],
+  IFCFURNISHINGELEMENT:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
+  IFCPRODUCTDEFINITIONSHAPE:['name','description','representations'],
+  IFCSHAPEREPRESENTATION:['contextOfItems','representationIdentifier','representationType','items'],
+  IFCMAPPEDITEM:['mappingSource','mappingTarget'],
+  IFCREPRESENTATIONMAP:['mappingOrigin','mappedRepresentation'],
+  IFCEXTRUDEDAREASOLID:['sweptArea','position','extrudedDirection','depth'],
+  IFCREVOLVEDAREASOLID:['sweptArea','position','axis','angle'],
+  IFCRECTANGLEPROFILEDEF:['profileType','profileName','position','xDim','yDim'],
+  IFCCIRCLEPROFILEDEF:['profileType','profileName','position','radius'],
+  IFCARBITRARYCLOSEDPROFILEDEF:['profileType','profileName','outerCurve'],
+  IFCPOLYLINE:['points'],
+  IFCLOCALPLACEMENT:['placementRelTo','relativePlacement'],
+  IFCAXIS2PLACEMENT3D:['location','axis','refDirection'],
+  IFCAXIS2PLACEMENT2D:['location','refDirection'],
+  IFCCARTESIANPOINT:['coordinates'],
+  IFCDIRECTION:['directionRatios'],
+  IFCOWNERHISTORY:['owningUser','owningApplication','state','changeAction','lastModifiedDate','lastModifyingUser','lastModifyingApplication','creationDate'],
+  IFCGEOMETRICREPRESENTATIONCONTEXT:['contextIdentifier','contextType','coordinateSpaceDimension','precision','worldCoordinateSystem','trueNorth']
+};
+
 function toIfcJsonType(t){return 'Ifc'+t.slice(3).toLowerCase().replace(/(^|_)([a-z])/g,(_,a,b)=>b.toUpperCase())}
 function expandGuid(g){const chars='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$';let num=0n;for(const c of g)num=num*64n+BigInt(chars.indexOf(c));let hex=num.toString(16).padStart(32,'0');return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`}
+
 function ifcEntityToJson(entity,entities,visited=new Set()){
   if(!entity) return null;
   const schema=IFC_SCHEMA[entity.type]||[];
@@ -231,13 +286,14 @@ function ifcEntityToJson(entity,entities,visited=new Set()){
   schema.forEach((key,i)=>{if(entity.args[i]!==undefined)obj[key]=convertVal(entity.args[i],entities,visited)});
   return obj;
 }
+
 function convertVal(val,entities,visited){
   if(val===null||val===undefined) return null;
   if(typeof val==='number'||typeof val==='string') return val;
   if(Array.isArray(val)) return val.map(v=>convertVal(v,entities,visited));
   if(val&&typeof val==='object'){
     if(val.id!==undefined&&val.type){
-      if(visited.has(val.id)) return {type:toIfcJsonType(val.type),ref:(typeof val.args?.[0]==='string'&&val.args[0].length===22)?expandGuid(val.args[0]):undefined};
+      if(visited.has(val.id)) return {type:toIfcJsonType(val.type)};
       visited.add(val.id);
       return ifcEntityToJson(val,entities,visited);
     }
@@ -245,37 +301,54 @@ function convertVal(val,entities,visited){
   }
   return val;
 }
+
 function convertIfcToJson(entities){
-  const rootTypes=new Set(['IFCPROJECT','IFCSITE','IFCBUILDING','IFCBUILDINGSTOREY','IFCSPACE','IFCWALL','IFCWALLSTANDARDCASE','IFCSLAB','IFCCOLUMN','IFCDOOR','IFCWINDOW','IFCROOF','IFCSTAIR','IFCBEAM','IFCFURNISHINGELEMENT','IFCPLATE','IFCMEMBER','IFCPILE','IFCRAILING','IFCRAMP','IFCCOVERING','IFCFOOTING','IFCRELAGGREGATES','IFCRELCONTAINEDINSPATIALSTRUCTURE','IFCRELDEFINESBYPROPERTIES','IFCRELDEFINESBYTYPE','IFCPROPERTYSET','IFCPROPERTYSETDEFINITION']);
-  const data=[],visited=new Set();
+  const rootTypes=new Set(['IFCPROJECT','IFCSITE','IFCBUILDING','IFCBUILDINGSTOREY','IFCSPACE','IFCWALL','IFCWALLSTANDARDCASE','IFCSLAB','IFCCOLUMN','IFCDOOR','IFCWINDOW','IFCROOF','IFCSTAIR','IFCBEAM','IFCFURNISHINGELEMENT']);
+  const data=[];
+  const visited=new Set();
   for(const e of Object.values(entities)){
     if(rootTypes.has(e.type)){
       const json=ifcEntityToJson(e,entities,visited);
       if(json){
-        if(typeof e.args?.[0]==='string'){try{json.globalId=expandGuid(e.args[0])}catch{json.globalId=e.args[0]}}
+        if(e.args[0]&&typeof e.args[0]==='string'){try{json.globalId=expandGuid(e.args[0])}catch{json.globalId=e.args[0]}}
         data.push(json);
       }
     }
   }
-  return {type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'FullBIM Web Converter v1.0.0',preprocessorVersion:'web-ifc-parser (pure JS)',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data};
+  return {type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'FullBIM Web Converter',preprocessorVersion:'pure JS',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data};
 }
 
-const TYPE_COLORS={IfcWall:0x9E9E9E,IfcWallStandardCase:0x9E9E9E,IfcSlab:0xBDBDBD,IfcRoof:0x795548,IfcColumn:0x58A6FF,IfcBeam:0x4FC3F7,IfcDoor:0xFF9800,IfcWindow:0x80DEEA,IfcSpace:0x4CAF50,IfcStair:0xCDDC39,IfcRailing:0xE91E63,IfcFurnishingElement:0xAB47BC,IfcPlate:0x78909C,IfcMember:0x26C6DA,IfcCovering:0xFFEB3B,IfcFooting:0x8D6E63,default:0x546E7A};
+const TYPE_COLORS={IfcWall:0x9E9E9E,IfcWallStandardCase:0x9E9E9E,IfcSlab:0xBDBDBD,IfcRoof:0x795548,IfcColumn:0x58A6FF,IfcBeam:0x4FC3F7,IfcDoor:0xFF9800,IfcWindow:0x80DEEA,IfcSpace:0x4CAF50,IfcStair:0xCDDC39,IfcFurnishingElement:0xAB47BC,default:0x546E7A};
 const TRANSPARENT_TYPES=new Set(['IfcWindow','IfcSpace']);
+
 function makeEntityMaterial(type,highlighted=false){
   const color=TYPE_COLORS[type]||TYPE_COLORS.default;
   const transparent=TRANSPARENT_TYPES.has(type);
   return new THREE.MeshPhongMaterial({color,transparent:transparent||highlighted,opacity:transparent?0.35:(highlighted?0.85:1),side:THREE.DoubleSide,wireframe:wireframeMode&&!transparent,shininess:15,specular:0x222222});
 }
-function getCoords(pt){if(!pt)return [0,0,0];if(Array.isArray(pt))return pt.map(v=>typeof v==='number'?v:(v&&v.value)||0);if(pt.coordinates)return getCoords(pt.coordinates);if(pt.value)return getCoords(pt.value);return [0,0,0]}
-function getDirectionRatios(dir){if(!dir)return [0,0,1];if(Array.isArray(dir))return dir.map(v=>typeof v==='number'?v:(v&&v.value)||0);if(dir.directionRatios)return getDirectionRatios(dir.directionRatios);return [0,0,1]}
+
+function getCoords(pt){
+  if(!pt) return [0,0,0];
+  if(Array.isArray(pt)) return pt.map(v=>typeof v==='number'?v:(v&&v.value)||0);
+  if(pt.coordinates) return getCoords(pt.coordinates);
+  if(pt.value) return getCoords(pt.value);
+  return [0,0,0];
+}
+
+function getDirectionRatios(dir){
+  if(!dir) return [0,0,1];
+  if(Array.isArray(dir)) return dir.map(v=>typeof v==='number'?v:(v&&v.value)||0);
+  if(dir.directionRatios) return getDirectionRatios(dir.directionRatios);
+  return [0,0,1];
+}
+
 function placementToMatrix(placement){
-  if(!placement)return new THREE.Matrix4();
+  if(!placement) return new THREE.Matrix4();
   const loc=getCoords(placement.location);
   const axisRaw=getDirectionRatios(placement.axis);
   const refRaw=getDirectionRatios(placement.refDirection);
-  let zAxis=new THREE.Vector3(...axisRaw);if(zAxis.lengthSq()===0)zAxis.set(0,0,1);zAxis.normalize();
-  let xAxis=new THREE.Vector3(...refRaw);if(xAxis.lengthSq()===0)xAxis.set(1,0,0);xAxis.normalize();
+  let zAxis=new THREE.Vector3(...axisRaw); if(zAxis.lengthSq()===0) zAxis.set(0,0,1); zAxis.normalize();
+  let xAxis=new THREE.Vector3(...refRaw); if(xAxis.lengthSq()===0) xAxis.set(1,0,0); xAxis.normalize();
   let yAxis=new THREE.Vector3().crossVectors(zAxis,xAxis);
   if(yAxis.lengthSq()===0) yAxis.set(0,1,0); else yAxis.normalize();
   xAxis.crossVectors(yAxis,zAxis).normalize();
@@ -284,37 +357,40 @@ function placementToMatrix(placement){
   m.setPosition(loc[0]||0,loc[1]||0,loc[2]||0);
   return m;
 }
+
 function resolvePlacementChain(entity){
-  const chain=[];let p=entity.objectPlacement;
-  while(p){if(p.relativePlacement)chain.unshift(placementToMatrix(p.relativePlacement));p=p.placementRelTo}
+  const chain=[]; let p=entity.objectPlacement;
+  while(p){ if(p.relativePlacement) chain.unshift(placementToMatrix(p.relativePlacement)); p=p.placementRelTo; }
   const result=new THREE.Matrix4();
   for(const m of chain) result.premultiply(m);
   return result;
 }
+
 function profileToShape(profile){
   if(!profile) return null;
   const t=(profile.type||'').toLowerCase();
   if(t.includes('rectangle')){
-    const x=((typeof profile.xDim==='number'?profile.xDim:1)*0.5),y=((typeof profile.yDim==='number'?profile.yDim:1)*0.5),s=new THREE.Shape();
-    s.moveTo(-x,-y);s.lineTo(x,-y);s.lineTo(x,y);s.lineTo(-x,y);s.closePath();return s;
+    const x=((typeof profile.xDim==='number'?profile.xDim:1)*0.5), y=((typeof profile.yDim==='number'?profile.yDim:1)*0.5), s=new THREE.Shape();
+    s.moveTo(-x,-y); s.lineTo(x,-y); s.lineTo(x,y); s.lineTo(-x,y); s.closePath(); return s;
   }
   if(t.includes('circle')){
-    const r=typeof profile.radius==='number'?profile.radius:.5,s=new THREE.Shape();
-    s.absarc(0,0,r,0,Math.PI*2,false);return s;
+    const r=typeof profile.radius==='number'?profile.radius:.5, s=new THREE.Shape();
+    s.absarc(0,0,r,0,Math.PI*2,false); return s;
   }
   const pts=profile.outerCurve?.points||profile.outerCurve||profile.points;
   if(!pts||pts.length<3) return null;
   const s=new THREE.Shape();
   const first=getCoords(pts[0]);
   s.moveTo(first[0],first[1]);
-  for(let i=1;i<pts.length;i++){const p=getCoords(pts[i]);s.lineTo(p[0],p[1])}
+  for(let i=1;i<pts.length;i++){const p=getCoords(pts[i]); s.lineTo(p[0],p[1]);}
   s.closePath();
   return s;
 }
+
 function buildSolid(item){
   const t=(item.type||'').toLowerCase();
   if(t.includes('extrudedareasolid')){
-    const shape=profileToShape(item.sweptArea);if(!shape) return null;
+    const shape=profileToShape(item.sweptArea); if(!shape) return null;
     const depth=typeof item.depth==='number'?item.depth:1;
     const geo=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false});
     const p=item.position?.relativePlacement;
@@ -326,14 +402,14 @@ function buildSolid(item){
     return geo;
   }
   if(t.includes('revolvedareasolid')){
-    const shape=profileToShape(item.sweptArea);if(!shape) return null;
+    const shape=profileToShape(item.sweptArea); if(!shape) return null;
     const geo=new THREE.LatheGeometry(shape.getPoints(24),24);
     geo.computeVertexNormals();
     return geo;
   }
   if(t.includes('facetedbrep')||t.includes('polygonalfaceset')){
     const faces=item.outer?.cfsFaces||item.faces||item.polygonalFaces||[];
-    const vertices=[],indices=[];let v=0;
+    const vertices=[],indices=[]; let v=0;
     for(const face of faces){
       const bounds=face.bounds||face.faceOuterBound?[face.faceOuterBound||face.bounds]:[];
       for(const bound of bounds){
@@ -342,7 +418,7 @@ function buildSolid(item){
         if(!poly||poly.length<3) continue;
         const pts=poly.map(p=>getCoords(p));
         const base=v;
-        for(const p of pts){vertices.push(p[0],p[1],p[2]);v++}
+        for(const p of pts){ vertices.push(p[0],p[1],p[2]); v++; }
         for(let i=1;i<pts.length-1;i++) indices.push(base,base+i,base+i+1);
       }
     }
@@ -355,12 +431,13 @@ function buildSolid(item){
   }
   return null;
 }
+
 function collectGeometries(node){
   const out=[];
   if(!node) return out;
-  if(Array.isArray(node)){for(const n of node) out.push(...collectGeometries(n));return out;}
+  if(Array.isArray(node)){ for(const n of node) out.push(...collectGeometries(n)); return out; }
   if(node.representations) return collectGeometries(node.representations);
-  if(node.items){for(const item of node.items){out.push(...collectGeometries(item))}return out}
+  if(node.items){ for(const item of node.items) out.push(...collectGeometries(item)); return out; }
   if((node.type||'').toLowerCase().includes('mappeditem')&&node.mappingSource?.mappedRepresentation){
     return collectGeometries(node.mappingSource.mappedRepresentation);
   }
@@ -368,17 +445,18 @@ function collectGeometries(node){
   if(geo) out.push(geo);
   return out;
 }
+
 function mergeGeometries(geos){
   if(!geos.length) return null;
   if(geos.length===1) return geos[0];
   let totalV=0,totalI=0;
-  for(const g of geos){totalV+=g.attributes.position.count;if(g.index) totalI+=g.index.count}
-  const pos=new Float32Array(totalV*3),nor=new Float32Array(totalV*3),idx=totalI?new Uint32Array(totalI):null;
+  for(const g of geos){ totalV+=g.attributes.position.count; if(g.index) totalI+=g.index.count; }
+  const pos=new Float32Array(totalV*3), nor=new Float32Array(totalV*3), idx=totalI?new Uint32Array(totalI):null;
   let vOff=0,iOff=0;
   for(const g of geos){
     pos.set(g.attributes.position.array,vOff*3);
     nor.set((g.attributes.normal?g.attributes.normal.array:new Float32Array(g.attributes.position.array.length)),vOff*3);
-    if(idx&&g.index){const src=g.index.array;for(let i=0;i<src.length;i++) idx[iOff+i]=src[i]+vOff;iOff+=src.length}
+    if(idx&&g.index){ const src=g.index.array; for(let i=0;i<src.length;i++) idx[iOff+i]=src[i]+vOff; iOff+=src.length; }
     vOff+=g.attributes.position.count;
   }
   const merged=new THREE.BufferGeometry();
@@ -387,9 +465,14 @@ function mergeGeometries(geos){
   if(idx&&iOff) merged.setIndex(new THREE.BufferAttribute(idx,1));
   return merged;
 }
+
 function buildSceneFromJson(ifcJson){
-  if(modelGroup){scene.remove(modelGroup);modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}
-  modelGroup=new THREE.Group();meshMap={};
+  if(modelGroup){
+    scene.remove(modelGroup);
+    modelGroup.traverse(o=>{ if(o.geometry)o.geometry.dispose(); if(o.material)o.material.dispose(); });
+  }
+  modelGroup=new THREE.Group();
+  meshMap={};
   const skip=new Set(['ifcproject','ifcsite','ifcbuilding','ifcbuildingstorey','ifcrelaggregates','ifcrelcontainedinspatialstructure','ifcreldefinesbyproperties','ifcreldefinesbytype','ifcpropertyset','ifcownerhistory','ifcgeometricrepresentationcontext','ifcunitassignment','ifcdimensionalexponents','ifcsiunit']);
   let meshCount=0,vertCount=0,geomCount=0;
   for(const entity of ifcJson.data){
@@ -403,12 +486,12 @@ function buildSceneFromJson(ifcJson){
     if(!geo&&physical.some(t=>typeLower.startsWith(t))) geo=new THREE.BoxGeometry(1,1,1);
     if(!geo) continue;
     const mesh=new THREE.Mesh(geo,makeEntityMaterial(entity.type));
-    mesh.castShadow=true;mesh.receiveShadow=true;
+    mesh.castShadow=true; mesh.receiveShadow=true;
     mesh.userData={entity};
     mesh.applyMatrix4(resolvePlacementChain(entity));
     modelGroup.add(mesh);
     if(entity.globalId) meshMap[entity.globalId]=mesh;
-    meshCount++;vertCount+=geo.attributes.position.count;
+    meshCount++; vertCount+=geo.attributes.position.count;
   }
   scene.add(modelGroup);
   document.getElementById('vpEntCount').textContent=ifcJson.data.length;
@@ -417,15 +500,18 @@ function buildSceneFromJson(ifcJson){
   document.getElementById('vpStats').classList.add('show');
   return {meshCount,vertCount,geomCount};
 }
+
 function fitCameraToModel(){
   if(!modelGroup||!modelGroup.children.length) return;
   const box=new THREE.Box3().setFromObject(modelGroup);
   if(box.isEmpty()) return;
-  const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()),maxDim=Math.max(size.x,size.y,size.z),fov=camera.fov*Math.PI/180,dist=Math.abs(maxDim/Math.sin(fov/2))*0.7;
+  const center=box.getCenter(new THREE.Vector3()), size=box.getSize(new THREE.Vector3());
+  const maxDim=Math.max(size.x,size.y,size.z), fov=camera.fov*Math.PI/180, dist=Math.abs(maxDim/Math.sin(fov/2))*0.7;
   camera.position.set(center.x+dist*.6,center.y+dist*.5,center.z+dist*.6);
   controls.target.copy(center);
   controls.update();
 }
+
 const $=id=>document.getElementById(id);
 function setStatus(msg,type='loading'){const bar=$('statusBar'),spinner=$('statusSpinner'),msgEl=$('statusMsg');bar.classList.add('show');spinner.style.display=type==='loading'?'block':'none';msgEl.textContent=msg;msgEl.className=type==='ok'?'status-ok':type==='err'?'status-err':'';$('statusDot').className='dot'+(type==='ok'?' active':'');$('statusText').textContent=type==='ok'?'Ready':type==='err'?'Error':'Processing…'}
 function setProgress(p){$('progressWrap').classList.add('show');$('progressBar').style.width=p+'%'}
@@ -434,7 +520,8 @@ function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className
 function buildEntityTree(data){const grouped={};for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){const color='#'+((TYPE_COLORS[type]||TYPE_COLORS.default).toString(16).padStart(6,'0'));const group=document.createElement('div');group.className='entity-group';const header=document.createElement('div');header.className='entity-type-header';header.innerHTML=`<div class="entity-type-dot" style="background:${color}"></div><span>${type.replace('Ifc','')}</span><span class="count">${items.length}</span>`;const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));for(const entity of items.slice(0,50)){const row=document.createElement('div');row.className='entity-item';const label=entity.name||entity.longName||entity.globalId||'—';row.innerHTML=`<span class="eid">#</span><span>${label}</span>`;row.title=entity.globalId||'';row.addEventListener('click',()=>selectEntity(entity,row));itemsDiv.appendChild(row)}if(items.length>50){const more=document.createElement('div');more.className='entity-item';more.style.color='var(--muted)';more.textContent=`+ ${items.length-50} more…`;itemsDiv.appendChild(more)}group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group)}}
 function selectEntity(entity,rowEl){document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));if(selectedMesh&&selectedMesh.material) selectedMesh.material.emissive=new THREE.Color(0x000000);rowEl.classList.add('selected');if(entity.globalId&&meshMap[entity.globalId]){selectedMesh=meshMap[entity.globalId];selectedMesh.material.emissive=new THREE.Color(0x58A6FF);selectedMesh.material.emissiveIntensity=.3;const box=new THREE.Box3().setFromObject(selectedMesh),center=box.getCenter(new THREE.Vector3());controls.target.copy(center);controls.update()}showProperties(entity)}
 function showProperties(entity){const panel=$('propPanel'),title=$('propType'),body=$('propBody');title.textContent=entity.type;body.innerHTML='';const skip=new Set(['type','objectPlacement','representation','ownerHistory']);for(const [k,v] of Object.entries(entity)){if(skip.has(k)) continue;const row=document.createElement('div');row.className='prop-row';const valStr=v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v);row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${valStr}</span>`;body.appendChild(row)}panel.classList.add('show')}
-$('propClose').addEventListener('click',()=>{$('propPanel').classList.remove('show');if(selectedMesh&&selectedMesh.material)selectedMesh.material.emissive=new THREE.Color(0x000000);selectedMesh=null});
+$('propClose').addEventListener('click',()=>$('propPanel').classList.remove('show'));
+
 async function processIFCFile(file){
   currentJson=null;currentJsonStr=null;
   $('btnDownload').disabled=true;$('btnReset').disabled=true;$('statsSection').style.display='none';$('treeLabel').hidden=true;$('entityList').innerHTML='';$('vpPlaceholder').style.display='flex';
@@ -461,16 +548,19 @@ async function processIFCFile(file){
   fitCameraToModel();
   $('vpPlaceholder').style.display='none';
   setProgress(100);hideProgress();
-  setStatus(`✓ ${ifcJson.data.length} entities converted`,`ok`);
+  setStatus(`✓ ${ifcJson.data.length} entities converted`, 'ok');
   buildEntityTree(ifcJson.data);
   $('btnDownload').disabled=false;$('btnReset').disabled=false;
 }
+
 function tick(){return new Promise(r=>setTimeout(r,0))}
+
 $('btnDownload').addEventListener('click',()=>{if(!currentJsonStr)return;const blob=new Blob([currentJsonStr],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='model.ifcJSON';a.click();URL.revokeObjectURL(url)});
 $('btnReset').addEventListener('click',()=>{currentJson=null;currentJsonStr=null;$('statusBar').classList.remove('show');$('statsSection').style.display='none';$('entityList').innerHTML='';$('treeLabel').hidden=true;$('vpPlaceholder').style.display='flex';$('vpStats').classList.remove('show');$('propPanel').classList.remove('show');$('btnDownload').disabled=true;$('btnReset').disabled=true;$('fileInput').value='';$('statusDot').className='dot active';$('statusText').textContent='Ready';if(modelGroup){scene.remove(modelGroup);modelGroup=null}meshMap={}});
 $('btnFit').addEventListener('click',fitCameraToModel);
 $('btnTop').addEventListener('click',()=>{if(!modelGroup)return;const box=new THREE.Box3().setFromObject(modelGroup),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());camera.position.set(center.x,center.y+Math.max(size.x,size.z)*1.5,center.z);controls.target.copy(center);controls.update()});
 $('btnWire').addEventListener('click',()=>{wireframeMode=!wireframeMode;$('btnWire').style.color=wireframeMode?'var(--accent)':'';if(!modelGroup)return;modelGroup.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=wireframeMode})});
+
 const dropzone=$('dropzone'),fileInput=$('fileInput');
 dropzone.addEventListener('dragenter',e=>{e.preventDefault();dropzone.classList.add('dragover')});
 dropzone.addEventListener('dragover',e=>e.preventDefault());
@@ -478,6 +568,20 @@ dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('dragover'))
 dropzone.addEventListener('drop',e=>{e.preventDefault();dropzone.classList.remove('dragover');const file=e.dataTransfer.files[0];if(file)handleFile(file)});
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
 function handleFile(file){if(!file.name.toLowerCase().endsWith('.ifc')){showToast('Please upload a .ifc file','err');return}processIFCFile(file)}
+
+function showProperties(entity){
+  const panel=$('propPanel'),title=$('propType'),body=$('propBody');
+  title.textContent=entity.type; body.innerHTML='';
+  const skip=new Set(['type','objectPlacement','representation','ownerHistory']);
+  for(const [k,v] of Object.entries(entity)){
+    if(skip.has(k)) continue;
+    const row=document.createElement('div');
+    row.className='prop-row';
+    row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v)}</span>`;
+    body.appendChild(row);
+  }
+  panel.classList.add('show');
+}
 </script>
 </body>
 </html>
