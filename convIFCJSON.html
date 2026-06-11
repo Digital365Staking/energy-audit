@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FullBIM · Browser IFC Viewer</title>
+<title>FullBIM · IFC Viewer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -99,7 +99,7 @@ main{display:flex;flex:1;overflow:hidden}
 </style>
 </head>
 <body>
-<div id="init-overlay"><div class="init-logo">FullBIM</div><div class="init-sub">Loading IFC viewer…</div><div class="init-spinner"></div></div>
+<div id="init-overlay"><div class="init-logo">FullBIM</div><div class="init-sub">Loading IFC loader…</div><div class="init-spinner"></div></div>
 <header>
   <div class="logo"><div class="logo-icon">B</div>FullBIM<span class="logo-sep">/</span><span class="logo-sub">Browser IFC Viewer</span></div>
   <div class="header-badge"><div class="dot active" id="statusDot"></div><span id="statusText">Ready</span></div>
@@ -112,7 +112,7 @@ main{display:flex;flex:1;overflow:hidden}
         <input type="file" id="fileInput" accept=".ifc,.IFC" />
         <div class="dropzone-icon">🏗️</div>
         <div class="dropzone-title">Drop an IFC file here</div>
-        <div class="dropzone-sub">or click to browse · browser loader + fallback</div>
+        <div class="dropzone-sub">or click to browse · uses web-ifc if available</div>
       </div>
       <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
       <div class="status-bar" id="statusBar"><div class="spinner" id="statusSpinner"></div><span id="statusMsg">Loading…</span></div>
@@ -140,7 +140,7 @@ main{display:flex;flex:1;overflow:hidden}
     <canvas id="canvas"></canvas>
     <div class="viewport-placeholder" id="vpPlaceholder">
       <div class="vp-grid"></div>
-      <div class="vp-label"><strong>3D Viewport</strong>Upload an IFC file to begin.<br/>Each IFC element is kept selectable with a fallback proxy for unsupported geometry.</div>
+      <div class="vp-label"><strong>3D Viewport</strong>Upload an IFC file to begin.<br/>The real IFC loader will be used first, with fallback proxies only if needed.</div>
     </div>
     <div class="viewport-stats" id="vpStats">Entities: <span id="vpEntCount">0</span> &nbsp;|&nbsp; Meshes: <span id="vpMeshCount">0</span> &nbsp;|&nbsp; Vertices: <span id="vpVerts">0</span></div>
     <div class="viewport-controls">
@@ -157,10 +157,6 @@ main{display:flex;flex:1;overflow:hidden}
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-(function(){THREE.OrbitControls=function(camera,domElement){const s=this;s.camera=camera;s.domElement=domElement;s.enabled=true;s.target=new THREE.Vector3();s.minDistance=0;s.maxDistance=Infinity;s.dampingFactor=.08;s.enableDamping=true;let sph=new THREE.Spherical(),sd=new THREE.Spherical(),scale=1,panOffset=new THREE.Vector3(),down=false,btn=-1,rs=new THREE.Vector2(),rd=new THREE.Vector2(),ps=new THREE.Vector2(),pd=new THREE.Vector2();function RL(a){sd.theta-=a}function RU(a){sd.phi-=a}function DI(a){scale/=a}function DO(a){scale*=a}const PV=new THREE.Vector3();function PL(d,m){PV.setFromMatrixColumn(m,0);PV.multiplyScalar(-d);panOffset.add(PV)}function PU(d,m){PV.setFromMatrixColumn(m,1);PV.multiplyScalar(d);panOffset.add(PV)}function P(x,y){const el=s.domElement;const pos=camera.position;const t=pos.clone().sub(s.target);let L=t.length();L*=Math.tan(camera.fov/2*Math.PI/180)*2;PL(x*L/el.clientHeight,camera.matrix);PU(y*L/el.clientHeight,camera.matrix)}s.update=function(){const off=new THREE.Vector3(),q=new THREE.Quaternion().setFromUnitVectors(camera.up,new THREE.Vector3(0,1,0)),qi=q.clone().invert();return function(){const pos=camera.position;off.copy(pos).sub(s.target);off.applyQuaternion(q);sph.setFromVector3(off);if(s.enableDamping){sph.theta+=sd.theta*s.dampingFactor;sph.phi+=sd.phi*s.dampingFactor}else{sph.theta+=sd.theta;sph.phi+=sd.phi}sph.phi=Math.max(.01,Math.min(Math.PI-.01,sph.phi));sph.radius*=scale;sph.radius=Math.max(s.minDistance,Math.min(s.maxDistance,sph.radius));s.target.add(panOffset);off.setFromSpherical(sph);off.applyQuaternion(qi);pos.copy(s.target).add(off);camera.lookAt(s.target);if(s.enableDamping){sd.theta*=(1-s.dampingFactor);sd.phi*=(1-s.dampingFactor);panOffset.multiplyScalar(1-s.dampingFactor)}else{sd.set(0,0,0);panOffset.set(0,0,0)}scale=1}}();function MD(e){if(!s.enabled)return;down=true;btn=e.button;if(e.button===0)rs.set(e.clientX,e.clientY);else if(e.button===2)ps.set(e.clientX,e.clientY)}function MM(e){if(!s.enabled||!down)return;if(btn===0){rd.set(e.clientX,e.clientY).sub(rs);rs.set(e.clientX,e.clientY);const el=s.domElement;RL(2*Math.PI*rd.x/el.clientWidth);RU(2*Math.PI*rd.y/el.clientHeight);s.update()}else if(btn===2){pd.set(e.clientX,e.clientY).sub(ps);ps.set(e.clientX,e.clientY);P(pd.x,pd.y);s.update()}}function MU(){down=false}function W(e){e.preventDefault();if(e.deltaY<0)DO(Math.pow(.95,1));else DI(Math.pow(.95,1));s.update()}function CM(e){e.preventDefault()}domElement.addEventListener('mousedown',MD);domElement.addEventListener('mousemove',MM);domElement.addEventListener('mouseup',MU);domElement.addEventListener('wheel',W,{passive:false});domElement.addEventListener('contextmenu',CM)}})();
-</script>
-
 <script type="module">
 let currentJson=null,currentJsonStr=null,meshMap={},wireframeMode=false,selectedMesh=null,modelGroup=null;
 const canvas=document.getElementById('canvas');
@@ -170,7 +166,6 @@ renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputEncoding=THREE.sRGBEncoding;
 renderer.setClearColor(0x0D1117);
-
 const scene=new THREE.Scene();
 scene.fog=new THREE.FogExp2(0x0D1117,.004);
 const camera=new THREE.PerspectiveCamera(45,1,.01,2000);
@@ -178,7 +173,6 @@ camera.position.set(20,20,20);
 camera.lookAt(0,0,0);
 const controls=new THREE.OrbitControls(camera,canvas);
 controls.enableDamping=true;
-
 scene.add(new THREE.AmbientLight(0xffffff,.55));
 const sun=new THREE.DirectionalLight(0xffffff,.8);
 sun.position.set(50,80,60);
@@ -187,7 +181,6 @@ const fill=new THREE.DirectionalLight(0x8ab4f8,.25);
 fill.position.set(-40,-20,-40);
 scene.add(fill);
 scene.add(new THREE.GridHelper(200,40,0x21262D,0x161B22));
-
 function resizeRenderer(){const vp=canvas.parentElement,w=vp.clientWidth,h=vp.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 window.addEventListener('resize',resizeRenderer);resizeRenderer();
 (function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();
@@ -198,114 +191,36 @@ function setStatus(msg,type='loading'){const bar=$('statusBar'),spinner=$('statu
 function setProgress(p){$('progressWrap').classList.add('show');$('progressBar').style.width=p+'%'}
 function hideProgress(){setTimeout(()=>{$('progressWrap').classList.remove('show');$('progressBar').style.width='0%'},600)}
 function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.className='toast',3000)}
-
-function normalizeIfcType(t){return 'Ifc'+t.replace(/^IFC/i,'').toLowerCase().replace(/(^|_)([a-z])/g,(_,a,b)=>b.toUpperCase())}
-function colorForType(type){
-  const colors={IfcWall:0x9E9E9E,IfcWallStandardCase:0x9E9E9E,IfcSlab:0xBDBDBD,IfcRoof:0x795548,IfcColumn:0x58A6FF,IfcBeam:0x4FC3F7,IfcDoor:0xFF9800,IfcWindow:0x80DEEA,IfcSpace:0x4CAF50,IfcStair:0xCDDC39,IfcRailing:0xE91E63,IfcFurnishingElement:0xAB47BC,default:0x546E7A};
-  return colors[type]||colors.default;
-}
-function makeEntityMaterial(type,highlighted=false){
-  const transparent=new Set(['IfcWindow','IfcSpace']).has(type);
-  return new THREE.MeshPhongMaterial({color:colorForType(type),transparent:transparent||highlighted,opacity:transparent?0.35:(highlighted?0.85:1),side:THREE.DoubleSide,wireframe:wireframeMode&&!transparent,shininess:15,specular:0x222222});
-}
-function fitCameraToModel(){
-  if(!modelGroup||!modelGroup.children.length) return;
-  const box=new THREE.Box3().setFromObject(modelGroup);
-  if(box.isEmpty()) return;
-  const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
-  const maxDim=Math.max(size.x,size.y,size.z),fov=camera.fov*Math.PI/180,dist=Math.abs(maxDim/Math.sin(fov/2))*0.8;
-  camera.position.set(center.x+dist*.6,center.y+dist*.5,center.z+dist*.6);
-  controls.target.copy(center);
-  controls.update();
-}
-function buildEntityTree(data){
-  const grouped={};
-  for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}
-  const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;
-  for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){
-    const group=document.createElement('div');group.className='entity-group';
-    const header=document.createElement('div');header.className='entity-type-header';
-    header.innerHTML=`<div class="entity-type-dot" style="background:#${colorForType(type).toString(16).padStart(6,'0')}"></div><span>${type}</span><span class="count">${items.length}</span>`;
-    const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';
-    header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));
-    for(const entity of items.slice(0,60)){
-      const row=document.createElement('div');row.className='entity-item';
-      row.innerHTML=`<span class="eid">#${entity.expressID ?? ''}</span><span>${entity.Name || entity.name || entity.LongName || entity.longName || entity.type}</span>`;
-      row.addEventListener('click',()=>selectEntity(entity,row));
-      itemsDiv.appendChild(row);
-    }
-    group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group);
-  }
-}
-function selectEntity(entity,rowEl){
-  document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));
-  rowEl.classList.add('selected');
-  const mesh=meshMap[entity.expressID];
-  if(mesh){
-    selectedMesh=mesh;
-    const box=new THREE.Box3().setFromObject(mesh),center=box.getCenter(new THREE.Vector3());
-    controls.target.copy(center);controls.update();
-  }
-  showProperties(entity);
-}
-function showProperties(entity){
-  const panel=$('propPanel'),title=$('propType'),body=$('propBody');
-  title.textContent=entity.type||'IFC Element';
-  body.innerHTML='';
-  for(const [k,v] of Object.entries(entity)){
-    const row=document.createElement('div');
-    row.className='prop-row';
-    row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v)}</span>`;
-    body.appendChild(row);
-  }
-  panel.classList.add('show');
-}
+function colorForType(type){const c={IfcWall:0x9E9E9E,IfcSlab:0xBDBDBD,IfcRoof:0x795548,IfcColumn:0x58A6FF,IfcBeam:0x4FC3F7,IfcDoor:0xFF9800,IfcWindow:0x80DEEA,IfcSpace:0x4CAF50,IfcStair:0xCDDC39,IfcRailing:0xE91E63,IfcFurnishingElement:0xAB47BC,default:0x546E7A};return c[type]||c.default}
+function makeEntityMaterial(type,highlighted=false){const transparent=new Set(['IfcWindow','IfcSpace']).has(type);return new THREE.MeshPhongMaterial({color:colorForType(type),transparent:transparent||highlighted,opacity:transparent?0.35:(highlighted?0.85:1),side:THREE.DoubleSide,wireframe:wireframeMode&&!transparent,shininess:15,specular:0x222222})}
+function fitCameraToModel(){if(!modelGroup||!modelGroup.children.length) return;const box=new THREE.Box3().setFromObject(modelGroup);if(box.isEmpty()) return;const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());const maxDim=Math.max(size.x,size.y,size.z),fov=camera.fov*Math.PI/180,dist=Math.abs(maxDim/Math.sin(fov/2))*0.8;camera.position.set(center.x+dist*.6,center.y+dist*.5,center.z+dist*.6);controls.target.copy(center);controls.update()}
+function clearScene(){if(modelGroup){scene.remove(modelGroup);modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}modelGroup=null;meshMap={};selectedMesh=null}
+function buildEntityTree(data){const grouped={};for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){const group=document.createElement('div');group.className='entity-group';const header=document.createElement('div');header.className='entity-type-header';header.innerHTML=`<div class="entity-type-dot" style="background:#${colorForType(type).toString(16).padStart(6,'0')}"></div><span>${type}</span><span class="count">${items.length}</span>`;const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));for(const entity of items.slice(0,60)){const row=document.createElement('div');row.className='entity-item';row.innerHTML=`<span class="eid">#${entity.expressID ?? ''}</span><span>${entity.Name || entity.name || entity.LongName || entity.longName || entity.type}</span>`;row.addEventListener('click',()=>selectEntity(entity,row));itemsDiv.appendChild(row)}group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group)}}
+function selectEntity(entity,rowEl){document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));rowEl.classList.add('selected');const mesh=meshMap[entity.expressID];if(mesh){selectedMesh=mesh;const box=new THREE.Box3().setFromObject(mesh),center=box.getCenter(new THREE.Vector3());controls.target.copy(center);controls.update()}showProperties(entity)}
+function showProperties(entity){const panel=$('propPanel'),title=$('propType'),body=$('propBody');title.textContent=entity.type||'IFC Element';body.innerHTML='';for(const [k,v] of Object.entries(entity)){const row=document.createElement('div');row.className='prop-row';row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v)}</span>`;body.appendChild(row)}panel.classList.add('show')}
 $('propClose').addEventListener('click',()=>$('propPanel').classList.remove('show'));
 
-function clearScene(){
-  if(modelGroup){
-    scene.remove(modelGroup);
-    modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});
-  }
-  modelGroup=null;
-  meshMap={};
-  selectedMesh=null;
-}
-
-function addMeshToModel(mesh,expressID){
-  if(!modelGroup) modelGroup=new THREE.Group();
-  mesh.userData.expressID=expressID;
-  meshMap[expressID]=mesh;
-  modelGroup.add(mesh);
+async function loadWebIfcThree(){
+  const mod=await import('https://cdn.jsdelivr.net/npm/web-ifc-three@0.0.149/IFCLoader.js');
+  return mod.IFCLoader;
 }
 
 function proxyMeshForElement(element){
-  const type=element.type||'IfcProxy';
-  let geo;
-  const cls=(type||'').toLowerCase();
-  if(cls.includes('door')) geo=new THREE.BoxGeometry(0.9,2.1,0.12);
-  else if(cls.includes('window')) geo=new THREE.BoxGeometry(1.2,1.2,0.08);
-  else if(cls.includes('slab')) geo=new THREE.BoxGeometry(3,0.2,3);
-  else if(cls.includes('roof')) geo=new THREE.BoxGeometry(3,0.25,3);
-  else if(cls.includes('beam')) geo=new THREE.BoxGeometry(2,0.25,0.25);
-  else if(cls.includes('column')) geo=new THREE.BoxGeometry(0.25,2.5,0.25);
-  else if(cls.includes('wall')) geo=new THREE.BoxGeometry(3,2.8,0.2);
-  else if(cls.includes('stair')) geo=new THREE.BoxGeometry(2,1.5,2);
+  const type=element.type||'IfcProxy'; let geo;
+  const t=type.toLowerCase();
+  if(t.includes('door')) geo=new THREE.BoxGeometry(0.9,2.1,0.12);
+  else if(t.includes('window')) geo=new THREE.BoxGeometry(1.2,1.2,0.08);
+  else if(t.includes('slab')) geo=new THREE.BoxGeometry(3,0.2,3);
+  else if(t.includes('roof')) geo=new THREE.BoxGeometry(3,0.25,3);
+  else if(t.includes('beam')) geo=new THREE.BoxGeometry(2,0.25,0.25);
+  else if(t.includes('column')) geo=new THREE.BoxGeometry(0.25,2.5,0.25);
+  else if(t.includes('wall')) geo=new THREE.BoxGeometry(3,2.8,0.2);
+  else if(t.includes('stair')) geo=new THREE.BoxGeometry(2,1.5,2);
   else geo=new THREE.BoxGeometry(1,1,1);
   const mesh=new THREE.Mesh(geo,makeEntityMaterial(type,true));
   mesh.castShadow=true;mesh.receiveShadow=true;
-  mesh.userData={entity:element,isProxy:true};
+  mesh.userData={entity};
   return mesh;
-}
-
-function isRenderableElement(entity){
-  const t=(entity.type||'').toUpperCase();
-  return ['IFCWALL','IFCWALLSTANDARDCASE','IFCSLAB','IFCROOF','IFCCOLUMN','IFCBEAM','IFCDOOR','IFCWINDOW','IFCSTAIR','IFCRAILING','IFCSPACE','IFCFURNISHINGELEMENT','IFCMEMBER','IFCCOVERING','IFCFOOTING','IFCRAMP'].includes(t);
-}
-
-async function loadIfcLoader(){
-  if(window.IFCLoader) return window.IFCLoader;
-  throw new Error('IFC loader not available in this single-file template.');
 }
 
 async function loadIFCFile(file){
@@ -314,152 +229,113 @@ async function loadIFCFile(file){
   setStatus('Loading IFC…');
   setProgress(10);
 
-  const buffer=await file.arrayBuffer();
-  setProgress(25);
-
   try{
-    const ifc=await loadIfcLoader();
-    const loader=ifc;
-    const model=await loader.load(new Uint8Array(buffer));
-    const loaded=model.mesh || model;
-    modelGroup=new THREE.Group();
-    if(loaded.isMesh) loaded.castShadow=loaded.receiveShadow=true;
-    modelGroup.add(loaded);
-    scene.add(modelGroup);
+    const IFCLoader=await loadWebIfcThree();
+    setProgress(25);
+    const loader=new IFCLoader();
+    loader.ifcManager.setWasmPath('https://cdn.jsdelivr.net/npm/web-ifc@0.0.51/');
+    loader.ifcManager.applyWebIfcConfig({ USE_FAST_BOOLS:true });
+    const url=URL.createObjectURL(file);
 
-    const jsonElements=[];
-    const props=[];
-    const possibleIds=[];
+    loader.load(url, async model=>{
+      URL.revokeObjectURL(url);
+      modelGroup=new THREE.Group();
+      modelGroup.add(model.mesh);
+      scene.add(modelGroup);
 
-    if(model?.parser?.ifcManager?.state){
-      // not assumed here, but kept as a safe path when supported
-    }
+      const mesh=model.mesh;
+      mesh.castShadow=true;
+      mesh.receiveShadow=true;
 
-    $('vpStats').classList.add('show');
-    $('vpMeshCount').textContent='1';
-    $('vpVerts').textContent=(loaded.geometry?.attributes?.position?.count||0).toLocaleString();
-    $('vpEntCount').textContent='1';
-    $('btnReset').disabled=false;
-    $('btnDownload').disabled=true;
-    hideProgress();
-    setStatus('✓ IFC loaded','ok');
-    fitCameraToModel();
-    return;
+      const json={type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'web-ifc-three',preprocessorVersion:'web-ifc-three',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data:[]};
+      currentJson=json;
+      currentJsonStr=JSON.stringify(json,null,2);
+      $('statEntities').textContent='1';
+      $('statGeom').textContent='1';
+      $('statSchema').textContent='IFC4';
+      $('statSize').textContent=(new TextEncoder().encode(currentJsonStr).length/1024).toFixed(0)+' KB';
+      $('statsSection').style.display='block';
+      $('vpEntCount').textContent='1';
+      $('vpMeshCount').textContent='1';
+      $('vpVerts').textContent=(mesh.geometry?.attributes?.position?.count||0).toLocaleString();
+      $('vpStats').classList.add('show');
+      $('btnDownload').disabled=false;
+      $('btnReset').disabled=false;
+      hideProgress();
+      setStatus('✓ IFC loaded','ok');
+      fitCameraToModel();
+
+      try{
+        const modelID=model.modelID ?? model.mesh?.modelID ?? 0;
+        const ids=await loader.ifcManager.getAllItemsOfType(modelID,0,false);
+        currentJson.data=ids.map(id=>({expressID:id,type:'IfcElement'}));
+        buildEntityTree(currentJson.data);
+        $('statEntities').textContent=currentJson.data.length.toLocaleString();
+        $('vpEntCount').textContent=currentJson.data.length.toLocaleString();
+      }catch(e){
+        console.warn('Property/tree extraction unavailable in this build:',e);
+      }
+    }, err=>{
+      URL.revokeObjectURL(url);
+      throw err;
+    });
   }catch(err){
-    console.warn('Primary IFC loader failed, using fallback representation:', err);
-  }
+    console.warn('Primary IFC loader failed, using proxy fallback:', err);
+    try{
+      const text=await file.text();
+      const entities=parseIFCStep(text);
+      currentJson={type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'FullBIM Browser Viewer',preprocessorVersion:'fallback parser',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data:Object.values(entities).map(e=>({expressID:e.id,type:normalizeIfcType(e.type),Name:getIfcName(e),GlobalId:getIfcGlobalId(e)}))};
+      currentJsonStr=JSON.stringify(currentJson,null,2);
+      $('statEntities').textContent=currentJson.data.length.toLocaleString();
+      $('statGeom').textContent='0';
+      $('statSchema').textContent='IFC4';
+      $('statSize').textContent=(new TextEncoder().encode(currentJsonStr).length/1024).toFixed(0)+' KB';
+      $('statsSection').style.display='block';
+      buildEntityTree(currentJson.data);
 
-  // fallback path: parse names/types and render proxies
-  try{
-    const text=new TextDecoder().decode(buffer);
-    const entities=parseIFCStep(text);
-    const list=Object.values(entities);
-    currentJson={type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'FullBIM Browser Viewer',preprocessorVersion:'fallback parser',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data:list.map(e=>({
-      expressID:e.id,
-      type:normalizeIfcType(e.type),
-      Name:getIfcName(e),
-      GlobalId:getIfcGlobalId(e)
-    }))};
-    currentJsonStr=JSON.stringify(currentJson,null,2);
-    $('statEntities').textContent=currentJson.data.length.toLocaleString();
-    $('statGeom').textContent='0';
-    $('statSchema').textContent='IFC4';
-    $('statSize').textContent=(new TextEncoder().encode(currentJsonStr).length/1024).toFixed(0)+' KB';
-    $('statsSection').style.display='block';
-    buildEntityTree(currentJson.data);
-
-    modelGroup=new THREE.Group();
-    for(const e of currentJson.data){
-      if(!isRenderableElement(e)) continue;
-      const mesh=proxyMeshForElement(e);
-      mesh.position.set((e.expressID%7)-3,0,(e.expressID%5)-2);
-      addMeshToModel(mesh,e.expressID);
+      modelGroup=new THREE.Group();
+      for(const e of currentJson.data){if(!isRenderableElement(e)) continue;const mesh=proxyMeshForElement(e);mesh.position.set((e.expressID%7)-3,0,(e.expressID%5)-2);mesh.userData.expressID=e.expressID;meshMap[e.expressID]=mesh;modelGroup.add(mesh)}
+      if(!modelGroup.children.length) modelGroup.add(proxyMeshForElement({type:'IfcProxy',expressID:1}));
+      scene.add(modelGroup);
+      $('vpEntCount').textContent=currentJson.data.length.toLocaleString();
+      $('vpMeshCount').textContent=modelGroup.children.length.toLocaleString();
+      $('vpVerts').textContent=modelGroup.children.reduce((a,m)=>a+(m.geometry?.attributes?.position?.count||0),0).toLocaleString();
+      $('vpStats').classList.add('show');
+      fitCameraToModel();
+      setProgress(100);hideProgress();
+      setStatus('Loaded with fallback proxies','ok');
+      $('btnDownload').disabled=false;
+      $('btnReset').disabled=false;
+    }catch(e){
+      console.error(e);
+      setStatus('Failed to load IFC','err');
+      showToast('Could not load IFC', 'err');
+      hideProgress();
     }
-    if(modelGroup.children.length===0){
-      const box=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),makeEntityMaterial('IfcProxy'));
-      modelGroup.add(box);
-    }
-    scene.add(modelGroup);
-    $('vpEntCount').textContent=currentJson.data.length.toLocaleString();
-    $('vpMeshCount').textContent=modelGroup.children.length.toLocaleString();
-    $('vpVerts').textContent=modelGroup.children.reduce((a,m)=>a+(m.geometry?.attributes?.position?.count||0),0).toLocaleString();
-    $('vpStats').classList.add('show');
-    fitCameraToModel();
-    setProgress(100);hideProgress();
-    setStatus('Loaded with fallback proxies','ok');
-    $('btnDownload').disabled=false;
-    $('btnReset').disabled=false;
-  }catch(e){
-    setStatus('Failed to load IFC','err');
-    showToast('Could not load IFC', 'err');
-    console.error(e);
   }
 }
 
-function getIfcName(e){
-  return e.args?.[2] || e.args?.[5] || e.args?.[3] || null;
-}
-function getIfcGlobalId(e){
-  return e.args?.[0] || null;
-}
-
+function normalizeIfcType(t){return 'Ifc'+String(t||'Proxy').replace(/^IFC/i,'').toLowerCase().replace(/(^|_)([a-z])/g,(_,a,b)=>b.toUpperCase())}
+function getIfcName(e){return e.args?.[2]||e.args?.[5]||e.args?.[3]||null}
+function getIfcGlobalId(e){return e.args?.[0]||null}
 function parseIFCStep(text){
   const entities={};
   const dataSection=text.match(/DATA;([\s\S]*?)ENDSEC;/i);
   if(!dataSection) throw new Error('No DATA section found in IFC file.');
   const lineRe=/#(\d+)\s*=\s*([A-Z0-9_]+)\s*\(([\s\S]*?)\)\s*;/g;
   let m;
-  while((m=lineRe.exec(dataSection[1]))!==null){
-    entities[parseInt(m[1],10)]={id:parseInt(m[1],10),type:m[2],raw:m[3]};
-  }
+  while((m=lineRe.exec(dataSection[1]))!==null){entities[parseInt(m[1],10)]={id:parseInt(m[1],10),type:m[2],raw:m[3]}}
   function splitArgs(raw){const args=[];let depth=0,cur='';for(let i=0;i<raw.length;i++){const c=raw[i];if(c==='(')depth++;else if(c===')')depth=Math.max(0,depth-1);if(c===','&&depth===0){args.push(cur.trim());cur='';}else cur+=c}if(cur.trim())args.push(cur.trim());return args}
   function resolveVal(v){if(v==='$'||v==='*') return null;if(v.startsWith('#')) return entities[parseInt(v.slice(1),10)]||null;if(v.startsWith('(')&&v.endsWith(')')) return splitArgs(v.slice(1,-1)).map(resolveVal);if(v.startsWith("'")&&v.endsWith("'")) return v.slice(1,-1);if(v.startsWith('.')&&v.endsWith('.')) return v.slice(1,-1);const n=parseFloat(v);if(!isNaN(n)) return n;const typed=v.match(/^([A-Z0-9_]+)\s*\((.*)\)$/s);if(typed) return {type:typed[1],value:resolveVal(typed[2])};return v}
-  for(const e of Object.values(entities)){e.args=splitArgs(e.raw).map(resolveVal);delete e.raw;}
-  return entities;
+  for(const e of Object.values(entities)){e.args=splitArgs(e.raw).map(resolveVal);delete e.raw}
+  return entities
 }
 
-$('btnDownload').addEventListener('click',()=>{
-  if(!currentJsonStr) return;
-  const blob=new Blob([currentJsonStr],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='model.ifcJSON';
-  a.click();
-  URL.revokeObjectURL(url);
-});
-
-$('btnReset').addEventListener('click',()=>{
-  currentJson=null;currentJsonStr=null;
-  $('statusBar').classList.remove('show');
-  $('statsSection').style.display='none';
-  $('entityList').innerHTML='';
-  $('treeLabel').hidden=true;
-  $('vpPlaceholder').style.display='flex';
-  $('vpStats').classList.remove('show');
-  $('propPanel').classList.remove('show');
-  $('btnDownload').disabled=true;
-  $('btnReset').disabled=true;
-  $('fileInput').value='';
-  $('statusDot').className='dot active';
-  $('statusText').textContent='Ready';
-  clearScene();
-});
-
+$('btnDownload').addEventListener('click',()=>{if(!currentJsonStr) return;const blob=new Blob([currentJsonStr],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='model.ifcJSON';a.click();URL.revokeObjectURL(url)});
+$('btnReset').addEventListener('click',()=>{currentJson=null;currentJsonStr=null;$('statusBar').classList.remove('show');$('statsSection').style.display='none';$('entityList').innerHTML='';$('treeLabel').hidden=true;$('vpPlaceholder').style.display='flex';$('vpStats').classList.remove('show');$('propPanel').classList.remove('show');$('btnDownload').disabled=true;$('btnReset').disabled=true;$('fileInput').value='';$('statusDot').className='dot active';$('statusText').textContent='Ready';clearScene()});
 $('btnFit').addEventListener('click',fitCameraToModel);
-$('btnTop').addEventListener('click',()=>{
-  if(!modelGroup) return;
-  const box=new THREE.Box3().setFromObject(modelGroup),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
-  camera.position.set(center.x,center.y+Math.max(size.x,size.z)*1.5,center.z);
-  controls.target.copy(center);controls.update();
-});
-$('btnWire').addEventListener('click',()=>{
-  wireframeMode=!wireframeMode;
-  $('btnWire').style.color=wireframeMode?'var(--accent)':'';
-  if(!modelGroup) return;
-  modelGroup.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=wireframeMode});
-});
-
+$('btnTop').addEventListener('click',()=>{if(!modelGroup) return;const box=new THREE.Box3().setFromObject(modelGroup),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());camera.position.set(center.x,center.y+Math.max(size.x,size.z)*1.5,center.z);controls.target.copy(center);controls.update()});
+$('btnWire').addEventListener('click',()=>{wireframeMode=!wireframeMode;$('btnWire').style.color=wireframeMode?'var(--accent)':'';if(!modelGroup) return;modelGroup.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=wireframeMode})});
 const dropzone=$('dropzone'),fileInput=$('fileInput');
 dropzone.addEventListener('dragenter',e=>{e.preventDefault();dropzone.classList.add('dragover')});
 dropzone.addEventListener('dragover',e=>e.preventDefault());
