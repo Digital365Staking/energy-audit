@@ -27,8 +27,7 @@ main{display:flex;flex:1;overflow:hidden}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 .dropzone{border:1.5px dashed var(--border);border-radius:var(--radius);padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;background:linear-gradient(var(--surface) 0 0) padding-box,repeating-linear-gradient(0deg,transparent,transparent 19px,var(--border) 19px,var(--border) 20px) border-box,repeating-linear-gradient(90deg,transparent,transparent 19px,var(--border) 19px,var(--border) 20px) border-box}
 .dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:linear-gradient(var(--accent-dim) 0 0) padding-box,repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(88,166,255,0.15) 19px,rgba(88,166,255,0.15) 20px) border-box,repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(88,166,255,0.15) 19px,rgba(88,166,255,0.15) 20px) border-box}
-.dropzone-icon{font-size:28px;margin-bottom:8px;filter:grayscale(1);transition:filter .2s}
-.dropzone:hover .dropzone-icon,.dropzone.dragover .dropzone-icon{filter:grayscale(0)}
+.dropzone-icon{font-size:28px;margin-bottom:8px}
 .dropzone-title{font-weight:500;font-size:13px;color:var(--text);margin-bottom:4px}
 .dropzone-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
 .dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
@@ -40,13 +39,12 @@ main{display:flex;flex:1;overflow:hidden}
 .status-err{color:var(--danger)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .15s;text-decoration:none}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn:disabled{opacity:.4;pointer-events:none}
+.btn:disabled{opacity:0.4;pointer-events:none}
 .btn-success{background:var(--accent2);border-color:var(--accent2);color:var(--bg)}
-.btn-success:hover{background:#56d068;border-color:#56d068;color:var(--bg)}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .progress-wrap{background:var(--surface2);border-radius:2px;height:3px;margin-top:8px;overflow:hidden;display:none}
 .progress-wrap.show{display:block}
-.progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s ease;border-radius:2px}
+.progress-bar{height:100%;background:var(--accent);width:0%;transition:width 0.3s ease;border-radius:2px}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
 .stat-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--accent);line-height:1;margin-bottom:3px}
@@ -62,7 +60,6 @@ main{display:flex;flex:1;overflow:hidden}
 .entity-item{padding:4px 8px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .1s;display:flex;align-items:center;gap:6px}
 .entity-item:hover{background:var(--surface2);color:var(--text)}
 .entity-item.selected{background:var(--accent-dim);color:var(--accent)}
-.entity-item .eid{color:var(--border);font-size:9px;flex-shrink:0}
 .viewport{flex:1;position:relative;overflow:hidden;background:var(--bg)}
 #canvas{width:100%;height:100%;display:block}
 .viewport-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none}
@@ -154,7 +151,7 @@ main{display:flex;flex:1;overflow:hidden}
 <div class="toast" id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-(function(){const U=new THREE.Vector3(0,1,0);THREE.OrbitControls=function(c,d){const s=this;this.camera=c;this.domElement=d;this.enabled=true;this.target=new THREE.Vector3();this.minDistance=0;this.maxDistance=1/0;this.dampingFactor=.08;this.enableDamping=true;let S=new THREE.Spherical(),SD=new THREE.Spherical(),sc=1,PO=new THREE.Vector3(),down=false,btn=-1,rs=new THREE.Vector2(),rd=new THREE.Vector2(),ps=new THREE.Vector2(),pd=new THREE.Vector2();function RL(a){SD.theta-=a}function RU(a){SD.phi-=a}function DI(a){sc/=a}function DO(a){sc*=a}const PV=new THREE.Vector3();function PL(d,m){PV.setFromMatrixColumn(m,0);PV.multiplyScalar(-d);PO.add(PV)}function PU(d,m){PV.setFromMatrixColumn(m,1);PV.multiplyScalar(d);PO.add(PV)}function P(x,y){const el=s.domElement,pos=c.position,t=pos.clone().sub(s.target);let L=t.length();L*=Math.tan(c.fov/2*Math.PI/180)*2;PL(x*L/el.clientHeight,c.matrix);PU(y*L/el.clientHeight,c.matrix)}this.update=function(){const off=new THREE.Vector3(),q=new THREE.Quaternion().setFromUnitVectors(c.up,U),qi=q.clone().invert();return function(){const pos=c.position;off.copy(pos).sub(s.target);off.applyQuaternion(q);S.setFromVector3(off);if(s.enableDamping){S.theta+=SD.theta*s.dampingFactor;S.phi+=SD.phi*s.dampingFactor}else{S.theta+=SD.theta;S.phi+=SD.phi}S.phi=Math.max(.01,Math.min(Math.PI-.01,S.phi));S.radius*=sc;S.radius=Math.max(s.minDistance,Math.min(s.maxDistance,S.radius));s.target.add(PO);off.setFromSpherical(S);off.applyQuaternion(qi);pos.copy(s.target).add(off);c.lookAt(s.target);if(s.enableDamping){SD.theta*=(1-s.dampingFactor);SD.phi*=(1-s.dampingFactor);PO.multiplyScalar(1-s.dampingFactor)}else{SD.set(0,0,0);PO.set(0,0,0)}sc=1}}();function MD(e){if(!s.enabled)return;down=true;btn=e.button;if(e.button===0)rs.set(e.clientX,e.clientY);else if(e.button===2)ps.set(e.clientX,e.clientY)}function MM(e){if(!s.enabled||!down)return;if(btn===0){rd.set(e.clientX,e.clientY).sub(rs);rs.set(e.clientX,e.clientY);const el=s.domElement;RL(2*Math.PI*rd.x/el.clientWidth);RU(2*Math.PI*rd.y/el.clientHeight);s.update()}else if(btn===2){pd.set(e.clientX,e.clientY).sub(ps);ps.set(e.clientX,e.clientY);P(pd.x,pd.y);s.update()}}function MU(){down=false}function W(e){e.preventDefault();if(e.deltaY<0)DO(Math.pow(.95,1));else DI(Math.pow(.95,1));s.update()}function CM(e){e.preventDefault()}d.addEventListener('mousedown',MD);d.addEventListener('mousemove',MM);d.addEventListener('mouseup',MU);d.addEventListener('wheel',W,{passive:false});d.addEventListener('contextmenu',CM);this.dispose=function(){d.removeEventListener('mousedown',MD);d.removeEventListener('mousemove',MM);d.removeEventListener('mouseup',MU);d.removeEventListener('wheel',W);d.removeEventListener('contextmenu',CM)}}})();
+(function(){THREE.OrbitControls=function(camera,domElement){const s=this;s.camera=camera;s.domElement=domElement;s.enabled=true;s.target=new THREE.Vector3();s.minDistance=0;s.maxDistance=Infinity;s.dampingFactor=.08;s.enableDamping=true;let sph=new THREE.Spherical(),sd=new THREE.Spherical(),scale=1,panOffset=new THREE.Vector3(),down=false,btn=-1,rs=new THREE.Vector2(),rd=new THREE.Vector2(),ps=new THREE.Vector2(),pd=new THREE.Vector2();function RL(a){sd.theta-=a}function RU(a){sd.phi-=a}function DI(a){scale/=a}function DO(a){scale*=a}const PV=new THREE.Vector3();function PL(d,m){PV.setFromMatrixColumn(m,0);PV.multiplyScalar(-d);panOffset.add(PV)}function PU(d,m){PV.setFromMatrixColumn(m,1);PV.multiplyScalar(d);panOffset.add(PV)}function P(x,y){const el=s.domElement;const pos=camera.position;const t=pos.clone().sub(s.target);let L=t.length();L*=Math.tan(camera.fov/2*Math.PI/180)*2;PL(x*L/el.clientHeight,camera.matrix);PU(y*L/el.clientHeight,camera.matrix)}s.update=function(){const off=new THREE.Vector3(),q=new THREE.Quaternion().setFromUnitVectors(camera.up,new THREE.Vector3(0,1,0)),qi=q.clone().invert();return function(){const pos=camera.position;off.copy(pos).sub(s.target);off.applyQuaternion(q);sph.setFromVector3(off);if(s.enableDamping){sph.theta+=sd.theta*s.dampingFactor;sph.phi+=sd.phi*s.dampingFactor}else{sph.theta+=sd.theta;sph.phi+=sd.phi}sph.phi=Math.max(.01,Math.min(Math.PI-.01,sph.phi));sph.radius*=scale;sph.radius=Math.max(s.minDistance,Math.min(s.maxDistance,sph.radius));s.target.add(panOffset);off.setFromSpherical(sph);off.applyQuaternion(qi);pos.copy(s.target).add(off);camera.lookAt(s.target);if(s.enableDamping){sd.theta*=(1-s.dampingFactor);sd.phi*=(1-s.dampingFactor);panOffset.multiplyScalar(1-s.dampingFactor)}else{sd.set(0,0,0);panOffset.set(0,0,0)}scale=1}}();function MD(e){if(!s.enabled)return;down=true;btn=e.button;if(e.button===0)rs.set(e.clientX,e.clientY);else if(e.button===2)ps.set(e.clientX,e.clientY)}function MM(e){if(!s.enabled||!down)return;if(btn===0){rd.set(e.clientX,e.clientY).sub(rs);rs.set(e.clientX,e.clientY);const el=s.domElement;RL(2*Math.PI*rd.x/el.clientWidth);RU(2*Math.PI*rd.y/el.clientHeight);s.update()}else if(btn===2){pd.set(e.clientX,e.clientY).sub(ps);ps.set(e.clientX,e.clientY);P(pd.x,pd.y);s.update()}}function MU(){down=false}function W(e){e.preventDefault();if(e.deltaY<0)DO(Math.pow(.95,1));else DI(Math.pow(.95,1));s.update()}function CM(e){e.preventDefault()}domElement.addEventListener('mousedown',MD);domElement.addEventListener('mousemove',MM);domElement.addEventListener('mouseup',MU);domElement.addEventListener('wheel',W,{passive:false});domElement.addEventListener('contextmenu',CM)}})();
 </script>
 <script>
 let currentJson=null,currentJsonStr=null,meshMap={},wireframeMode=false,selectedMesh=null,modelGroup=null;
@@ -174,9 +171,13 @@ const controls=new THREE.OrbitControls(camera,canvas);
 controls.enableDamping=true;
 scene.add(new THREE.AmbientLight(0xffffff,.55));
 const sun=new THREE.DirectionalLight(0xffffff,.8);
-sun.position.set(50,80,60);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+sun.position.set(50,80,60);
+sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+scene.add(sun);
 const fill=new THREE.DirectionalLight(0x8ab4f8,.25);
-fill.position.set(-40,-20,-40);scene.add(fill);
+fill.position.set(-40,-20,-40);
+scene.add(fill);
 scene.add(new THREE.GridHelper(200,40,0x21262D,0x161B22));
 function resizeRenderer(){const vp=canvas.parentElement,w=vp.clientWidth,h=vp.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 window.addEventListener('resize',resizeRenderer);resizeRenderer();
@@ -199,8 +200,7 @@ function parseIFCStep(text){
       const c=raw[i];
       if(c==='(') depth++;
       else if(c===')') depth=Math.max(0,depth-1);
-      if(c===','&&depth===0){args.push(cur.trim());cur='';}
-      else cur+=c;
+      if(c===','&&depth===0){args.push(cur.trim());cur='';} else cur+=c;
     }
     if(cur.trim()) args.push(cur.trim());
     return args;
@@ -221,53 +221,7 @@ function parseIFCStep(text){
   return entities;
 }
 
-const IFC_SCHEMA={
-  IFCPROJECT:['globalId','ownerHistory','name','description','objectType','longName','phase','representationContexts','unitsInContext'],
-  IFCSITE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','refLatitude','refLongitude','refElevation','landTitleNumber'],
-  IFCBUILDING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','isExternal','elevation','referenceElevation'],
-  IFCBUILDINGSTOREY:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','elevation'],
-  IFCWALL:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCWALLSTANDARDCASE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCSLAB:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','predefinedType'],
-  IFCCOLUMN:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCBEAM:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCROOF:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCSTAIR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCDOOR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],
-  IFCWINDOW:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],
-  IFCSPACE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','interiorOrExteriorSpace','elevation'],
-  IFCFURNISHINGELEMENT:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCPLATE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCMEMBER:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCRAILING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCRAMP:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCFOOTING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],
-  IFCRELAGGREGATES:['globalId','ownerHistory','name','description','relatingObject','relatedObjects'],
-  IFCRELCONTAINEDINSPATIALSTRUCTURE:['globalId','ownerHistory','name','description','relatedElements','relatingStructure'],
-  IFCRELDEFINESBYPROPERTIES:['globalId','ownerHistory','name','description','relatedObjects','relatingPropertyDefinition'],
-  IFCRELDEFINESBYTYPE:['globalId','ownerHistory','name','description','relatedObjects','relatingType'],
-  IFCPROPERTYSET:['globalId','ownerHistory','name','description','hasProperties'],
-  IFCPROPERTYSETDEFINITION:['globalId','ownerHistory','name','description'],
-  IFCPRODUCTDEFINITIONSHAPE:['name','description','representations'],
-  IFCSHAPEREPRESENTATION:['contextOfItems','representationIdentifier','representationType','items'],
-  IFCMAPPEDITEM:['mappingSource','mappingTarget'],
-  IFCREPRESENTATIONMAP:['mappingOrigin','mappedRepresentation'],
-  IFCEXTRUDEDAREASOLID:['sweptArea','position','extrudedDirection','depth'],
-  IFCREVOLVEDAREASOLID:['sweptArea','position','axis','angle'],
-  IFCRECTANGLEPROFILEDEF:['profileType','profileName','position','xDim','yDim'],
-  IFCCIRCLEPROFILEDEF:['profileType','profileName','position','radius'],
-  IFCARBITRARYCLOSEDPROFILEDEF:['profileType','profileName','outerCurve'],
-  IFCARBITRARYPROFILEDEF:['profileType','profileName','outerCurve'],
-  IFCPOLYLINE:['points'],
-  IFCLOCALPLACEMENT:['placementRelTo','relativePlacement'],
-  IFCAXIS2PLACEMENT3D:['location','axis','refDirection'],
-  IFCAXIS2PLACEMENT2D:['location','refDirection'],
-  IFCCARTESIANPOINT:['coordinates'],
-  IFCDIRECTION:['directionRatios'],
-  IFCOWNERHISTORY:['owningUser','owningApplication','state','changeAction','lastModifiedDate','lastModifyingUser','lastModifyingApplication','creationDate'],
-  IFCGEOMETRICREPRESENTATIONCONTEXT:['contextIdentifier','contextType','coordinateSpaceDimension','precision','worldCoordinateSystem','trueNorth']
-};
-
+const IFC_SCHEMA={IFCPROJECT:['globalId','ownerHistory','name','description','objectType','longName','phase','representationContexts','unitsInContext'],IFCSITE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','refLatitude','refLongitude','refElevation','landTitleNumber'],IFCBUILDING:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','isExternal','elevation','referenceElevation'],IFCBUILDINGSTOREY:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','elevation'],IFCWALL:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCWALLSTANDARDCASE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCSLAB:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','predefinedType'],IFCCOLUMN:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCBEAM:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCROOF:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCSTAIR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCDOOR:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],IFCWINDOW:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag','overallHeight','overallWidth'],IFCSPACE:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','longName','compositionType','interiorOrExteriorSpace','elevation'],IFCFURNISHINGELEMENT:['globalId','ownerHistory','name','description','objectType','objectPlacement','representation','tag'],IFCPRODUCTDEFINITIONSHAPE:['name','description','representations'],IFCSHAPEREPRESENTATION:['contextOfItems','representationIdentifier','representationType','items'],IFCMAPPEDITEM:['mappingSource','mappingTarget'],IFCREPRESENTATIONMAP:['mappingOrigin','mappedRepresentation'],IFCEXTRUDEDAREASOLID:['sweptArea','position','extrudedDirection','depth'],IFCREVOLVEDAREASOLID:['sweptArea','position','axis','angle'],IFCRECTANGLEPROFILEDEF:['profileType','profileName','position','xDim','yDim'],IFCCIRCLEPROFILEDEF:['profileType','profileName','position','radius'],IFCARBITRARYCLOSEDPROFILEDEF:['profileType','profileName','outerCurve'],IFCPOLYLINE:['points'],IFCLOCALPLACEMENT:['placementRelTo','relativePlacement'],IFCAXIS2PLACEMENT3D:['location','axis','refDirection'],IFCAXIS2PLACEMENT2D:['location','refDirection'],IFCCARTESIANPOINT:['coordinates'],IFCDIRECTION:['directionRatios'],IFCOWNERHISTORY:['owningUser','owningApplication','state','changeAction','lastModifiedDate','lastModifyingUser','lastModifyingApplication','creationDate'],IFCGEOMETRICREPRESENTATIONCONTEXT:['contextIdentifier','contextType','coordinateSpaceDimension','precision','worldCoordinateSystem','trueNorth']};
 function toIfcJsonType(t){return 'Ifc'+t.slice(3).toLowerCase().replace(/(^|_)([a-z])/g,(_,a,b)=>b.toUpperCase())}
 function expandGuid(g){const chars='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$';let num=0n;for(const c of g)num=num*64n+BigInt(chars.indexOf(c));let hex=num.toString(16).padStart(32,'0');return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`}
 function ifcEntityToJson(entity,entities,visited=new Set()){
@@ -293,7 +247,7 @@ function convertVal(val,entities,visited){
 }
 function convertIfcToJson(entities){
   const rootTypes=new Set(['IFCPROJECT','IFCSITE','IFCBUILDING','IFCBUILDINGSTOREY','IFCSPACE','IFCWALL','IFCWALLSTANDARDCASE','IFCSLAB','IFCCOLUMN','IFCDOOR','IFCWINDOW','IFCROOF','IFCSTAIR','IFCBEAM','IFCFURNISHINGELEMENT','IFCPLATE','IFCMEMBER','IFCPILE','IFCRAILING','IFCRAMP','IFCCOVERING','IFCFOOTING','IFCRELAGGREGATES','IFCRELCONTAINEDINSPATIALSTRUCTURE','IFCRELDEFINESBYPROPERTIES','IFCRELDEFINESBYTYPE','IFCPROPERTYSET','IFCPROPERTYSETDEFINITION']);
-  const data=[];const visited=new Set();
+  const data=[],visited=new Set();
   for(const e of Object.values(entities)){
     if(rootTypes.has(e.type)){
       const json=ifcEntityToJson(e,entities,visited);
@@ -323,14 +277,14 @@ function placementToMatrix(placement){
   let zAxis=new THREE.Vector3(...axisRaw);if(zAxis.lengthSq()===0)zAxis.set(0,0,1);zAxis.normalize();
   let xAxis=new THREE.Vector3(...refRaw);if(xAxis.lengthSq()===0)xAxis.set(1,0,0);xAxis.normalize();
   let yAxis=new THREE.Vector3().crossVectors(zAxis,xAxis);
-  if(yAxis.lengthSq()===0)yAxis.set(0,1,0);else yAxis.normalize();
+  if(yAxis.lengthSq()===0) yAxis.set(0,1,0); else yAxis.normalize();
   xAxis.crossVectors(yAxis,zAxis).normalize();
   const m=new THREE.Matrix4();
   m.makeBasis(xAxis,yAxis,zAxis);
   m.setPosition(loc[0]||0,loc[1]||0,loc[2]||0);
   return m;
 }
-function resolveFullPlacement(entity){
+function resolvePlacementChain(entity){
   const chain=[];let p=entity.objectPlacement;
   while(p){if(p.relativePlacement)chain.unshift(placementToMatrix(p.relativePlacement));p=p.placementRelTo}
   const result=new THREE.Matrix4();
@@ -348,9 +302,7 @@ function profileToShape(profile){
     const r=typeof profile.radius==='number'?profile.radius:.5,s=new THREE.Shape();
     s.absarc(0,0,r,0,Math.PI*2,false);return s;
   }
-  const outer=profile.outerCurve||profile.outer||profile.points;
-  if(!outer) return null;
-  const pts=Array.isArray(outer)?outer:(outer.points||outer);
+  const pts=profile.outerCurve?.points||profile.outerCurve||profile.points;
   if(!pts||pts.length<3) return null;
   const s=new THREE.Shape();
   const first=getCoords(pts[0]);
@@ -359,42 +311,29 @@ function profileToShape(profile){
   s.closePath();
   return s;
 }
-function buildBooleanFallback(item,entities,visited){
-  const out=[];
-  for(const op of [item.firstOperand||item.operand1,item.secondOperand||item.operand2]){
-    if(!op) continue;
-    if(op.representation) out.push(...collectGeometriesFromRepresentation(op.representation,entities,visited));
-    else if(op.items) out.push(...collectGeometriesFromRepresentation(op,entities,visited));
-  }
-  return out.length?out:null;
-}
 function buildSolid(item){
   const t=(item.type||'').toLowerCase();
   if(t.includes('extrudedareasolid')){
-    const profile=item.sweptArea; if(!profile) return null;
-    const shape=profileToShape(profile); if(!shape) return null;
-    const depth=typeof item.depth==='number'?item.depth:(item.depth?.value||1);
+    const shape=profileToShape(item.sweptArea);if(!shape) return null;
+    const depth=typeof item.depth==='number'?item.depth:1;
     const geo=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false});
-    if(item.position?.relativePlacement) geo.applyMatrix4(placementToMatrix(item.position.relativePlacement));
-    const ext=getDirectionRatios(item.extrudedDirection),target=new THREE.Vector3(...ext).normalize();
-    if(target.lengthSq()&&target.dot(new THREE.Vector3(0,0,1))<0.999){
-      const q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1),target);
-      geo.applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(q));
-    }
+    const p=item.position?.relativePlacement;
+    if(p) geo.applyMatrix4(placementToMatrix(p));
+    const dir=getDirectionRatios(item.extrudedDirection);
+    const q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(...dir).normalize());
+    if(Math.abs(q.w-1)>1e-6) geo.applyMatrix4(new THREE.Matrix4().makeRotationFromQuaternion(q));
     geo.computeVertexNormals();
     return geo;
   }
   if(t.includes('revolvedareasolid')){
-    const profile=item.sweptArea;if(!profile)return null;
-    const shape=profileToShape(profile);if(!shape)return null;
-    const pts=shape.getPoints(24);
-    const geo=new THREE.LatheGeometry(pts,24);
+    const shape=profileToShape(item.sweptArea);if(!shape) return null;
+    const geo=new THREE.LatheGeometry(shape.getPoints(24),24);
     geo.computeVertexNormals();
     return geo;
   }
   if(t.includes('facetedbrep')||t.includes('polygonalfaceset')){
     const faces=item.outer?.cfsFaces||item.faces||item.polygonalFaces||[];
-    const vertices=[];const indices=[];let v=0;
+    const vertices=[],indices=[];let v=0;
     for(const face of faces){
       const bounds=face.bounds||face.faceOuterBound?[face.faceOuterBound||face.bounds]:[];
       for(const bound of bounds){
@@ -416,76 +355,57 @@ function buildSolid(item){
   }
   return null;
 }
-function collectGeometriesFromRepresentation(representation,entities,visited=new Set()){
-  const geos=[];
-  if(!representation) return geos;
-  const reps=representation.representations||[representation];
-  for(const rep of reps){
-    if(rep.items){
-      for(const item of rep.items){
-        if(!item||!item.type) continue;
-        const t=item.type.toLowerCase();
-        let geo=null;
-        if(t.includes('mappeditem')&&item.mappingSource?.mappedRepresentation){
-          geos.push(...collectGeometriesFromRepresentation(item.mappingSource.mappedRepresentation,entities,visited));
-          continue;
-        }
-        if(t.includes('booleanresult')) geo=buildBooleanFallback(item,entities,visited);
-        else geo=buildSolid(item);
-        if(Array.isArray(geo)) geos.push(...geo);
-        else if(geo) geos.push(geo);
-      }
-    }
+function collectGeometries(node){
+  const out=[];
+  if(!node) return out;
+  if(Array.isArray(node)){for(const n of node) out.push(...collectGeometries(n));return out;}
+  if(node.representations) return collectGeometries(node.representations);
+  if(node.items){for(const item of node.items){out.push(...collectGeometries(item))}return out}
+  if((node.type||'').toLowerCase().includes('mappeditem')&&node.mappingSource?.mappedRepresentation){
+    return collectGeometries(node.mappingSource.mappedRepresentation);
   }
-  return geos;
+  const geo=buildSolid(node);
+  if(geo) out.push(geo);
+  return out;
 }
-function mergeGeos(geos){
+function mergeGeometries(geos){
   if(!geos.length) return null;
   if(geos.length===1) return geos[0];
-  let totalVerts=0,totalIdx=0;
-  for(const g of geos){totalVerts+=g.attributes.position.count;if(g.index) totalIdx+=g.index.count}
-  const posArr=new Float32Array(totalVerts*3),normArr=new Float32Array(totalVerts*3),idxArr=totalIdx?new Uint32Array(totalIdx):null;
+  let totalV=0,totalI=0;
+  for(const g of geos){totalV+=g.attributes.position.count;if(g.index) totalI+=g.index.count}
+  const pos=new Float32Array(totalV*3),nor=new Float32Array(totalV*3),idx=totalI?new Uint32Array(totalI):null;
   let vOff=0,iOff=0;
   for(const g of geos){
-    posArr.set(g.attributes.position.array,vOff*3);
-    const norm=g.attributes.normal?g.attributes.normal.array:new Float32Array(g.attributes.position.array.length);
-    normArr.set(norm,vOff*3);
-    if(idxArr&&g.index){
-      const src=g.index.array;
-      for(let j=0;j<src.length;j++) idxArr[iOff+j]=src[j]+vOff;
-      iOff+=src.length;
-    }
+    pos.set(g.attributes.position.array,vOff*3);
+    nor.set((g.attributes.normal?g.attributes.normal.array:new Float32Array(g.attributes.position.array.length)),vOff*3);
+    if(idx&&g.index){const src=g.index.array;for(let i=0;i<src.length;i++) idx[iOff+i]=src[i]+vOff;iOff+=src.length}
     vOff+=g.attributes.position.count;
   }
   const merged=new THREE.BufferGeometry();
-  merged.setAttribute('position',new THREE.BufferAttribute(posArr,3));
-  merged.setAttribute('normal',new THREE.BufferAttribute(normArr,3));
-  if(idxArr&&iOff>0) merged.setIndex(new THREE.BufferAttribute(idxArr,1));
+  merged.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  merged.setAttribute('normal',new THREE.BufferAttribute(nor,3));
+  if(idx&&iOff) merged.setIndex(new THREE.BufferAttribute(idx,1));
   return merged;
 }
 function buildSceneFromJson(ifcJson){
-  if(modelGroup){
-    scene.remove(modelGroup);
-    modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});
-  }
-  modelGroup=new THREE.Group();
-  meshMap={};
+  if(modelGroup){scene.remove(modelGroup);modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}
+  modelGroup=new THREE.Group();meshMap={};
   const skip=new Set(['ifcproject','ifcsite','ifcbuilding','ifcbuildingstorey','ifcrelaggregates','ifcrelcontainedinspatialstructure','ifcreldefinesbyproperties','ifcreldefinesbytype','ifcpropertyset','ifcownerhistory','ifcgeometricrepresentationcontext','ifcunitassignment','ifcdimensionalexponents','ifcsiunit']);
   let meshCount=0,vertCount=0,geomCount=0;
   for(const entity of ifcJson.data){
     if(!entity?.type) continue;
     const typeLower=entity.type.toLowerCase();
     if(skip.has(typeLower)) continue;
-    const geos=collectGeometriesFromRepresentation(entity.representation,ifcJson.data);
+    const geos=collectGeometries(entity.representation);
     geomCount+=geos.length;
-    let geo=mergeGeos(geos);
-    const physical=['ifcwall','ifcslab','ifccolumn','ifcbeam','ifcdoor','ifcwindow','ifcroof','ifcstair','ifcrailing','ifcplate','ifcmember','ifcfooting','ifcramp'];
+    let geo=mergeGeometries(geos);
+    const physical=['ifcwall','ifcslab','ifccolumn','ifcbeam','ifcdoor','ifcwindow','ifcroof','ifcstair','ifcrailing','ifcplate','ifcmember','ifcfooting','ifcramp','ifccovering'];
     if(!geo&&physical.some(t=>typeLower.startsWith(t))) geo=new THREE.BoxGeometry(1,1,1);
     if(!geo) continue;
     const mesh=new THREE.Mesh(geo,makeEntityMaterial(entity.type));
     mesh.castShadow=true;mesh.receiveShadow=true;
     mesh.userData={entity};
-    mesh.applyMatrix4(resolveFullPlacement(entity));
+    mesh.applyMatrix4(resolvePlacementChain(entity));
     modelGroup.add(mesh);
     if(entity.globalId) meshMap[entity.globalId]=mesh;
     meshCount++;vertCount+=geo.attributes.position.count;
@@ -511,56 +431,9 @@ function setStatus(msg,type='loading'){const bar=$('statusBar'),spinner=$('statu
 function setProgress(p){$('progressWrap').classList.add('show');$('progressBar').style.width=p+'%'}
 function hideProgress(){setTimeout(()=>{$('progressWrap').classList.remove('show');$('progressBar').style.width='0%'},600)}
 function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.className='toast',3000)}
-function buildEntityTree(data){
-  const grouped={};
-  for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}
-  const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;
-  for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){
-    const color='#'+((TYPE_COLORS[type]||TYPE_COLORS.default).toString(16).padStart(6,'0'));
-    const group=document.createElement('div');group.className='entity-group';
-    const header=document.createElement('div');header.className='entity-type-header';header.innerHTML=`<div class="entity-type-dot" style="background:${color}"></div><span>${type.replace('Ifc','')}</span><span class="count">${items.length}</span>`;
-    const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';
-    header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));
-    for(const entity of items.slice(0,50)){
-      const row=document.createElement('div');row.className='entity-item';
-      const label=entity.name||entity.longName||entity.globalId||'—';
-      row.innerHTML=`<span class="eid">#</span><span>${label}</span>`;
-      row.title=entity.globalId||'';
-      row.addEventListener('click',()=>selectEntity(entity,row));
-      itemsDiv.appendChild(row);
-    }
-    if(items.length>50){
-      const more=document.createElement('div');more.className='entity-item';more.style.color='var(--muted)';more.textContent=`+ ${items.length-50} more…`;itemsDiv.appendChild(more);
-    }
-    group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group);
-  }
-}
-function selectEntity(entity,rowEl){
-  document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));
-  if(selectedMesh&&selectedMesh.material) selectedMesh.material.emissive=new THREE.Color(0x000000);
-  rowEl.classList.add('selected');
-  if(entity.globalId&&meshMap[entity.globalId]){
-    selectedMesh=meshMap[entity.globalId];
-    selectedMesh.material.emissive=new THREE.Color(0x58A6FF);
-    selectedMesh.material.emissiveIntensity=.3;
-    const box=new THREE.Box3().setFromObject(selectedMesh),center=box.getCenter(new THREE.Vector3());
-    controls.target.copy(center);controls.update();
-  }
-  showProperties(entity);
-}
-function showProperties(entity){
-  const panel=$('propPanel'),title=$('propType'),body=$('propBody');
-  title.textContent=entity.type;body.innerHTML='';
-  const skip=new Set(['type','objectPlacement','representation','ownerHistory']);
-  for(const [k,v] of Object.entries(entity)){
-    if(skip.has(k)) continue;
-    const row=document.createElement('div');row.className='prop-row';
-    const valStr=v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v);
-    row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${valStr}</span>`;
-    body.appendChild(row);
-  }
-  panel.classList.add('show');
-}
+function buildEntityTree(data){const grouped={};for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){const color='#'+((TYPE_COLORS[type]||TYPE_COLORS.default).toString(16).padStart(6,'0'));const group=document.createElement('div');group.className='entity-group';const header=document.createElement('div');header.className='entity-type-header';header.innerHTML=`<div class="entity-type-dot" style="background:${color}"></div><span>${type.replace('Ifc','')}</span><span class="count">${items.length}</span>`;const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));for(const entity of items.slice(0,50)){const row=document.createElement('div');row.className='entity-item';const label=entity.name||entity.longName||entity.globalId||'—';row.innerHTML=`<span class="eid">#</span><span>${label}</span>`;row.title=entity.globalId||'';row.addEventListener('click',()=>selectEntity(entity,row));itemsDiv.appendChild(row)}if(items.length>50){const more=document.createElement('div');more.className='entity-item';more.style.color='var(--muted)';more.textContent=`+ ${items.length-50} more…`;itemsDiv.appendChild(more)}group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group)}}
+function selectEntity(entity,rowEl){document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));if(selectedMesh&&selectedMesh.material) selectedMesh.material.emissive=new THREE.Color(0x000000);rowEl.classList.add('selected');if(entity.globalId&&meshMap[entity.globalId]){selectedMesh=meshMap[entity.globalId];selectedMesh.material.emissive=new THREE.Color(0x58A6FF);selectedMesh.material.emissiveIntensity=.3;const box=new THREE.Box3().setFromObject(selectedMesh),center=box.getCenter(new THREE.Vector3());controls.target.copy(center);controls.update()}showProperties(entity)}
+function showProperties(entity){const panel=$('propPanel'),title=$('propType'),body=$('propBody');title.textContent=entity.type;body.innerHTML='';const skip=new Set(['type','objectPlacement','representation','ownerHistory']);for(const [k,v] of Object.entries(entity)){if(skip.has(k)) continue;const row=document.createElement('div');row.className='prop-row';const valStr=v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v);row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${valStr}</span>`;body.appendChild(row)}panel.classList.add('show')}
 $('propClose').addEventListener('click',()=>{$('propPanel').classList.remove('show');if(selectedMesh&&selectedMesh.material)selectedMesh.material.emissive=new THREE.Color(0x000000);selectedMesh=null});
 async function processIFCFile(file){
   currentJson=null;currentJsonStr=null;
@@ -571,11 +444,9 @@ async function processIFCFile(file){
   setProgress(25);setStatus('Parsing IFC STEP data…');await tick();
   let entities;
   try{entities=parseIFCStep(text)}catch(e){setStatus('IFC parse error: '+e.message,'err');showToast('Parse error: '+e.message,'err');return}
-  const count=Object.keys(entities).length;
-  setProgress(55);setStatus(`Parsed ${count.toLocaleString()} entities — building ifcJSON…`);await tick();
+  setProgress(55);setStatus('Converting to ifcJSON…');await tick();
   let ifcJson;
   try{ifcJson=convertIfcToJson(entities)}catch(e){setStatus('Conversion error: '+e.message,'err');showToast('Conversion error','err');return}
-  setProgress(70);setStatus('Serialising JSON…');await tick();
   currentJson=ifcJson;currentJsonStr=JSON.stringify(ifcJson,null,2);
   const jsonBytes=new TextEncoder().encode(currentJsonStr).length;
   $('statEntities').textContent=ifcJson.data.length.toLocaleString();
@@ -583,17 +454,16 @@ async function processIFCFile(file){
   $('statSchema').textContent=ifcJson.schemaIdentifier||'IFC4';
   $('statSize').textContent=jsonBytes>1048576?(jsonBytes/1048576).toFixed(1)+' MB':(jsonBytes/1024).toFixed(0)+' KB';
   $('statsSection').style.display='block';
-  setProgress(82);setStatus('Building 3D scene from JSON…');await tick();
+  setProgress(82);setStatus('Building 3D scene…');await tick();
   let sceneStats;
-  try{sceneStats=buildSceneFromJson(ifcJson)}catch(e){console.error('3D build error',e)}
+  try{sceneStats=buildSceneFromJson(ifcJson)}catch(e){console.error(e)}
   setProgress(96);await tick();
   fitCameraToModel();
   $('vpPlaceholder').style.display='none';
   setProgress(100);hideProgress();
-  setStatus(`✓ ${ifcJson.data.length} entities converted`,'ok');
+  setStatus(`✓ ${ifcJson.data.length} entities converted`,`ok`);
   buildEntityTree(ifcJson.data);
   $('btnDownload').disabled=false;$('btnReset').disabled=false;
-  showToast(`Converted ${file.name} · ${ifcJson.data.length} entities`,'ok');
 }
 function tick(){return new Promise(r=>setTimeout(r,0))}
 $('btnDownload').addEventListener('click',()=>{if(!currentJsonStr)return;const blob=new Blob([currentJsonStr],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='model.ifcJSON';a.click();URL.revokeObjectURL(url)});
