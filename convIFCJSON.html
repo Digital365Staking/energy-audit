@@ -1,50 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FullBIM · IFC Viewer</title>
+
+<style>
+body { margin:0; overflow:hidden; font-family:system-ui; background:#0D1117; color:white; }
+header { padding:10px 14px; background:#161B22; border-bottom:1px solid #21262D; }
+main { display:flex; height:calc(100vh - 50px); }
+
+.panel {
+  width:320px;
+  background:#161B22;
+  border-right:1px solid #21262D;
+  display:flex;
+  flex-direction:column;
+}
+
+.dropzone {
+  margin:10px;
+  padding:20px;
+  border:1px dashed #444;
+  text-align:center;
+  cursor:pointer;
+}
+
+button {
+  margin:10px;
+  padding:10px;
+  background:#21262D;
+  color:white;
+  border:1px solid #333;
+  cursor:pointer;
+}
+
+button:disabled { opacity:0.5; cursor:not-allowed; }
+
+#log {
+  flex:1;
+  margin:10px;
+  font-size:12px;
+  overflow:auto;
+  white-space:pre-wrap;
+}
+
+.viewport { flex:1; }
+canvas { width:100%; height:100%; display:block; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <b>FullBIM IFC Viewer (Backend Geometry Enabled)</b>
+</header>
+
+<main>
+
+<!-- LEFT PANEL -->
+<div class="panel">
+
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="fileInput" accept=".ifc" hidden />
+    Drop IFC or click
+  </div>
+
+  <button id="btnDownload" disabled>Download JSON</button>
+  <button id="btnReset" disabled>Reset</button>
+
+  <div id="log"></div>
+</div>
+
+<!-- VIEWPORT -->
+<div class="viewport">
+  <canvas id="canvas"></canvas>
+</div>
+
+</main>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
+let scene, camera, renderer;
 let currentJson = null;
 let currentJsonStr = null;
 
-let scene, camera, renderer, controls;
-
-const log = (msg) => {
-  document.getElementById("log").textContent += msg + "\n";
+const log = (m) => {
+  document.getElementById("log").textContent += m + "\n";
 };
 
-function setEnabled(state){
-  document.getElementById("btnDownload").disabled = !state;
-  document.getElementById("btnReset").disabled = !state;
+function setEnabled(v){
+  document.getElementById("btnDownload").disabled = !v;
+  document.getElementById("btnReset").disabled = !v;
 }
 
-/* -----------------------------
+/* ----------------------------
    THREE.JS INIT
-------------------------------*/
+-----------------------------*/
 function init3D(){
-  const canvas = document.getElementById("canvas");
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0D1117);
 
   camera = new THREE.PerspectiveCamera(
     60,
-    window.innerWidth / window.innerHeight,
+    window.innerWidth/window.innerHeight,
     0.1,
-    10000
+    100000
   );
 
-  camera.position.set(10, 10, 10);
+  camera.position.set(10,10,10);
 
   renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true
+    canvas: document.getElementById("canvas"),
+    antialias:true
   });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(10, 20, 10);
-  scene.add(light);
+  // LIGHTS (VERY IMPORTANT)
+  const light1 = new THREE.DirectionalLight(0xffffff, 1);
+  light1.position.set(10,20,10);
+  scene.add(light1);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const light2 = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(light2);
 
   animate();
 }
@@ -54,17 +135,17 @@ function animate(){
   renderer.render(scene, camera);
 }
 
-/* -----------------------------
-   CONVERT BACKEND → 3D
-------------------------------*/
-function buildGeometry(element){
+/* ----------------------------
+   GEOMETRY BUILDER
+-----------------------------*/
+function buildMesh(el){
 
-  if(!element.geometry) return null;
+  if(!el.geometry) return null;
 
   const geo = new THREE.BufferGeometry();
 
-  const vertices = new Float32Array(element.geometry.vertices.flat());
-  const indices = new Uint32Array(element.geometry.indices);
+  const vertices = new Float32Array(el.geometry.vertices.flat());
+  const indices = new Uint32Array(el.geometry.indices);
 
   geo.setAttribute(
     "position",
@@ -82,27 +163,43 @@ function buildGeometry(element){
 
   const mesh = new THREE.Mesh(geo, mat);
 
-  mesh.userData = element;
+  mesh.userData = el;
 
   return mesh;
 }
 
-function renderScene(data){
+/* ----------------------------
+   CENTER MODEL (IMPORTANT FIX)
+-----------------------------*/
+function centerModel(){
 
-  // clear previous
-  scene.clear();
+  const box = new THREE.Box3().setFromObject(scene);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(10, 20, 10);
-  scene.add(light);
+  scene.position.sub(center);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const max = Math.max(size.x, size.y, size.z);
+
+  camera.position.set(max, max, max);
+  camera.lookAt(0,0,0);
+}
+
+/* ----------------------------
+   RENDER IFC DATA
+-----------------------------*/
+function render(data){
+
+  // clear scene but keep lights
+  scene.children = scene.children.filter(o =>
+    o.isLight
+  );
 
   let count = 0;
 
   data.forEach(el => {
 
-    const mesh = buildGeometry(el);
+    const mesh = buildMesh(el);
 
     if(mesh){
       scene.add(mesh);
@@ -110,62 +207,58 @@ function renderScene(data){
     }
   });
 
-  log("3D objects rendered: " + count);
+  log("3D meshes: " + count);
+
+  centerModel();
 }
 
-/* -----------------------------
+/* ----------------------------
    BACKEND CALL
-------------------------------*/
-async function loadIFCFile(file){
-  log("Uploading IFC to backend...");
+-----------------------------*/
+async function upload(file){
+
+  log("Uploading IFC...");
+
+  const fd = new FormData();
+  fd.append("file", file);
 
   try {
-    const formData = new FormData();
-    formData.append("file", file);
 
     const res = await fetch(
       "https://ifcjsonbackend-production.up.railway.app/convert-ifc",
-      {
-        method: "POST",
-        body: formData
-      }
+      { method:"POST", body:fd }
     );
 
-    if (!res.ok) throw new Error(await res.text());
+    if(!res.ok) throw new Error(await res.text());
 
-    const data = await res.json();
+    const json = await res.json();
 
-    currentJson = data;
-    currentJsonStr = JSON.stringify(data, null, 2);
+    currentJson = json;
+    currentJsonStr = JSON.stringify(json,null,2);
 
-    log("Backend success");
-    log("Entities: " + data.data.length);
-    log("Geometry: " + (data.geometryCount || 0));
+    log("Success");
+    log("Entities: " + json.data.length);
+    log("Geometry count: " + json.geometryCount);
 
-    // 🚀 RENDER 3D
-    renderScene(data.data);
+    render(json.data);
 
     setEnabled(true);
 
-  } catch (err) {
-
-    log("Backend failed: " + err.message);
-
+  } catch(e){
+    log("ERROR: " + e.message);
     setEnabled(false);
   }
 }
 
-/* -----------------------------
+/* ----------------------------
    EVENTS
-------------------------------*/
-document.getElementById("fileInput").addEventListener("change", (e)=>{
-  const file = e.target.files[0];
-  if(file) loadIFCFile(file);
-});
-
-document.getElementById("dropzone").addEventListener("click", ()=>{
+-----------------------------*/
+document.getElementById("dropzone").onclick = () =>
   document.getElementById("fileInput").click();
-});
+
+document.getElementById("fileInput").onchange = (e)=>{
+  if(e.target.files[0]) upload(e.target.files[0]);
+};
 
 document.getElementById("btnDownload").onclick = () => {
   const blob = new Blob([currentJsonStr], {type:"application/json"});
@@ -177,15 +270,23 @@ document.getElementById("btnDownload").onclick = () => {
 };
 
 document.getElementById("btnReset").onclick = () => {
-  currentJson = null;
-  currentJsonStr = null;
   scene.clear();
+  init3D();
   setEnabled(false);
   document.getElementById("log").textContent = "";
 };
 
-/* -----------------------------
+window.addEventListener("resize", ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ----------------------------
    INIT
-------------------------------*/
+-----------------------------*/
 init3D();
 </script>
+
+</body>
+</html>
