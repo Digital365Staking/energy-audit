@@ -33,7 +33,6 @@
     flex-direction: column;
   }
 
-  /* ── PAGE SHELL ── */
   .page {
     display: flex;
     width: 100%;
@@ -62,81 +61,41 @@
     transition: .15s ease;
     text-align: center;
     user-select: none;
+    flex-shrink: 0;
   }
-  .drop-area:hover,
-  .drop-area.drag-over {
+  .drop-area:hover, .drop-area.drag-over {
     border-color: var(--accent);
     background: #d7eef9;
     transform: translateY(-1px);
   }
-  .drop-area input { display:none; }
-
-  .drop-icon { font-size: 2rem; color: var(--accent-2); margin-bottom: 8px; }
-  .drop-title { font-weight:700; color:var(--title); font-size:1rem; margin-bottom:4px; }
-  .drop-sub   { font-size:.88rem; color:#4f6780; line-height:1.45; }
+  .drop-area input { display: none; }
+  .drop-icon  { font-size: 2rem; color: var(--accent-2); margin-bottom: 8px; }
+  .drop-title { font-weight: 700; color: var(--title); font-size: 1rem; margin-bottom: 4px; }
+  .drop-sub   { font-size: .88rem; color: #4f6780; line-height: 1.45; }
 
   /* ── BUTTONS ── */
-  .btn-row { display:flex; gap:8px; }
-
+  .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
   .btn {
-    flex:1;
-    border:none;
-    border-radius:10px;
-    padding: 10px 12px;
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 10px;
     background: var(--title);
-    color:#fff;
-    font-weight:700;
-    font-size:.88rem;
-    cursor:pointer;
-    transition:.2s ease;
+    color: #fff;
+    font-weight: 700;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: .2s ease;
     white-space: nowrap;
   }
-  .btn:hover:not(:disabled) { background:var(--accent-2); transform:translateY(-1px); }
-  .btn:disabled { opacity:.35; cursor:default; transform:none; }
+  .btn:hover:not(:disabled) { background: var(--accent-2); transform: translateY(-1px); }
+  .btn:disabled { opacity: .35; cursor: default; transform: none; }
   .btn.secondary {
     background: transparent;
     color: var(--title);
-    border: 2px solid var(--line);
+    border: 2px solid rgba(11,60,93,0.2);
   }
-  .btn.secondary:hover:not(:disabled) {
-    background: var(--soft);
-    border-color: var(--accent-2);
-  }
-
-  /* ── STATS ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .stat-cell {
-    background: var(--soft);
-    border: 1px solid #c8e0ef;
-    border-radius: 10px;
-    padding: 10px 12px;
-  }
-  .stat-value { font-size:1.35rem; font-weight:800; color:var(--title); line-height:1; }
-  .stat-key   { font-size:.78rem; color:#4f6780; text-transform:uppercase; letter-spacing:.06em; margin-top:3px; }
-
-  /* ── PROGRESS ── */
-  .progress-wrap {
-    height: 4px;
-    background: #c8e0ef;
-    border-radius: 2px;
-    overflow: hidden;
-    display: none;
-  }
-  .progress-wrap.active { display:block; }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    width: 40%;
-    animation: slide 1.2s ease-in-out infinite;
-  }
-  @keyframes slide {
-    0%   { transform: translateX(-120%); }
-    100% { transform: translateX(350%); }
-  }
+  .btn.secondary:hover:not(:disabled) { background: var(--soft); border-color: var(--accent-2); }
 
   /* ── STATUS BADGE ── */
   .status-badge {
@@ -150,112 +109,66 @@
     background: #e0eef8;
     color: #4f6780;
     align-self: flex-start;
+    flex-shrink: 0;
   }
-  .status-badge.ready   { background:#d4f4e6; color:#1a7a4a; }
-  .status-badge.loading { background:#fff3cd; color:#7a5800; }
-  .status-badge.error   { background:#fde8e8; color:#9b1c1c; }
+  .status-badge.ready   { background: #d4f4e6; color: #1a7a4a; }
+  .status-badge.loading { background: #fff3cd; color: #7a5800; }
+  .status-badge.error   { background: #fde8e8; color: #9b1c1c; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { height: 4px; background: #c8e0ef; border-radius: 2px; overflow: hidden; display: none; flex-shrink: 0; }
+  .progress-wrap.active { display: block; }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width: 40%;
+    animation: slide 1.2s ease-in-out infinite;
+  }
+  @keyframes slide { 0% { transform: translateX(-120%); } 100% { transform: translateX(350%); } }
+
+  /* ── STATS ── */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+  .stat-cell { background: var(--soft); border: 1px solid #c8e0ef; border-radius: 10px; padding: 10px 12px; }
+  .stat-value { font-size: 1.35rem; font-weight: 800; color: var(--title); line-height: 1; }
+  .stat-key   { font-size: .78rem; color: #4f6780; text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+
+  /* ── ERROR BANNER ── */
+  .err-banner { display: none; background: #fde8e8; border: 1px solid #f5a3a3; border-radius: 10px; padding: 10px 12px; font-size: .83rem; color: #9b1c1c; white-space: pre-wrap; line-height: 1.5; flex-shrink: 0; }
+  .err-banner.visible { display: block; }
 
   /* ── LOG ── */
-  .log-wrap {
-    flex:1;
-    min-height:0;
-    background:var(--card);
-    border:1px solid #dbe9f3;
-    border-radius:12px;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
-  .log-header {
-    padding: 8px 12px;
-    font-size:.78rem;
-    font-weight:700;
-    color: var(--title);
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    border-bottom:1px solid #edf4fa;
-    background:#f5fbff;
-    flex-shrink:0;
-  }
-  #log {
-    flex:1;
-    overflow-y:auto;
-    padding:10px 12px;
-    font-family:'Courier New', monospace;
-    font-size:.8rem;
-    color:#37566f;
-    line-height:1.7;
-    white-space:pre-wrap;
-    scrollbar-width:thin;
-    scrollbar-color:#99cee8 transparent;
-  }
-  #log .ok   { color:#1a7a4a; }
-  #log .err  { color:#9b1c1c; }
-  #log .warn { color:#7a5800; }
-  #log .info { color:var(--accent-2); }
+  .log-wrap { flex: 1; min-height: 0; background: var(--card); border: 1px solid #dbe9f3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .log-header { padding: 8px 12px; font-size: .78rem; font-weight: 700; color: var(--title); text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #edf4fa; background: #f5fbff; flex-shrink: 0; }
+  #log { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: 'Courier New', monospace; font-size: .8rem; color: #37566f; line-height: 1.7; scrollbar-width: thin; scrollbar-color: #99cee8 transparent; }
+  #log .ok   { color: #1a7a4a; }
+  #log .err  { color: #9b1c1c; }
+  #log .warn { color: #7a5800; }
+  #log .info { color: var(--accent-2); }
 
   /* ── VIEWPORT ── */
   .viewport {
-    flex:1;
-    position:relative;
-    border-radius:16px;
-    overflow:hidden;
+    flex: 1; min-width: 0;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
     background: radial-gradient(circle at 50% 40%, #ffffff 0%, #eaf7ff 55%, #d5efff 100%);
-    border:1px solid #c8e0ef;
+    border: 1px solid #c8e0ef;
     box-shadow: var(--shadow);
-    touch-action:none;
-    min-width:0;
+    touch-action: none;
   }
-
-  canvas { display:block; width:100%; height:100%; touch-action:none; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
   /* ── EMPTY STATE ── */
-  .empty-state {
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    pointer-events:none;
-  }
-  .empty-state.hidden { display:none; }
-  .empty-card {
-    background:rgba(255,255,255,0.88);
-    border:1px solid #dbe9f3;
-    border-radius:14px;
-    padding:22px 28px;
-    text-align:center;
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  }
-  .empty-icon   { font-size:2.2rem; margin-bottom:8px; }
-  .empty-title  { font-weight:700; color:var(--title); font-size:1.05rem; margin-bottom:6px; }
-  .empty-hint   { color:#4f6780; font-size:.88rem; }
+  .empty-state { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .empty-state.hidden { display: none; }
+  .empty-card { background: rgba(255,255,255,0.88); border: 1px solid #dbe9f3; border-radius: 14px; padding: 22px 28px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+  .empty-icon  { font-size: 2.2rem; margin-bottom: 8px; }
+  .empty-title { font-weight: 700; color: var(--title); font-size: 1.05rem; margin-bottom: 6px; }
+  .empty-hint  { color: #4f6780; font-size: .88rem; }
 
   /* ── HUD ── */
-  .hud {
-    position:absolute; bottom:14px; right:14px;
-    font-size:.75rem;
-    background:rgba(255,255,255,0.7);
-    border:1px solid #c8e0ef;
-    border-radius:10px;
-    padding:8px 12px;
-    backdrop-filter:blur(8px);
-    color:#4f6780;
-    line-height:1.9;
-    pointer-events:none;
-  }
-  .hud-key { color:var(--accent-2); font-weight:700; }
-
-  /* ── ERROR BANNER ── */
-  .err-banner {
-    display:none;
-    background:#fde8e8;
-    border:1px solid #f5a3a3;
-    border-radius:10px;
-    padding:10px 12px;
-    font-size:.83rem;
-    color:#9b1c1c;
-    white-space:pre-wrap;
-    line-height:1.5;
-  }
-  .err-banner.visible { display:block; }
+  .hud { position: absolute; bottom: 14px; right: 14px; font-size: .75rem; background: rgba(255,255,255,0.72); border: 1px solid #c8e0ef; border-radius: 10px; padding: 8px 12px; backdrop-filter: blur(8px); color: #4f6780; line-height: 1.9; pointer-events: none; }
+  .hud-key { color: var(--accent-2); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -268,15 +181,13 @@
       <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
       <div class="drop-icon">⬡</div>
       <div class="drop-title">Drop .ifc or click to upload</div>
-      <div class="drop-sub">Converts via IfcJSON backend &amp; renders real geometry</div>
+      <div class="drop-sub">Sends to backend · renders real geometry</div>
     </div>
 
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar"></div>
-    </div>
+    <div class="progress-wrap" id="progressWrap"><div class="progress-bar"></div></div>
 
     <div class="btn-row">
-      <button class="btn" id="btnDownload" disabled>↓ Download JSON</button>
+      <button class="btn" id="btnDownload" disabled>↓ JSON</button>
       <button class="btn secondary" id="btnFit" disabled>⊡ Fit</button>
       <button class="btn secondary" id="btnReset" disabled>✕</button>
     </div>
@@ -320,19 +231,19 @@
     </div>
   </section>
 
-</div>
+</div><!-- .page -->
 
 <script>
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    SCENE SETUP
-═══════════════════════════════════════════════ */
+═══════════════════════════════════ */
 const canvas   = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-const scene  = new THREE.Scene();
+const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeaf7ff);
 
 const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 10000);
@@ -342,12 +253,12 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping    = true;
 controls.dampingFactor    = 0.08;
 controls.screenSpacePanning = true;
-controls.minDistance      = 0.1;
+controls.minDistance      = 0.01;
 controls.maxDistance      = 5000;
 controls.mouseButtons = {
-  LEFT: THREE.MOUSE.ROTATE,
+  LEFT:   THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
-  RIGHT: THREE.MOUSE.PAN
+  RIGHT:  THREE.MOUSE.PAN
 };
 
 /* Lights */
@@ -360,7 +271,7 @@ fill.position.set(-10, 5, -15);
 scene.add(fill);
 
 /* Grid */
-const grid = new THREE.GridHelper(100, 100, 0x78a6c8, 0xc5dce9);
+const grid = new THREE.GridHelper(200, 200, 0x78a6c8, 0xc5dce9);
 scene.add(grid);
 
 /* Model group */
@@ -385,9 +296,9 @@ new ResizeObserver(resize).observe(viewport);
   renderer.render(scene, camera);
 })();
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    UI HELPERS
-═══════════════════════════════════════════════ */
+═══════════════════════════════════ */
 const logEl      = document.getElementById("log");
 const badgeEl    = document.getElementById("statusBadge");
 const progressW  = document.getElementById("progressWrap");
@@ -395,43 +306,29 @@ const errBanner  = document.getElementById("errBanner");
 const emptyState = document.getElementById("emptyState");
 const hudEl      = document.getElementById("hud");
 
-function log(msg, type = "") {
+function log(msg, type) {
   const div = document.createElement("div");
   if (type) div.className = type;
   div.textContent = msg;
   logEl.appendChild(div);
   logEl.scrollTop = logEl.scrollHeight;
 }
-
-function setStatus(text, cls = "") {
+function setStatus(text, cls) {
   badgeEl.textContent = text;
-  badgeEl.className = "status-badge " + cls;
+  badgeEl.className = "status-badge " + (cls || "");
 }
-
-function setLoading(on) {
-  progressW.classList.toggle("active", on);
-}
-
+function setLoading(on) { progressW.classList.toggle("active", on); }
 function setEnabled(on) {
-  document.getElementById("btnDownload").disabled = !on;
-  document.getElementById("btnFit").disabled      = !on;
-  document.getElementById("btnReset").disabled    = !on;
+  ["btnDownload","btnFit","btnReset"].forEach(id => {
+    document.getElementById(id).disabled = !on;
+  });
 }
-
-function showError(msg) {
-  errBanner.textContent = msg;
-  errBanner.classList.add("visible");
-}
-function hideError() {
-  errBanner.classList.remove("visible");
-  errBanner.textContent = "";
-}
-
+function showError(msg) { errBanner.textContent = msg; errBanner.classList.add("visible"); }
+function hideError()    { errBanner.classList.remove("visible"); errBanner.textContent = ""; }
 function fmt(n) {
   if (!Number.isFinite(n)) return "—";
-  return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n);
+  return n >= 1000 ? (n/1000).toFixed(1)+"k" : String(n);
 }
-
 function setStats(entities, meshes, verts, tris) {
   document.getElementById("statsBlock").style.display = "";
   document.getElementById("statEntities").textContent = fmt(entities);
@@ -440,17 +337,24 @@ function setStats(entities, meshes, verts, tris) {
   document.getElementById("statTris").textContent     = fmt(tris);
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    GEOMETRY ENGINE
-═══════════════════════════════════════════════ */
-
-/* IFC type → mesh color */
+   
+   Backend schema (confirmed from ifc-probe.json):
+   {
+     expressID, globalId, name, type,
+     geometry: {
+       vertices: [[x,y,z], ...],   ← indexed vertex positions
+       indices:  [i0,i1,i2, ...]   ← flat triangle list, 0-based
+     }
+   }
+═══════════════════════════════════ */
 const TYPE_COLORS = {
   IFCWALL:              0x9ecfff,
   IFCWALLSTANDARDCASE:  0x9ecfff,
   IFCSLAB:              0xc2d8e8,
   IFCCOLUMN:            0x8ec7ff,
-  IFCBEAM:              0x7fb7f0,
+  IFCBEAM:              0xf4a460,   /* sandy brown — easy to spot */
   IFCDOOR:              0xffd9a3,
   IFCWINDOW:            0xb0e2ff,
   IFCSTAIR:             0xd5b0ff,
@@ -458,187 +362,56 @@ const TYPE_COLORS = {
   IFCFURNISHINGELEMENT: 0xd3b68c,
   DEFAULT:              0x90c8f0,
 };
-function colorForType(type) {
-  return TYPE_COLORS[(type || "").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
-}
-
-/* IFC entities that carry no geometry */
-const SKIP_TYPES = new Set([
-  "IFCPROJECT","IFCSITE","IFCBUILDING","IFCBUILDINGSTOREY",
-  "IFCRELCONTAINEDINSPATIALSTRUCTURE","IFCRELASSOCIATESMATERIAL",
-  "IFCRELAGGREGATES","IFCRELDECLARES","IFCRELDEFINESBYPROPERTIES",
-  "IFCRELDEFINESBYTYPE","IFCPROPERTYSET","IFCPROPERTYSINGLEVALUE",
-  "IFCMATERIAL","IFCMATERIALLAYER","IFCMATERIALLAYERSET",
-  "IFCMATERIALLAYERSETUSAGE","IFCUNITASSIGNMENT","IFCSIUNIT",
-  "IFCGEOMETRICREPRESENTATIONCONTEXT","IFCGEOMETRICREPRESENTATIONSUBCONTEXT",
-  "IFCAXIS2PLACEMENT3D","IFCLOCALPLACEMENT","IFCPERSON","IFCORGANIZATION",
-  "IFCPERSONANDORGANIZATION","IFCAPPLICATION","IFCOWNERHISTORY",
-]);
-
-/**
- * Resolve IIfcLocalPlacement chain → THREE.Matrix4
- */
-function extractPlacementMatrix(placement) {
-  const mat = new THREE.Matrix4();
-  if (!placement) return mat;
-
-  const rel = placement.RelativePlacement;
-  if (rel) {
-    const loc  = (rel.Location  && rel.Location.Coordinates)  || [0,0,0];
-    const axis = (rel.Axis      && rel.Axis.DirectionRatios)   || [0,0,1];
-    const ref  = (rel.RefDirection && rel.RefDirection.DirectionRatios) || [1,0,0];
-
-    const Z = new THREE.Vector3(axis[0],axis[1],axis[2]).normalize();
-    const X = new THREE.Vector3(ref[0], ref[1], ref[2]).normalize();
-    const Y = new THREE.Vector3().crossVectors(Z, X).normalize();
-
-    mat.makeBasis(X, Y, Z);
-    mat.setPosition(loc[0], loc[1], loc[2]);
-  }
-
-  if (placement.PlacementRelTo) {
-    const parent = extractPlacementMatrix(placement.PlacementRelTo);
-    parent.multiply(mat);
-    return parent;
-  }
-  return mat;
+function colorForType(t) {
+  return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
 }
 
 /**
- * Build a BufferGeometry from one IFC entity's Representation.
- * Returns null if nothing usable is found (caller uses a fallback box).
+ * Build a BufferGeometry from the backend's custom schema:
+ *   geometry.vertices  – Array of [x,y,z] triplets
+ *   geometry.indices   – Flat array of integer triangle indices (0-based)
  *
- * Handles:
- *   IfcTriangulatedFaceSet  – preferred: real triangles
- *   IfcFacetedBrep          – polygon faces, fan-triangulated
- *   IfcExtrudedAreaSolid    – box approximation from profile dims + depth
- *   IfcBoundingBox          – direct box dims
+ * Returns null if there's nothing usable.
  */
-function buildGeometryFromEntity(entity) {
-  const reps = (entity && entity.Representation && entity.Representation.Representations) || [];
+function buildGeometry(entity) {
+  const geo_data = entity.geometry;
+  if (!geo_data) return null;
 
-  for (let ri = 0; ri < reps.length; ri++) {
-    const items = reps[ri].Items || [];
+  const verts   = geo_data.vertices;   // [[x,y,z], ...]
+  const indices = geo_data.indices;    // [i0,i1,i2, ...]
 
-    for (let ii = 0; ii < items.length; ii++) {
-      const item = items[ii];
-      const t = (item.type || item.Type || "").toUpperCase();
+  if (!verts || !verts.length || !indices || !indices.length) return null;
 
-      /* ── IfcTriangulatedFaceSet ── */
-      if (t === "IFCTRIANGULATEDFACESET") {
-        try {
-          const coords  = (item.Coordinates && item.Coordinates.CoordList)
-                         || item.CoordList || [];
-          const indices = item.CoordIndex || [];
-
-          if (coords.length && indices.length) {
-            const pos = [], nrm = [];
-
-            for (let fi = 0; fi < indices.length; fi++) {
-              const face = indices[fi];
-              if (!Array.isArray(face) || face.length < 3) continue;
-
-              /* IFC spec uses 1-based indices; ifcJSON may use 0-based */
-              const off = (face[0] > 0) ? 1 : 0;
-              const i0 = face[0]-off, i1 = face[1]-off, i2 = face[2]-off;
-              if (!coords[i0] || !coords[i1] || !coords[i2]) continue;
-
-              const p0 = coords[i0], p1 = coords[i1], p2 = coords[i2];
-              const A = new THREE.Vector3(p0[0],p0[1],p0[2]);
-              const B = new THREE.Vector3(p1[0],p1[1],p1[2]);
-              const C = new THREE.Vector3(p2[0],p2[1],p2[2]);
-              const n = new THREE.Vector3()
-                .crossVectors(B.clone().sub(A), C.clone().sub(A))
-                .normalize();
-
-              pos.push(p0[0],p0[1],p0[2], p1[0],p1[1],p1[2], p2[0],p2[1],p2[2]);
-              nrm.push(n.x,n.y,n.z, n.x,n.y,n.z, n.x,n.y,n.z);
-            }
-
-            if (pos.length) {
-              const geo = new THREE.BufferGeometry();
-              geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-              geo.setAttribute("normal",   new THREE.Float32BufferAttribute(nrm, 3));
-              return geo;
-            }
-          }
-        } catch(e) { /* fall through to next item */ }
-      }
-
-      /* ── IfcFacetedBrep ── */
-      if (t === "IFCFACETEDBREP") {
-        try {
-          const faces = (item.Outer && item.Outer.CfsFaces) || [];
-          const pos = [], nrm = [];
-
-          for (let fi = 0; fi < faces.length; fi++) {
-            const bounds = faces[fi].Bounds || [];
-            for (let bi = 0; bi < bounds.length; bi++) {
-              const pts = (bounds[bi].Bound && bounds[bi].Bound.Polygon) || [];
-              if (pts.length < 3) continue;
-
-              const p0c = pts[0].Coordinates || pts[0];
-              const A   = new THREE.Vector3(p0c[0],p0c[1],p0c[2]);
-
-              for (let k = 1; k < pts.length - 1; k++) {
-                const pb = pts[k].Coordinates   || pts[k];
-                const pc = pts[k+1].Coordinates || pts[k+1];
-                const B  = new THREE.Vector3(pb[0],pb[1],pb[2]);
-                const C  = new THREE.Vector3(pc[0],pc[1],pc[2]);
-                const n  = new THREE.Vector3()
-                  .crossVectors(B.clone().sub(A), C.clone().sub(A))
-                  .normalize();
-
-                pos.push(p0c[0],p0c[1],p0c[2], pb[0],pb[1],pb[2], pc[0],pc[1],pc[2]);
-                nrm.push(n.x,n.y,n.z, n.x,n.y,n.z, n.x,n.y,n.z);
-              }
-            }
-          }
-
-          if (pos.length) {
-            const geo = new THREE.BufferGeometry();
-            geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-            geo.setAttribute("normal",   new THREE.Float32BufferAttribute(nrm, 3));
-            return geo;
-          }
-        } catch(e) { /* fall through */ }
-      }
-
-      /* ── IfcExtrudedAreaSolid → box approximation ── */
-      if (t === "IFCEXTRUDEDAREASOLID") {
-        try {
-          const depth = item.Depth || 1;
-          const prof  = item.SweptArea;
-          const sx = (prof && prof.XDim) ? prof.XDim : 1;
-          const sy = (prof && prof.YDim) ? prof.YDim : 1;
-          return new THREE.BoxGeometry(sx, depth, sy);
-        } catch(e) {}
-      }
-
-      /* ── IfcBoundingBox ── */
-      if (t === "IFCBOUNDINGBOX") {
-        try {
-          return new THREE.BoxGeometry(
-            item.XDim || 1, item.YDim || 1, item.ZDim || 1
-          );
-        } catch(e) {}
-      }
-    }
+  /* Flatten [[x,y,z],...] → Float32Array */
+  const positions = new Float32Array(verts.length * 3);
+  for (let i = 0; i < verts.length; i++) {
+    positions[i*3]   = verts[i][0];
+    positions[i*3+1] = verts[i][1];
+    positions[i*3+2] = verts[i][2];
   }
-  return null;
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
+
+  /* Compute smooth normals from the indexed mesh */
+  geo.computeVertexNormals();
+
+  return geo;
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    SCENE BUILD
-═══════════════════════════════════════════════ */
+═══════════════════════════════════ */
 function clearModel() {
   while (modelGroup.children.length) {
     const obj = modelGroup.children[modelGroup.children.length - 1];
     modelGroup.remove(obj);
-    if (obj.geometry) obj.geometry.dispose();
+    obj.geometry && obj.geometry.dispose();
     if (obj.material) {
-      if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
-      else obj.material.dispose();
+      Array.isArray(obj.material)
+        ? obj.material.forEach(m => m.dispose())
+        : obj.material.dispose();
     }
   }
 }
@@ -661,79 +434,68 @@ function fitCamera() {
   controls.target.copy(center);
   controls.update();
 
+  /* Align grid to model floor */
   grid.position.y = box.min.y;
 }
 
 function buildScene(json) {
   clearModel();
 
-  /* Normalise: ifcJSON schema wraps entities in .data[] */
-  const data = Array.isArray(json && json.data) ? json.data
-             : Array.isArray(json)               ? json
-             : [];
+  const entities = Array.isArray(json.data) ? json.data
+                 : Array.isArray(json)       ? json
+                 : [];
 
-  if (!data.length) {
-    log("Warning: no entities found in JSON response.", "warn");
-  } else {
-    log("Entities in JSON: " + data.length, "info");
+  log("Entities received: " + entities.length, "info");
+
+  if (json.geometryCount !== undefined) {
+    log("Backend geometryCount: " + json.geometryCount, "info");
   }
 
-  let meshCount = 0, vertCount = 0, triCount = 0;
-  let fallbackIdx = 0;
-  const FALLBACK_STEP = 1.2;
+  let meshCount = 0, vertCount = 0, triCount = 0, skipped = 0;
 
-  for (let i = 0; i < data.length; i++) {
-    const entity = data[i];
-    const type   = (entity.type || entity.Type || "").toUpperCase();
+  for (const entity of entities) {
+    const type = (entity.type || entity.Type || "UNKNOWN");
 
-    if (SKIP_TYPES.has(type)) continue;
-
-    /* --- real geometry first --- */
-    let geo = buildGeometryFromEntity(entity);
-    let isFallback = false;
+    const geo = buildGeometry(entity);
 
     if (!geo) {
-      /* placeholder cube so the scene is never empty */
-      geo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
-      isFallback = true;
+      /* No geometry in this entity (e.g. IfcRoof with empty arrays) */
+      log("  No geometry: " + type + " '" + (entity.name || entity.globalId || "?") + "'", "warn");
+      skipped++;
+      continue;
     }
 
-    const mat  = new THREE.MeshStandardMaterial({
+    const mat = new THREE.MeshStandardMaterial({
       color:     colorForType(type),
-      roughness: 0.7,
-      metalness: 0.04,
+      roughness: 0.65,
+      metalness: 0.05,
       side:      THREE.DoubleSide,
     });
 
     const mesh = new THREE.Mesh(geo, mat);
-
-    if (isFallback) {
-      /* lay fallback cubes out on a grid so they're visible */
-      mesh.position.set(
-        (fallbackIdx % 20) * FALLBACK_STEP,
-        0.2,
-        Math.floor(fallbackIdx / 20) * FALLBACK_STEP
-      );
-      fallbackIdx++;
-    } else {
-      /* apply IFC placement chain */
-      mesh.applyMatrix4(extractPlacementMatrix(entity.ObjectPlacement));
-    }
-
+    /* Geometry is already in world space — no placement transform needed */
     modelGroup.add(mesh);
 
     const posAttr = geo.attributes.position;
-    const verts   = posAttr ? posAttr.count : 8;
-    const tris    = geo.index ? geo.index.count / 3 : Math.round(verts / 3);
-    vertCount += verts;
-    triCount  += tris;
+    const v = posAttr ? posAttr.count : 0;
+    const t = geo.index ? geo.index.count / 3 : Math.round(v / 3);
+    vertCount += v;
+    triCount  += Math.round(t);
     meshCount++;
+
+    log("  ✓ " + type + " '" + (entity.name || entity.globalId || "") + "'"
+        + "  verts:" + v + "  tris:" + Math.round(t), "ok");
   }
 
-  log("Meshes built: " + meshCount, "ok");
-  log("Verts: " + vertCount.toLocaleString() + "  Tris: " + triCount.toLocaleString(), "ok");
+  if (skipped > 0) {
+    log(skipped + " entity/entities had no geometry (backend limitation).", "warn");
+  }
 
-  setStats(data.length, meshCount, vertCount, triCount);
+  log("Meshes rendered: " + meshCount, "ok");
+  log("Total verts: " + vertCount.toLocaleString()
+      + "  tris: " + triCount.toLocaleString(), "ok");
+
+  setStats(entities.length, meshCount, vertCount, triCount);
   setStatus("READY", "ready");
   emptyState.classList.add("hidden");
   hudEl.style.display = "";
@@ -741,9 +503,9 @@ function buildScene(json) {
   fitCamera();
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    UPLOAD
-═══════════════════════════════════════════════ */
+═══════════════════════════════════ */
 const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
 let currentJsonStr = null;
 let uploadSeq = 0;
@@ -774,7 +536,7 @@ async function loadIFC(file) {
       throw new Error("Backend " + res.status + ": " + (txt || res.statusText));
     }
 
-    log("Upload OK – parsing JSON…", "ok");
+    log("Upload OK – parsing…", "ok");
     setStatus("PARSING…", "loading");
 
     const json = await res.json();
@@ -793,36 +555,27 @@ async function loadIFC(file) {
   }
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════
    UI WIRING
-═══════════════════════════════════════════════ */
+═══════════════════════════════════ */
 const dropArea  = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 
 dropArea.addEventListener("click", () => fileInput.click());
-
 fileInput.addEventListener("change", e => {
   const f = e.target.files && e.target.files[0];
   if (f) loadIFC(f);
   fileInput.value = "";
 });
 
-dropArea.addEventListener("dragover", e => {
-  e.preventDefault(); e.stopPropagation();
-  dropArea.classList.add("drag-over");
-});
-dropArea.addEventListener("dragleave", e => {
-  e.preventDefault(); e.stopPropagation();
-  dropArea.classList.remove("drag-over");
-});
+dropArea.addEventListener("dragover",  e => { e.preventDefault(); e.stopPropagation(); dropArea.classList.add("drag-over"); });
+dropArea.addEventListener("dragleave", e => { e.preventDefault(); e.stopPropagation(); dropArea.classList.remove("drag-over"); });
 dropArea.addEventListener("drop", e => {
   e.preventDefault(); e.stopPropagation();
   dropArea.classList.remove("drag-over");
   const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
   if (f) loadIFC(f);
 });
-
-/* Prevent browser from navigating on accidental drop outside zone */
 window.addEventListener("dragover", e => { if (e.dataTransfer) e.preventDefault(); });
 window.addEventListener("drop",     e => { if (e.dataTransfer) e.preventDefault(); });
 
