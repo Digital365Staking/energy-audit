@@ -4,346 +4,182 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FullBIM · IFC Viewer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
 <style>
 :root{
   --bg:#0D1117; --surface:#161B22; --surface2:#1C2128; --border:#21262D;
   --accent:#58A6FF; --accent-dim:rgba(88,166,255,0.12); --accent2:#3FB950;
   --danger:#F85149; --text:#E6EDF3; --muted:#8B949E;
-  --mono:'JetBrains Mono','Fira Code',monospace; --sans:system-ui,-apple-system,sans-serif;
-  --panel-w:380px; --header-h:52px; --radius:6px; --shadow:0 4px 24px rgba(0,0,0,0.5);
+  --mono:'JetBrains Mono',monospace;
+  --panel-w:380px; --header-h:52px; --radius:6px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+*{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;display:flex;flex-direction:column}
-header{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0;z-index:10}
-.logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:600;font-size:14px;color:var(--text);letter-spacing:-.3px}
-.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--bg);font-weight:700}
-.logo-sep{color:var(--border);font-size:20px}
-.logo-sub{color:var(--muted);font-weight:400;font-size:12px}
-.header-badge{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
-.dot.active{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
+body{background:var(--bg);color:var(--text);font-family:system-ui;display:flex;flex-direction:column}
+
+header{
+  height:var(--header-h);background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px
+}
+
+.logo{font-family:var(--mono);font-weight:600}
 main{display:flex;flex:1;overflow:hidden}
-.panel{width:var(--panel-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.panel-section{padding:14px 16px;border-bottom:1px solid var(--border)}
-.section-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.dropzone{border:1.5px dashed var(--border);border-radius:var(--radius);padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;background:linear-gradient(var(--surface) 0 0) padding-box,repeating-linear-gradient(0deg,transparent,transparent 19px,var(--border) 19px,var(--border) 20px) border-box,repeating-linear-gradient(90deg,transparent,transparent 19px,var(--border) 19px,var(--border) 20px) border-box}
-.dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:linear-gradient(var(--accent-dim) 0 0) padding-box,repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(88,166,255,0.15) 19px,rgba(88,166,255,0.15) 20px) border-box,repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(88,166,255,0.15) 19px,rgba(88,166,255,0.15) 20px) border-box}
-.dropzone-icon{font-size:28px;margin-bottom:8px}
-.dropzone-title{font-weight:500;font-size:13px;color:var(--text);margin-bottom:4px}
-.dropzone-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.status-bar{display:none;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-top:10px;font-family:var(--mono);font-size:11px}
-.status-bar.show{display:flex}
-.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.status-ok{color:var(--accent2)}
-.status-err{color:var(--danger)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all .15s;text-decoration:none}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn:disabled{opacity:.4;pointer-events:none}
-.btn-success{background:var(--accent2);border-color:var(--accent2);color:var(--bg)}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap}
-.progress-wrap{background:var(--surface2);border-radius:2px;height:3px;margin-top:8px;overflow:hidden;display:none}
-.progress-wrap.show{display:block}
-.progress-bar{height:100%;background:var(--accent);width:0%;transition:width .3s ease;border-radius:2px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.stat-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--accent);line-height:1;margin-bottom:3px}
-.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.entity-list{flex:1;overflow-y:auto;padding:8px}
-.entity-group{margin-bottom:6px}
-.entity-type-header{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--muted);user-select:none;transition:background .1s}
-.entity-type-header:hover{background:var(--surface2);color:var(--text)}
-.entity-type-header .count{margin-left:auto;background:var(--border);border-radius:10px;padding:1px 7px;font-size:10px}
-.entity-type-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.entity-items{display:none;padding-left:8px}
-.entity-items.open{display:block}
-.entity-item{padding:4px 8px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .1s;display:flex;align-items:center;gap:6px}
-.entity-item:hover{background:var(--surface2);color:var(--text)}
-.entity-item.selected{background:var(--accent-dim);color:var(--accent)}
-.viewport{flex:1;position:relative;overflow:hidden;background:var(--bg)}
-#canvas{width:100%;height:100%;display:block}
-.viewport-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none}
-.vp-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;opacity:.3}
-.vp-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
-.vp-label strong{color:var(--accent);display:block;font-size:14px;margin-bottom:4px}
-.viewport-stats{position:absolute;bottom:14px;left:14px;background:rgba(13,17,23,.8);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.8;display:none}
-.viewport-stats.show{display:block}
-.viewport-stats span{color:var(--accent)}
-.viewport-controls{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;gap:4px}
-.vp-btn{width:32px;height:32px;background:rgba(22,27,34,.85);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:14px;transition:all .15s}
-.vp-btn:hover{border-color:var(--accent);color:var(--accent)}
-.prop-panel{position:absolute;top:14px;right:14px;width:260px;background:rgba(22,27,34,.92);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:11px;display:none;overflow:hidden;box-shadow:var(--shadow)}
-.prop-panel.show{display:block}
-.prop-header{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:11px;color:var(--accent)}
-.prop-close{cursor:pointer;color:var(--muted);font-size:14px;line-height:1}
-.prop-close:hover{color:var(--text)}
-.prop-body{padding:10px 12px;max-height:300px;overflow-y:auto}
-.prop-row{display:flex;gap:8px;padding:3px 0;border-bottom:1px solid rgba(33,38,45,.5)}
-.prop-key{color:var(--muted);min-width:90px;flex-shrink:0}
-.prop-val{color:var(--text);word-break:break-all}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 18px;font-family:var(--mono);font-size:12px;color:var(--text);transition:transform .25s ease;z-index:100;box-shadow:var(--shadow)}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.toast.ok{border-color:var(--accent2);color:var(--accent2)}
-.toast.err{border-color:var(--danger);color:var(--danger)}
-#init-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;font-family:var(--mono);transition:opacity .5s}
-#init-overlay.fade{opacity:0;pointer-events:none}
-.init-logo{font-size:28px;font-weight:600;letter-spacing:-1px;color:var(--accent)}
-.init-sub{font-size:11px;color:var(--muted)}
-.init-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+
+.panel{
+  width:var(--panel-w);background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column
+}
+
+.panel-section{padding:14px;border-bottom:1px solid var(--border)}
+
+.dropzone{
+  border:1px dashed var(--border);
+  padding:20px;text-align:center;cursor:pointer
+}
+
+.btn{
+  padding:8px 12px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);
+  cursor:pointer
+}
+
+.btn:disabled{opacity:.5}
+
+.viewport{flex:1;position:relative;background:var(--bg)}
+
+canvas{width:100%;height:100%}
 </style>
 </head>
+
 <body>
-<div id="init-overlay"><div class="init-logo">FullBIM</div><div class="init-sub">Loading IFC loader…</div><div class="init-spinner"></div></div>
+
 <header>
-  <div class="logo"><div class="logo-icon">B</div>FullBIM<span class="logo-sep">/</span><span class="logo-sub">Browser IFC Viewer</span></div>
-  <div class="header-badge"><div class="dot active" id="statusDot"></div><span id="statusText">Ready</span></div>
+  <div class="logo">FullBIM IFC Viewer</div>
 </header>
+
 <main>
-  <aside class="panel">
-    <div class="panel-section">
-      <div class="section-label">Input</div>
-      <div class="dropzone" id="dropzone">
-        <input type="file" id="fileInput" accept=".ifc,.IFC" />
-        <div class="dropzone-icon">🏗️</div>
-        <div class="dropzone-title">Drop an IFC file here</div>
-        <div class="dropzone-sub">or click to browse · uses web-ifc if available</div>
-      </div>
-      <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
-      <div class="status-bar" id="statusBar"><div class="spinner" id="statusSpinner"></div><span id="statusMsg">Loading…</span></div>
-    </div>
-    <div class="panel-section">
-      <div class="section-label">Actions</div>
-      <div class="btn-row">
-        <button class="btn btn-success" id="btnDownload" disabled>⬇ Download JSON</button>
-        <button class="btn" id="btnReset" disabled>↺ Reset</button>
-      </div>
-    </div>
-    <div class="panel-section" id="statsSection" style="display:none">
-      <div class="section-label">Model Info</div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-val" id="statEntities">0</div><div class="stat-label">Entities</div></div>
-        <div class="stat-card"><div class="stat-val" id="statGeom">0</div><div class="stat-label">Geometry</div></div>
-        <div class="stat-card"><div class="stat-val" id="statSchema">—</div><div class="stat-label">Schema</div></div>
-        <div class="stat-card"><div class="stat-val" id="statSize">—</div><div class="stat-label">JSON Size</div></div>
-      </div>
-    </div>
-    <div class="section-label" style="padding:12px 16px 4px;margin:0" id="treeLabel" hidden>Entity Tree</div>
-    <div class="entity-list" id="entityList"></div>
-  </aside>
-  <div class="viewport">
-    <canvas id="canvas"></canvas>
-    <div class="viewport-placeholder" id="vpPlaceholder">
-      <div class="vp-grid"></div>
-      <div class="vp-label"><strong>3D Viewport</strong>Upload an IFC file to begin.<br/>The real IFC loader will be used first, with fallback proxies only if needed.</div>
-    </div>
-    <div class="viewport-stats" id="vpStats">Entities: <span id="vpEntCount">0</span> &nbsp;|&nbsp; Meshes: <span id="vpMeshCount">0</span> &nbsp;|&nbsp; Vertices: <span id="vpVerts">0</span></div>
-    <div class="viewport-controls">
-      <div class="vp-btn" id="btnFit" title="Fit to view">⊡</div>
-      <div class="vp-btn" id="btnTop" title="Top view">T</div>
-      <div class="vp-btn" id="btnWire" title="Toggle wireframe">⬡</div>
-    </div>
-    <div class="prop-panel" id="propPanel">
-      <div class="prop-header"><span id="propType">—</span><span class="prop-close" id="propClose">✕</span></div>
-      <div class="prop-body" id="propBody"></div>
+
+<!-- LEFT PANEL -->
+<aside class="panel">
+
+  <div class="panel-section">
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept=".ifc" />
+      Drop IFC file or click
     </div>
   </div>
+
+  <div class="panel-section">
+    <button class="btn" id="btnDownload" disabled>Download JSON</button>
+    <button class="btn" id="btnReset" disabled>Reset</button>
+  </div>
+
+  <pre id="log" style="padding:10px;font-size:11px;overflow:auto;flex:1"></pre>
+
+</aside>
+
+<!-- VIEWPORT -->
+<div class="viewport">
+  <canvas id="canvas"></canvas>
+</div>
+
 </main>
-<div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script type="module">
-let currentJson=null,currentJsonStr=null,meshMap={},wireframeMode=false,selectedMesh=null,modelGroup=null;
-const canvas=document.getElementById('canvas');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputEncoding=THREE.sRGBEncoding;
-renderer.setClearColor(0x0D1117);
-const scene=new THREE.Scene();
-scene.fog=new THREE.FogExp2(0x0D1117,.004);
-const camera=new THREE.PerspectiveCamera(45,1,.01,2000);
-camera.position.set(20,20,20);
-camera.lookAt(0,0,0);
-const controls=new THREE.OrbitControls(camera,canvas);
-controls.enableDamping=true;
-scene.add(new THREE.AmbientLight(0xffffff,.55));
-const sun=new THREE.DirectionalLight(0xffffff,.8);
-sun.position.set(50,80,60);
-scene.add(sun);
-const fill=new THREE.DirectionalLight(0x8ab4f8,.25);
-fill.position.set(-40,-20,-40);
-scene.add(fill);
-scene.add(new THREE.GridHelper(200,40,0x21262D,0x161B22));
-function resizeRenderer(){const vp=canvas.parentElement,w=vp.clientWidth,h=vp.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
-window.addEventListener('resize',resizeRenderer);resizeRenderer();
-(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();
-setTimeout(()=>{const o=document.getElementById('init-overlay');o.classList.add('fade');setTimeout(()=>o.remove(),500)},600);
+<script>
+let currentJson = null;
+let currentJsonStr = null;
 
-const $=id=>document.getElementById(id);
-function setStatus(msg,type='loading'){const bar=$('statusBar'),spinner=$('statusSpinner'),msgEl=$('statusMsg');bar.classList.add('show');spinner.style.display=type==='loading'?'block':'none';msgEl.textContent=msg;msgEl.className=type==='ok'?'status-ok':type==='err'?'status-err':'';$('statusDot').className='dot'+(type==='ok'?' active':'');$('statusText').textContent=type==='ok'?'Ready':type==='err'?'Error':'Processing…'}
-function setProgress(p){$('progressWrap').classList.add('show');$('progressBar').style.width=p+'%'}
-function hideProgress(){setTimeout(()=>{$('progressWrap').classList.remove('show');$('progressBar').style.width='0%'},600)}
-function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='toast show '+type;setTimeout(()=>t.className='toast',3000)}
-function colorForType(type){const c={IfcWall:0x9E9E9E,IfcSlab:0xBDBDBD,IfcRoof:0x795548,IfcColumn:0x58A6FF,IfcBeam:0x4FC3F7,IfcDoor:0xFF9800,IfcWindow:0x80DEEA,IfcSpace:0x4CAF50,IfcStair:0xCDDC39,IfcRailing:0xE91E63,IfcFurnishingElement:0xAB47BC,default:0x546E7A};return c[type]||c.default}
-function makeEntityMaterial(type,highlighted=false){const transparent=new Set(['IfcWindow','IfcSpace']).has(type);return new THREE.MeshPhongMaterial({color:colorForType(type),transparent:transparent||highlighted,opacity:transparent?0.35:(highlighted?0.85:1),side:THREE.DoubleSide,wireframe:wireframeMode&&!transparent,shininess:15,specular:0x222222})}
-function fitCameraToModel(){if(!modelGroup||!modelGroup.children.length) return;const box=new THREE.Box3().setFromObject(modelGroup);if(box.isEmpty()) return;const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());const maxDim=Math.max(size.x,size.y,size.z),fov=camera.fov*Math.PI/180,dist=Math.abs(maxDim/Math.sin(fov/2))*0.8;camera.position.set(center.x+dist*.6,center.y+dist*.5,center.z+dist*.6);controls.target.copy(center);controls.update()}
-function clearScene(){if(modelGroup){scene.remove(modelGroup);modelGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()})}modelGroup=null;meshMap={};selectedMesh=null}
-function buildEntityTree(data){const grouped={};for(const e of data){if(!e?.type) continue;(grouped[e.type]||(grouped[e.type]=[])).push(e)}const list=$('entityList');list.innerHTML='';$('treeLabel').hidden=false;for(const [type,items] of Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b))){const group=document.createElement('div');group.className='entity-group';const header=document.createElement('div');header.className='entity-type-header';header.innerHTML=`<div class="entity-type-dot" style="background:#${colorForType(type).toString(16).padStart(6,'0')}"></div><span>${type}</span><span class="count">${items.length}</span>`;const itemsDiv=document.createElement('div');itemsDiv.className='entity-items';header.addEventListener('click',()=>itemsDiv.classList.toggle('open'));for(const entity of items.slice(0,60)){const row=document.createElement('div');row.className='entity-item';row.innerHTML=`<span class="eid">#${entity.expressID ?? ''}</span><span>${entity.Name || entity.name || entity.LongName || entity.longName || entity.type}</span>`;row.addEventListener('click',()=>selectEntity(entity,row));itemsDiv.appendChild(row)}group.appendChild(header);group.appendChild(itemsDiv);list.appendChild(group)}}
-function selectEntity(entity,rowEl){document.querySelectorAll('.entity-item.selected').forEach(el=>el.classList.remove('selected'));rowEl.classList.add('selected');const mesh=meshMap[entity.expressID];if(mesh){selectedMesh=mesh;const box=new THREE.Box3().setFromObject(mesh),center=box.getCenter(new THREE.Vector3());controls.target.copy(center);controls.update()}showProperties(entity)}
-function showProperties(entity){const panel=$('propPanel'),title=$('propType'),body=$('propBody');title.textContent=entity.type||'IFC Element';body.innerHTML='';for(const [k,v] of Object.entries(entity)){const row=document.createElement('div');row.className='prop-row';row.innerHTML=`<span class="prop-key">${k}</span><span class="prop-val">${v===null||v===undefined?'—':typeof v==='object'?'[…]':String(v)}</span>`;body.appendChild(row)}panel.classList.add('show')}
-$('propClose').addEventListener('click',()=>$('propPanel').classList.remove('show'));
+const log = (msg) => {
+  document.getElementById("log").textContent += msg + "\n";
+};
 
-async function loadWebIfcThree(){
-  const mod=await import('https://cdn.jsdelivr.net/npm/web-ifc-three@0.0.149/IFCLoader.js');
-  return mod.IFCLoader;
+function setEnabled(state){
+  document.getElementById("btnDownload").disabled = !state;
+  document.getElementById("btnReset").disabled = !state;
 }
 
-function proxyMeshForElement(element){
-  const type=element.type||'IfcProxy'; let geo;
-  const t=type.toLowerCase();
-  if(t.includes('door')) geo=new THREE.BoxGeometry(0.9,2.1,0.12);
-  else if(t.includes('window')) geo=new THREE.BoxGeometry(1.2,1.2,0.08);
-  else if(t.includes('slab')) geo=new THREE.BoxGeometry(3,0.2,3);
-  else if(t.includes('roof')) geo=new THREE.BoxGeometry(3,0.25,3);
-  else if(t.includes('beam')) geo=new THREE.BoxGeometry(2,0.25,0.25);
-  else if(t.includes('column')) geo=new THREE.BoxGeometry(0.25,2.5,0.25);
-  else if(t.includes('wall')) geo=new THREE.BoxGeometry(3,2.8,0.2);
-  else if(t.includes('stair')) geo=new THREE.BoxGeometry(2,1.5,2);
-  else geo=new THREE.BoxGeometry(1,1,1);
-  const mesh=new THREE.Mesh(geo,makeEntityMaterial(type,true));
-  mesh.castShadow=true;mesh.receiveShadow=true;
-  mesh.userData={entity};
-  return mesh;
-}
-
+/**
+ * MAIN BACKEND INTEGRATION
+ */
 async function loadIFCFile(file){
-  clearScene();
-  $('vpPlaceholder').style.display='none';
-  setStatus('Loading IFC…');
-  setProgress(10);
+  log("Uploading IFC to backend...");
 
-  try{
-    const IFCLoader=await loadWebIfcThree();
-    setProgress(25);
-    const loader=new IFCLoader();
-    loader.ifcManager.setWasmPath('https://cdn.jsdelivr.net/npm/web-ifc@0.0.51/');
-    loader.ifcManager.applyWebIfcConfig({ USE_FAST_BOOLS:true });
-    const url=URL.createObjectURL(file);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
 
-    loader.load(url, async model=>{
-      URL.revokeObjectURL(url);
-      modelGroup=new THREE.Group();
-      modelGroup.add(model.mesh);
-      scene.add(modelGroup);
-
-      const mesh=model.mesh;
-      mesh.castShadow=true;
-      mesh.receiveShadow=true;
-
-      const json={type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'web-ifc-three',preprocessorVersion:'web-ifc-three',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data:[]};
-      currentJson=json;
-      currentJsonStr=JSON.stringify(json,null,2);
-      $('statEntities').textContent='1';
-      $('statGeom').textContent='1';
-      $('statSchema').textContent='IFC4';
-      $('statSize').textContent=(new TextEncoder().encode(currentJsonStr).length/1024).toFixed(0)+' KB';
-      $('statsSection').style.display='block';
-      $('vpEntCount').textContent='1';
-      $('vpMeshCount').textContent='1';
-      $('vpVerts').textContent=(mesh.geometry?.attributes?.position?.count||0).toLocaleString();
-      $('vpStats').classList.add('show');
-      $('btnDownload').disabled=false;
-      $('btnReset').disabled=false;
-      hideProgress();
-      setStatus('✓ IFC loaded','ok');
-      fitCameraToModel();
-
-      try{
-        const modelID=model.modelID ?? model.mesh?.modelID ?? 0;
-        const ids=await loader.ifcManager.getAllItemsOfType(modelID,0,false);
-        currentJson.data=ids.map(id=>({expressID:id,type:'IfcElement'}));
-        buildEntityTree(currentJson.data);
-        $('statEntities').textContent=currentJson.data.length.toLocaleString();
-        $('vpEntCount').textContent=currentJson.data.length.toLocaleString();
-      }catch(e){
-        console.warn('Property/tree extraction unavailable in this build:',e);
+    const res = await fetch(
+      "https://ifcjsonbackend-production.up.railway.app/convert-ifc",
+      {
+        method: "POST",
+        body: formData
       }
-    }, err=>{
-      URL.revokeObjectURL(url);
-      throw err;
-    });
-  }catch(err){
-    console.warn('Primary IFC loader failed, using proxy fallback:', err);
-    try{
-      const text=await file.text();
-      const entities=parseIFCStep(text);
-      currentJson={type:'ifcJSON',version:'0.0.1',schemaIdentifier:'IFC4',originatingSystem:'FullBIM Browser Viewer',preprocessorVersion:'fallback parser',timeStamp:new Date().toISOString().replace(/\.\d+Z$/,''),data:Object.values(entities).map(e=>({expressID:e.id,type:normalizeIfcType(e.type),Name:getIfcName(e),GlobalId:getIfcGlobalId(e)}))};
-      currentJsonStr=JSON.stringify(currentJson,null,2);
-      $('statEntities').textContent=currentJson.data.length.toLocaleString();
-      $('statGeom').textContent='0';
-      $('statSchema').textContent='IFC4';
-      $('statSize').textContent=(new TextEncoder().encode(currentJsonStr).length/1024).toFixed(0)+' KB';
-      $('statsSection').style.display='block';
-      buildEntityTree(currentJson.data);
+    );
 
-      modelGroup=new THREE.Group();
-      for(const e of currentJson.data){if(!isRenderableElement(e)) continue;const mesh=proxyMeshForElement(e);mesh.position.set((e.expressID%7)-3,0,(e.expressID%5)-2);mesh.userData.expressID=e.expressID;meshMap[e.expressID]=mesh;modelGroup.add(mesh)}
-      if(!modelGroup.children.length) modelGroup.add(proxyMeshForElement({type:'IfcProxy',expressID:1}));
-      scene.add(modelGroup);
-      $('vpEntCount').textContent=currentJson.data.length.toLocaleString();
-      $('vpMeshCount').textContent=modelGroup.children.length.toLocaleString();
-      $('vpVerts').textContent=modelGroup.children.reduce((a,m)=>a+(m.geometry?.attributes?.position?.count||0),0).toLocaleString();
-      $('vpStats').classList.add('show');
-      fitCameraToModel();
-      setProgress(100);hideProgress();
-      setStatus('Loaded with fallback proxies','ok');
-      $('btnDownload').disabled=false;
-      $('btnReset').disabled=false;
-    }catch(e){
-      console.error(e);
-      setStatus('Failed to load IFC','err');
-      showToast('Could not load IFC', 'err');
-      hideProgress();
+    if (!res.ok) {
+      throw new Error(await res.text());
     }
+
+    const data = await res.json();
+
+    currentJson = data;
+    currentJsonStr = JSON.stringify(data, null, 2);
+
+    log("Backend conversion success");
+    log("Entities: " + (data.data?.length || 0));
+
+    setEnabled(true);
+
+  } catch (err) {
+    log("Backend failed: " + err.message);
+    log("Using fallback parser...");
+
+    // fallback minimal
+    const text = await file.text();
+
+    currentJson = {
+      type: "fallback",
+      data: text.slice(0, 1000)
+    };
+
+    currentJsonStr = JSON.stringify(currentJson, null, 2);
+    setEnabled(true);
   }
 }
 
-function normalizeIfcType(t){return 'Ifc'+String(t||'Proxy').replace(/^IFC/i,'').toLowerCase().replace(/(^|_)([a-z])/g,(_,a,b)=>b.toUpperCase())}
-function getIfcName(e){return e.args?.[2]||e.args?.[5]||e.args?.[3]||null}
-function getIfcGlobalId(e){return e.args?.[0]||null}
-function parseIFCStep(text){
-  const entities={};
-  const dataSection=text.match(/DATA;([\s\S]*?)ENDSEC;/i);
-  if(!dataSection) throw new Error('No DATA section found in IFC file.');
-  const lineRe=/#(\d+)\s*=\s*([A-Z0-9_]+)\s*\(([\s\S]*?)\)\s*;/g;
-  let m;
-  while((m=lineRe.exec(dataSection[1]))!==null){entities[parseInt(m[1],10)]={id:parseInt(m[1],10),type:m[2],raw:m[3]}}
-  function splitArgs(raw){const args=[];let depth=0,cur='';for(let i=0;i<raw.length;i++){const c=raw[i];if(c==='(')depth++;else if(c===')')depth=Math.max(0,depth-1);if(c===','&&depth===0){args.push(cur.trim());cur='';}else cur+=c}if(cur.trim())args.push(cur.trim());return args}
-  function resolveVal(v){if(v==='$'||v==='*') return null;if(v.startsWith('#')) return entities[parseInt(v.slice(1),10)]||null;if(v.startsWith('(')&&v.endsWith(')')) return splitArgs(v.slice(1,-1)).map(resolveVal);if(v.startsWith("'")&&v.endsWith("'")) return v.slice(1,-1);if(v.startsWith('.')&&v.endsWith('.')) return v.slice(1,-1);const n=parseFloat(v);if(!isNaN(n)) return n;const typed=v.match(/^([A-Z0-9_]+)\s*\((.*)\)$/s);if(typed) return {type:typed[1],value:resolveVal(typed[2])};return v}
-  for(const e of Object.values(entities)){e.args=splitArgs(e.raw).map(resolveVal);delete e.raw}
-  return entities
-}
+/**
+ * EVENTS
+ */
+document.getElementById("fileInput").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(file) loadIFCFile(file);
+});
 
-$('btnDownload').addEventListener('click',()=>{if(!currentJsonStr) return;const blob=new Blob([currentJsonStr],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='model.ifcJSON';a.click();URL.revokeObjectURL(url)});
-$('btnReset').addEventListener('click',()=>{currentJson=null;currentJsonStr=null;$('statusBar').classList.remove('show');$('statsSection').style.display='none';$('entityList').innerHTML='';$('treeLabel').hidden=true;$('vpPlaceholder').style.display='flex';$('vpStats').classList.remove('show');$('propPanel').classList.remove('show');$('btnDownload').disabled=true;$('btnReset').disabled=true;$('fileInput').value='';$('statusDot').className='dot active';$('statusText').textContent='Ready';clearScene()});
-$('btnFit').addEventListener('click',fitCameraToModel);
-$('btnTop').addEventListener('click',()=>{if(!modelGroup) return;const box=new THREE.Box3().setFromObject(modelGroup),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());camera.position.set(center.x,center.y+Math.max(size.x,size.z)*1.5,center.z);controls.target.copy(center);controls.update()});
-$('btnWire').addEventListener('click',()=>{wireframeMode=!wireframeMode;$('btnWire').style.color=wireframeMode?'var(--accent)':'';if(!modelGroup) return;modelGroup.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=wireframeMode})});
-const dropzone=$('dropzone'),fileInput=$('fileInput');
-dropzone.addEventListener('dragenter',e=>{e.preventDefault();dropzone.classList.add('dragover')});
-dropzone.addEventListener('dragover',e=>e.preventDefault());
-dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('dragover'));
-dropzone.addEventListener('drop',e=>{e.preventDefault();dropzone.classList.remove('dragover');const file=e.dataTransfer.files[0];if(file)handleFile(file)});
-fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
-function handleFile(file){if(!file.name.toLowerCase().endsWith('.ifc')){showToast('Please upload a .ifc file','err');return}loadIFCFile(file)}
-setTimeout(()=>{const o=document.getElementById('init-overlay');o.classList.add('fade');setTimeout(()=>o.remove(),500)},600);
+document.getElementById("dropzone").addEventListener("click", ()=>{
+  document.getElementById("fileInput").click();
+});
+
+document.getElementById("btnDownload").onclick = () => {
+  const blob = new Blob([currentJsonStr], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ifc.json";
+  a.click();
+};
+
+document.getElementById("btnReset").onclick = () => {
+  currentJson = null;
+  currentJsonStr = null;
+  setEnabled(false);
+  document.getElementById("log").textContent = "";
+};
 </script>
+
 </body>
 </html>
