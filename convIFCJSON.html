@@ -9,39 +9,41 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #0B0E14;
-    --surface:   #111620;
-    --border:    #1E2535;
-    --border-hi: #2A3550;
-    --accent:    #3D8EF0;
-    --accent-dim:#1E4A8C;
-    --ok:        #3DD68C;
-    --warn:      #F0A03D;
-    --err:       #F0503D;
-    --text:      #C8D4E8;
-    --text-dim:  #5A6880;
-    --text-hi:   #EAF0FF;
-    --mono:      'JetBrains Mono', monospace;
+    --bg: #0b1118;
+    --surface: #101824;
+    --surface-2: #141f2d;
+    --border: #223044;
+    --border-hi: #34506d;
+    --accent: #b0e2ff;
+    --accent-2: #6ecbff;
+    --accent-soft: rgba(176, 226, 255, 0.10);
+    --ok: #69e0a8;
+    --warn: #ffd166;
+    --err: #ff7b7b;
+    --text: #c9d8e6;
+    --text-dim: #7f93a8;
+    --text-hi: #f4f9ff;
+    --mono: 'JetBrains Mono', monospace;
   }
+
+  html, body { height: 100%; }
 
   body {
     font-family: var(--mono);
-    background: var(--bg);
+    background: radial-gradient(1200px 800px at 70% 20%, rgba(176,226,255,0.06), transparent 55%), var(--bg);
     color: var(--text);
     overflow: hidden;
-    height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* ── HEADER ── */
   header {
-    height: 44px;
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    background: var(--surface);
+    background: linear-gradient(180deg, var(--surface), #0e1620);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
     gap: 12px;
@@ -54,10 +56,12 @@
   }
 
   .logo-mark {
-    width: 22px; height: 22px;
-    background: var(--accent);
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
     clip-path: polygon(0 100%, 50% 0, 100% 100%, 75% 100%, 50% 45%, 25% 100%);
     flex-shrink: 0;
+    box-shadow: 0 0 18px rgba(176,226,255,0.18);
   }
 
   .logo-text {
@@ -68,31 +72,26 @@
     text-transform: uppercase;
   }
 
-  .logo-text span {
-    color: var(--accent);
-  }
+  .logo-text span { color: var(--accent); }
 
   .header-status {
     font-size: 10px;
     color: var(--text-dim);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
   }
-
   .header-status.ready { color: var(--ok); }
   .header-status.loading { color: var(--warn); }
   .header-status.error { color: var(--err); }
 
-  /* ── LAYOUT ── */
   main {
     display: flex;
     flex: 1;
     overflow: hidden;
   }
 
-  /* ── PANEL ── */
   .panel {
-    width: 280px;
-    background: var(--surface);
+    width: 300px;
+    background: linear-gradient(180deg, var(--surface), #0d141e);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
@@ -107,26 +106,27 @@
 
   .panel-label {
     font-size: 9px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-dim);
     margin-bottom: 10px;
   }
 
-  /* ── DROP ZONE ── */
   #dropzone {
     border: 1px dashed var(--border-hi);
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 22px 12px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+    transition: 0.15s ease;
     position: relative;
+    background: rgba(255,255,255,0.01);
   }
   #dropzone:hover, #dropzone.drag-over {
     border-color: var(--accent);
-    background: rgba(61,142,240,0.05);
+    background: var(--accent-soft);
+    transform: translateY(-1px);
   }
   #dropzone input { display: none; }
 
@@ -134,58 +134,60 @@
     display: block;
     font-size: 22px;
     margin-bottom: 6px;
-    opacity: 0.5;
+    opacity: 0.8;
+    color: var(--accent);
   }
   .drop-title {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-hi);
   }
   .drop-sub {
     font-size: 10px;
     color: var(--text-dim);
-    margin-top: 3px;
+    margin-top: 4px;
   }
 
-  /* ── BUTTONS ── */
   .btn-row {
     display: flex;
     gap: 6px;
+    flex-wrap: wrap;
   }
 
   .btn {
     flex: 1;
-    padding: 7px 10px;
+    min-width: 82px;
+    padding: 8px 10px;
     font-family: var(--mono);
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background: transparent;
     color: var(--text);
     border: 1px solid var(--border-hi);
-    border-radius: 3px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.12s;
   }
   .btn:hover:not(:disabled) {
-    background: var(--border-hi);
+    background: var(--surface-2);
     color: var(--text-hi);
+    transform: translateY(-1px);
   }
   .btn:disabled {
-    opacity: 0.3;
+    opacity: 0.35;
     cursor: default;
   }
   .btn.primary {
-    border-color: var(--accent-dim);
+    border-color: rgba(176,226,255,0.55);
     color: var(--accent);
   }
   .btn.primary:hover:not(:disabled) {
-    background: var(--accent-dim);
+    background: rgba(176,226,255,0.12);
     color: var(--text-hi);
   }
 
-  /* ── STATS ── */
   .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -193,9 +195,9 @@
   }
 
   .stat-cell {
-    background: var(--bg);
+    background: #0c121a;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 6px;
     padding: 8px;
   }
   .stat-value {
@@ -212,7 +214,6 @@
     margin-top: 4px;
   }
 
-  /* ── LOG ── */
   #log {
     flex: 1;
     overflow-y: auto;
@@ -220,16 +221,16 @@
     line-height: 1.7;
     padding: 12px 14px;
     color: var(--text-dim);
+    white-space: pre-wrap;
     scrollbar-width: thin;
     scrollbar-color: var(--border-hi) transparent;
   }
 
-  #log .log-ok   { color: var(--ok); }
-  #log .log-err  { color: var(--err); }
+  #log .log-ok { color: var(--ok); }
+  #log .log-err { color: var(--err); }
   #log .log-warn { color: var(--warn); }
   #log .log-info { color: var(--accent); }
 
-  /* ── PROGRESS BAR ── */
   .progress-bar-wrap {
     height: 2px;
     background: var(--border);
@@ -239,7 +240,7 @@
   .progress-bar-wrap.active { display: block; }
   .progress-bar {
     height: 100%;
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
     width: 0%;
     transition: width 0.2s;
   }
@@ -248,21 +249,19 @@
     animation: slide 1.2s ease-in-out infinite;
   }
   @keyframes slide {
-    0%   { transform: translateX(-100%); }
+    0% { transform: translateX(-120%); }
     100% { transform: translateX(350%); }
   }
 
-  /* ── VIEWPORT ── */
   .viewport {
     flex: 1;
     position: relative;
     overflow: hidden;
-    background: var(--bg);
+    background: radial-gradient(900px 700px at 50% 40%, rgba(176,226,255,0.04), transparent 60%), var(--bg);
   }
 
   canvas { display: block; width: 100%; height: 100%; }
 
-  /* ── VIEWPORT OVERLAY ── */
   .empty-state {
     position: absolute;
     inset: 0;
@@ -276,28 +275,30 @@
   .empty-state.hidden { display: none; }
 
   .empty-icon {
-    width: 56px; height: 56px;
+    width: 56px;
+    height: 56px;
     border: 1.5px solid var(--border-hi);
-    border-radius: 6px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 26px;
-    opacity: 0.4;
+    color: var(--accent);
+    opacity: 0.55;
+    background: rgba(176,226,255,0.04);
   }
   .empty-title {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-dim);
     letter-spacing: 0.08em;
   }
   .empty-hint {
     font-size: 10px;
     color: var(--text-dim);
-    opacity: 0.6;
+    opacity: 0.75;
   }
 
-  /* ── VIEWPORT HUD ── */
   .hud {
     position: absolute;
     bottom: 14px;
@@ -308,9 +309,14 @@
     pointer-events: none;
     text-align: right;
     line-height: 1.9;
+    background: rgba(8,12,18,0.45);
+    border: 1px solid rgba(176,226,255,0.15);
+    border-radius: 8px;
+    padding: 8px 10px;
+    backdrop-filter: blur(8px);
   }
 
-  .hud-key { color: var(--text-dim); }
+  .hud-key { color: var(--accent); }
   .hud-val { color: var(--text); }
 </style>
 </head>
@@ -325,10 +331,7 @@
 </header>
 
 <main>
-
-  <!-- PANEL -->
   <div class="panel">
-
     <div class="progress-bar-wrap" id="progressWrap">
       <div class="progress-bar indeterminate" id="progressBar"></div>
     </div>
@@ -336,10 +339,10 @@
     <div class="panel-block">
       <div class="panel-label">Load IFC</div>
       <div id="dropzone">
-        <input type="file" id="fileInput" accept=".ifc" />
+        <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
         <span class="drop-icon">⬡</span>
         <div class="drop-title">Drop .ifc or click</div>
-        <div class="drop-sub">Converts via IfcJSON backend</div>
+        <div class="drop-sub">Uploads to the IFC backend</div>
       </div>
     </div>
 
@@ -362,10 +365,8 @@
     </div>
 
     <div id="log"></div>
-
   </div>
 
-  <!-- VIEWPORT -->
   <div class="viewport" id="viewport">
     <canvas id="canvas"></canvas>
 
@@ -381,68 +382,65 @@
       <div><span class="hud-key">SCR </span><span class="hud-val">zoom</span></div>
     </div>
   </div>
-
 </main>
 
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
 
-/* ────────────────── SCENE SETUP ────────────────── */
-const canvas   = document.getElementById("canvas");
+const canvas = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
+const logEl = document.getElementById("log");
+const statusEl = document.getElementById("headerStatus");
+const progressW = document.getElementById("progressWrap");
 
 function vpSize() {
   return { w: viewport.clientWidth, h: viewport.clientHeight };
 }
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(viewport.clientWidth, viewport.clientHeight, false);
 renderer.shadowMap.enabled = false;
 
-const scene  = new THREE.Scene();
-scene.background = new THREE.Color(0x0B0E14);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b1118);
 
 const { w, h } = vpSize();
 const camera = new THREE.PerspectiveCamera(55, w / h, 0.01, 5000);
 camera.position.set(15, 12, 15);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping    = true;
-controls.dampingFactor    = 0.07;
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
 controls.screenSpacePanning = true;
-controls.minDistance      = 0.1;
-controls.maxDistance      = 1000;
+controls.minDistance = 0.1;
+controls.maxDistance = 1000;
 
-/* Lights */
-scene.add(new THREE.AmbientLight(0xC8D4FF, 0.55));
-const sun = new THREE.DirectionalLight(0xFFFFFF, 0.9);
+scene.add(new THREE.AmbientLight(0xcfe9ff, 0.65));
+const sun = new THREE.DirectionalLight(0xffffff, 0.95);
 sun.position.set(20, 40, 20);
 scene.add(sun);
-const fill = new THREE.DirectionalLight(0x4060FF, 0.25);
+const fill = new THREE.DirectionalLight(0x7ccfff, 0.25);
 fill.position.set(-10, 5, -15);
 scene.add(fill);
 
-/* Grid */
-const grid = new THREE.GridHelper(100, 100, 0x1E2535, 0x161C28);
+const grid = new THREE.GridHelper(100, 100, 0x34506d, 0x1a2633);
 scene.add(grid);
 
-/* Model group */
 let modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
-/* ── Resize ── */
 function onResize() {
   const { w, h } = vpSize();
-  renderer.setSize(w, h);
+  renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-onResize();
 window.addEventListener("resize", onResize);
 new ResizeObserver(onResize).observe(viewport);
+onResize();
 
-/* ── Render loop ── */
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -450,22 +448,17 @@ function animate() {
 }
 animate();
 
-/* ────────────────── HELPERS ────────────────── */
-const logEl     = document.getElementById("log");
-const statusEl  = document.getElementById("headerStatus");
-const progressW = document.getElementById("progressWrap");
-
 function log(msg, type = "") {
-  const span = document.createElement("span");
-  span.className = type ? `log-${type}` : "";
-  span.textContent = msg + "\n";
-  logEl.appendChild(span);
+  const div = document.createElement("div");
+  if (type) div.className = `log-${type}`;
+  div.textContent = msg;
+  logEl.appendChild(div);
   logEl.scrollTop = logEl.scrollHeight;
 }
 
 function setStatus(text, cls = "") {
   statusEl.textContent = text;
-  statusEl.className   = `header-status ${cls}`;
+  statusEl.className = `header-status ${cls}`;
 }
 
 function setLoading(on) {
@@ -474,84 +467,62 @@ function setLoading(on) {
 
 function setEnabled(on) {
   document.getElementById("btnDownload").disabled = !on;
-  document.getElementById("btnFit").disabled      = !on;
-  document.getElementById("btnReset").disabled    = !on;
-}
-
-function setStats(entities, meshes, verts, tris) {
-  document.getElementById("statsBlock").style.display = "";
-  document.getElementById("statEntities").textContent = fmt(entities);
-  document.getElementById("statMeshes").textContent   = fmt(meshes);
-  document.getElementById("statVerts").textContent    = fmt(verts);
-  document.getElementById("statTris").textContent     = fmt(tris);
+  document.getElementById("btnFit").disabled = !on;
+  document.getElementById("btnReset").disabled = !on;
 }
 
 function fmt(n) {
   return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n);
 }
 
-/* Fit camera to bounding box */
+function setStats(entities, meshes, verts, tris) {
+  document.getElementById("statsBlock").style.display = "";
+  document.getElementById("statEntities").textContent = fmt(entities);
+  document.getElementById("statMeshes").textContent = fmt(meshes);
+  document.getElementById("statVerts").textContent = fmt(verts);
+  document.getElementById("statTris").textContent = fmt(tris);
+}
+
 function fitCamera() {
   const box = new THREE.Box3().setFromObject(modelGroup);
   if (box.isEmpty()) return;
   const center = box.getCenter(new THREE.Vector3());
-  const size   = box.getSize(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z);
-  const fov    = camera.fov * (Math.PI / 180);
-  const dist   = (maxDim / (2 * Math.tan(fov / 2))) * 1.6;
+  const fov = camera.fov * Math.PI / 180;
+  const dist = (maxDim / (2 * Math.tan(fov / 2))) * 1.6;
   camera.position.set(center.x + dist * 0.7, center.y + dist * 0.6, center.z + dist * 0.7);
   controls.target.copy(center);
   controls.update();
-  // Align grid to floor
-  const floorY = box.min.y;
-  grid.position.y = floorY;
+  grid.position.y = box.min.y;
 }
-
-/* ────────────────── GEOMETRY BUILDER ────────────────── */
-/*
-  Tries to extract real triangle geometry from ifcJSON entities.
-  Falls back to OBB boxes when no mesh data is available.
-
-  Supported representations we look for in ifcJSON data array:
-    - entity.Representation.Representations[*].Items[*]
-      with .type "IfcFacetedBrep"   → .Outer.CfsFaces
-      with .type "IfcTriangulatedFaceSet" → .Coordinates / .CoordIndex
-      with .type "IfcExtrudedAreaSolid"   → approximated as box
-      with .type "IfcBoundingBox"         → simple box
-
-  Placement is looked up on entity.ObjectPlacement (basic support).
-*/
-
-const ENTITY_COLORS = {
-  IFCWALL:         0x6B8CAE,
-  IFCWALLSTANDARDCASE: 0x6B8CAE,
-  IFCSLAB:         0xA0A8B8,
-  IFCCOLUMN:       0x8CA888,
-  IFCBEAM:         0x9E8A6E,
-  IFCDOOR:         0xD4A860,
-  IFCWINDOW:       0x88C4E8,
-  IFCSTAIR:        0xB88888,
-  IFCROOF:         0x7888A8,
-  IFCFURNISHINGELEMENT: 0xB8906A,
-  DEFAULT:         0x5588BB,
-};
 
 function colorForType(type) {
   const key = (type || "").toUpperCase();
-  return ENTITY_COLORS[key] ?? ENTITY_COLORS.DEFAULT;
+  return {
+    IFCWALL: 0x9ecfff,
+    IFCWALLSTANDARDCASE: 0x9ecfff,
+    IFCSLAB: 0xc2d8e8,
+    IFCCOLUMN: 0x8ec7ff,
+    IFCBEAM: 0x7fb7f0,
+    IFCDOOR: 0xffd9a3,
+    IFCWINDOW: 0xb0e2ff,
+    IFCSTAIR: 0xd5b0ff,
+    IFCROOF: 0x91aee8,
+    IFCFURNISHINGELEMENT: 0xd3b68c,
+    DEFAULT: 0xb0e2ff,
+  }[key] ?? 0xb0e2ff;
 }
 
 function extractPlacementMatrix(placement) {
-  // Recursively resolves IIfcLocalPlacement → 4x4 world matrix
   const mat = new THREE.Matrix4();
   if (!placement) return mat;
 
-  // RelativePlacement (IfcAxis2Placement3D)
   const rel = placement.RelativePlacement;
   if (rel) {
     const loc = rel.Location?.Coordinates || [0, 0, 0];
     const axis = rel.Axis?.DirectionRatios || [0, 0, 1];
-    const ref  = rel.RefDirection?.DirectionRatios || [1, 0, 0];
+    const ref = rel.RefDirection?.DirectionRatios || [1, 0, 0];
 
     const Z = new THREE.Vector3(...axis).normalize();
     const X = new THREE.Vector3(...ref).normalize();
@@ -561,7 +532,6 @@ function extractPlacementMatrix(placement) {
     mat.setPosition(loc[0], loc[1], loc[2]);
   }
 
-  // PlacementRelTo chain
   if (placement.PlacementRelTo) {
     const parent = extractPlacementMatrix(placement.PlacementRelTo);
     parent.multiply(mat);
@@ -572,121 +542,92 @@ function extractPlacementMatrix(placement) {
 
 function buildGeometryFromEntity(entity) {
   const reps = entity?.Representation?.Representations ?? [];
-
   for (const rep of reps) {
     for (const item of (rep.Items ?? [])) {
-      const t = (item.type || item.Type || "").replace("Ifc", "Ifc").toUpperCase();
+      const t = (item.type || item.Type || "").toUpperCase();
 
-      /* ── IfcTriangulatedFaceSet ── */
       if (t === "IFCTRIANGULATEDFACESET") {
         try {
-          const coords   = item.Coordinates?.CoordList ?? item.CoordList ?? [];
-          const indices  = item.CoordIndex ?? [];
-
+          const coords = item.Coordinates?.CoordList ?? item.CoordList ?? [];
+          const indices = item.CoordIndex ?? [];
           if (coords.length && indices.length) {
             const positions = [];
-            const normals   = [];
-
+            const normals = [];
             for (const face of indices) {
-              // face is [i1, i2, i3] (1-based in IFC spec, but ifcJSON may be 0-based)
-              const detect1Based = (face[0] > 0);
+              const detect1Based = face[0] > 0;
               const off = detect1Based ? 1 : 0;
               const i0 = face[0] - off, i1 = face[1] - off, i2 = face[2] - off;
               if (!coords[i0] || !coords[i1] || !coords[i2]) continue;
-
               const p0 = coords[i0], p1 = coords[i1], p2 = coords[i2];
-              const A = new THREE.Vector3(...p0);
-              const B = new THREE.Vector3(...p1);
-              const C = new THREE.Vector3(...p2);
-              const n = new THREE.Vector3().crossVectors(
-                B.clone().sub(A), C.clone().sub(A)
-              ).normalize();
-
+              const A = new THREE.Vector3(...p0), B = new THREE.Vector3(...p1), C = new THREE.Vector3(...p2);
+              const n = new THREE.Vector3().crossVectors(B.clone().sub(A), C.clone().sub(A)).normalize();
               positions.push(...p0, ...p1, ...p2);
               normals.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
             }
-
-            if (positions.length > 0) {
+            if (positions.length) {
               const geo = new THREE.BufferGeometry();
               geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-              geo.setAttribute("normal",   new THREE.Float32BufferAttribute(normals, 3));
+              geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
               return geo;
             }
           }
-        } catch(e) { /* fallthrough */ }
+        } catch {}
       }
 
-      /* ── IfcFacetedBrep ── */
       if (t === "IFCFACETEDBREP") {
         try {
           const faces = item.Outer?.CfsFaces ?? [];
-          const positions = [], normals = [];
-
+          const positions = [];
+          const normals = [];
           for (const face of faces) {
-            const bounds = face.Bounds ?? [];
-            for (const bound of bounds) {
+            for (const bound of (face.Bounds ?? [])) {
               const pts = bound.Bound?.Polygon ?? [];
               if (pts.length < 3) continue;
-
-              // Fan triangulation
               const p0 = pts[0].Coordinates ?? pts[0];
-              const A  = new THREE.Vector3(...p0);
-
+              const A = new THREE.Vector3(...p0);
               for (let k = 1; k < pts.length - 1; k++) {
-                const pb = pts[k].Coordinates   ?? pts[k];
-                const pc = pts[k+1].Coordinates ?? pts[k+1];
+                const pb = pts[k].Coordinates ?? pts[k];
+                const pc = pts[k + 1].Coordinates ?? pts[k + 1];
                 const B = new THREE.Vector3(...pb);
                 const C = new THREE.Vector3(...pc);
-                const n = new THREE.Vector3().crossVectors(
-                  B.clone().sub(A), C.clone().sub(A)
-                ).normalize();
-
+                const n = new THREE.Vector3().crossVectors(B.clone().sub(A), C.clone().sub(A)).normalize();
                 positions.push(...p0, ...pb, ...pc);
                 normals.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
               }
             }
           }
-
-          if (positions.length > 0) {
+          if (positions.length) {
             const geo = new THREE.BufferGeometry();
             geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-            geo.setAttribute("normal",   new THREE.Float32BufferAttribute(normals, 3));
+            geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
             return geo;
           }
-        } catch(e) { /* fallthrough */ }
+        } catch {}
       }
 
-      /* ── IfcExtrudedAreaSolid → box approximation ── */
       if (t === "IFCEXTRUDEDAREASOLID") {
         try {
           const depth = item.Depth ?? 1;
-          // Try to get profile bounds
           const profile = item.SweptArea;
           let sx = 1, sy = 1;
           if (profile?.XDim) sx = profile.XDim;
           if (profile?.YDim) sy = profile.YDim;
           return new THREE.BoxGeometry(sx, depth, sy);
-        } catch(e) { /* fallthrough */ }
+        } catch {}
       }
 
-      /* ── IfcBoundingBox ── */
       if (t === "IFCBOUNDINGBOX") {
         try {
-          return new THREE.BoxGeometry(
-            item.XDim ?? 1, item.YDim ?? 1, item.ZDim ?? 1
-          );
-        } catch(e) { /* fallthrough */ }
+          return new THREE.BoxGeometry(item.XDim ?? 1, item.YDim ?? 1, item.ZDim ?? 1);
+        } catch {}
       }
     }
   }
-
-  return null; // no geometry found
+  return null;
 }
 
-/* ────────────────── MODEL LOAD ────────────────── */
-let currentJson    = null;
+let currentJson = null;
 let currentJsonStr = null;
-
 const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
 
 async function loadIFC(file) {
@@ -705,16 +646,13 @@ async function loadIFC(file) {
       throw new Error(`Backend ${res.status}: ${msg}`);
     }
 
-    log("Backend responded", "ok");
     setStatus("PARSING", "loading");
-
     const json = await res.json();
-    currentJson    = json;
+    currentJson = json;
     currentJsonStr = JSON.stringify(json, null, 2);
 
     buildScene(json);
     setEnabled(true);
-
   } catch (err) {
     log("Error: " + err.message, "err");
     setStatus("ERROR", "error");
@@ -726,19 +664,15 @@ async function loadIFC(file) {
 function buildScene(json) {
   modelGroup.clear();
 
-  const data = Array.isArray(json.data) ? json.data
-             : Array.isArray(json)       ? json
-             : [];
-
+  const data = Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : [];
   log(`Entities: ${data.length}`, "info");
 
-  // Filter to physical entities that might have geometry
   const SKIP_TYPES = new Set([
     "IFCPROJECT","IFCSITE","IFCBUILDING","IFCBUILDINGSTOREY",
     "IFCRELCONTAINEDINSPATIALSTRUCTURE","IFCRELASSOCIATESMATERIAL",
     "IFCRELAGGREGATES","IFCRELDECLARES","IFCRELDEFINESBYPROPERTIES",
     "IFCRELDEFINESBYTYPE","IFCPROPERTYSET","IFCPROPERTYSINGLEVALUE",
-    "IFCMATERIAL","IFCMATERIALLAYER","IFCUNITASSIGNMENT","IFCSIUNIT",
+    "IFCMATERIAL","IFCMATERIALLAYER","IFCUNITASSIGNMENT","IFCSIUNIT"
   ]);
 
   let meshCount = 0, vertCount = 0, triCount = 0;
@@ -749,20 +683,17 @@ function buildScene(json) {
     const type = (entity.type || entity.Type || "").toUpperCase();
     if (SKIP_TYPES.has(type)) continue;
 
-    const color = colorForType(type);
-    const mat   = new THREE.MeshStandardMaterial({
-      color,
-      roughness: 0.75,
-      metalness: 0.05,
-      side: THREE.DoubleSide,
+    const mat = new THREE.MeshStandardMaterial({
+      color: colorForType(type),
+      roughness: 0.72,
+      metalness: 0.04,
+      side: THREE.DoubleSide
     });
 
-    // Try real geometry
     let geo = buildGeometryFromEntity(entity);
     let usedFallback = false;
 
     if (!geo) {
-      // Fallback: small box on a grid so model isn't empty
       geo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
       usedFallback = true;
     }
@@ -770,26 +701,19 @@ function buildScene(json) {
     const mesh = new THREE.Mesh(geo, mat);
 
     if (usedFallback) {
-      // Lay out in a grid
-      mesh.position.set(
-        (fallbackIdx % 20) * GRID_STEP,
-        0.2,
-        Math.floor(fallbackIdx / 20) * GRID_STEP
-      );
+      mesh.position.set((fallbackIdx % 20) * GRID_STEP, 0.2, Math.floor(fallbackIdx / 20) * GRID_STEP);
       fallbackIdx++;
     } else {
-      // Apply placement if available
-      const placementMatrix = extractPlacementMatrix(entity.ObjectPlacement);
-      mesh.applyMatrix4(placementMatrix);
+      mesh.applyMatrix4(extractPlacementMatrix(entity.ObjectPlacement));
     }
 
     modelGroup.add(mesh);
 
     const posAttr = geo.attributes.position;
-    const verts   = posAttr ? posAttr.count : 8;
-    const tris    = geo.index ? geo.index.count / 3 : verts / 3;
+    const verts = posAttr ? posAttr.count : 8;
+    const tris = geo.index ? geo.index.count / 3 : verts / 3;
     vertCount += verts;
-    triCount  += Math.round(tris);
+    triCount += Math.round(tris);
     meshCount++;
   }
 
@@ -798,15 +722,12 @@ function buildScene(json) {
 
   setStats(data.length, meshCount, vertCount, triCount);
   setStatus("READY", "ready");
-
   document.getElementById("emptyState").classList.add("hidden");
   document.getElementById("hud").style.display = "";
-
   fitCamera();
 }
 
-/* ────────────────── UI WIRING ────────────────── */
-const dropzone  = document.getElementById("dropzone");
+const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 
 dropzone.addEventListener("click", () => fileInput.click());
@@ -829,9 +750,10 @@ dropzone.addEventListener("drop", e => {
 });
 
 document.getElementById("btnDownload").addEventListener("click", () => {
+  if (!currentJsonStr) return;
   const blob = new Blob([currentJsonStr], { type: "application/json" });
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement("a"), { href: url, download: "ifc.json" });
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement("a"), { href: url, download: "ifc.json" });
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -840,7 +762,8 @@ document.getElementById("btnFit").addEventListener("click", fitCamera);
 
 document.getElementById("btnReset").addEventListener("click", () => {
   modelGroup.clear();
-  currentJson = currentJsonStr = null;
+  currentJson = null;
+  currentJsonStr = null;
   logEl.textContent = "";
   document.getElementById("statsBlock").style.display = "none";
   document.getElementById("emptyState").classList.remove("hidden");
