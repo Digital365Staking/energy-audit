@@ -69,6 +69,8 @@
 
   .actions {
     margin-top: 12px;
+    display: flex;
+    gap: 12px;
   }
 
   .btn {
@@ -85,10 +87,13 @@
     transform: translateY(-1px);
     background: var(--accent-2);
   }
-  .btn:disabled {
-    opacity: 0.35;
-    cursor: default;
-    transform: none;
+  .btn.secondary {
+    background: #eaf5fb;
+    color: var(--title);
+    border: 1px solid #cfe0ea;
+  }
+  .btn.secondary:hover {
+    background: #dff0fa;
   }
 
   .status {
@@ -100,6 +105,20 @@
     padding: 8px 12px;
     margin-top: 10px;
     display: inline-block;
+  }
+
+  .log {
+    margin-top: 14px;
+    padding: 12px;
+    background: #ffffff;
+    border: 1px solid #dbe9f3;
+    border-radius: 10px;
+    font-family: 'Segoe UI', monospace;
+    font-size: 12px;
+    color: #37566f;
+    max-height: 140px;
+    overflow: auto;
+    white-space: pre-wrap;
   }
 
   .viewport {
@@ -160,17 +179,20 @@
   </div>
 
   <div class="actions">
-    <button class="btn" id="btnDownload" disabled>Download JSON</button>
+    <button class="btn" id="btnDownload">Download JSON</button>
+    <button class="btn secondary" id="btnTest">Test download (dummy JSON)</button>
   </div>
 
   <div class="status" id="status">IDLE</div>
+
+  <div class="log" id="log">Ready.</div>
 
   <div class="viewport" id="viewport">
     <canvas id="canvas"></canvas>
     <div class="empty" id="empty">
       <div class="empty-card">
         <strong>No model</strong>
-        <span>Upload an IFC file or use the demo.</span>
+        <span>Upload an IFC file or test with the dummy JSON.</span>
       </div>
     </div>
   </div>
@@ -185,8 +207,10 @@ const viewport = document.getElementById("viewport");
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const btnDownload = document.getElementById("btnDownload");
+const btnTest = document.getElementById("btnTest");
 const statusEl = document.getElementById("status");
 const empty = document.getElementById("empty");
+const logEl = document.getElementById("log");
 
 const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
 
@@ -245,15 +269,24 @@ function animate() {
 }
 animate();
 
+function log(msg) {
+  logEl.textContent += `\n${msg}`;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
 function uploadFile(file) {
   const form = new FormData();
   form.append("file", file, file.name);
 
   statusEl.textContent = "UPLOADING";
+  log(`Uploading: ${file.name}`);
 
   fetch(BACKEND, { method: "POST", body: form })
     .then(res => {
-      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      log(`Response status: ${res.status} ${res.statusText}`);
+      if (!res.ok) {
+        throw new Error(`File upload failed: ${res.status} ${res.statusText}`);
+      }
       return res.json();
     })
     .then(json => {
@@ -265,10 +298,11 @@ function uploadFile(file) {
       modelGroup.add(cube);
       empty.style.display = "none";
       statusEl.textContent = "READY";
-      btnDownload.disabled = false;
+      log("Upload successful. JSON ready for download.");
     })
     .catch(err => {
       statusEl.textContent = "ERROR";
+      log("Upload error: " + err.message);
       console.error(err);
     });
 }
@@ -296,7 +330,10 @@ dropArea.addEventListener("drop", e => {
 });
 
 btnDownload.addEventListener("click", () => {
-  if (!jsonText) return;
+  if (!jsonText) {
+    log("No JSON yet. Upload an IFC file first, or use 'Test download' to try a dummy JSON.");
+    return;
+  }
   const blob = new Blob([jsonText], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -304,6 +341,32 @@ btnDownload.addEventListener("click", () => {
   a.download = "ifc.json";
   a.click();
   URL.revokeObjectURL(url);
+  log("JSON downloaded.");
+});
+
+btnTest.addEventListener("click", () => {
+  const dummy = {
+    test: true,
+    message: "This is a dummy JSON for testing the download button.",
+    timestamp: new Date().toISOString()
+  };
+  jsonText = JSON.stringify(dummy, null, 2);
+  log("Test JSON created.");
+  const blob = new Blob([jsonText], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "test.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  log("Test JSON downloaded.");
+  modelGroup.clear();
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
+  const cube = new THREE.Mesh(geo, mat);
+  modelGroup.add(cube);
+  empty.style.display = "none";
+  statusEl.textContent = "READY";
 });
 </script>
 </body>
