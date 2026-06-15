@@ -1,90 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Mobile 90° Rotated Chart</title>
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<meta charset="UTF-8"/>
+<title>IFC JSON Structure Probe</title>
 <style>
-  body, html { margin:0; padding:0; width:100%; height:100%; font-family: Arial; }
-  svg { width:100vw; height:100vh; }
-  .bar { fill: steelblue; fill-opacity:0.8; }
-  .bar:hover { fill-opacity:1; }
-  .line { fill:none; stroke:orange; stroke-width:3px; }
-  .dot { fill:orange; }  
+  body { font-family: 'Segoe UI', sans-serif; background: #b0e2ff; margin: 0; padding: 20px; }
+  .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.1); margin-bottom: 16px; }
+  h2 { color: #0b3c5d; margin: 0 0 12px; }
+  .drop { border: 2px dashed #99cee8; border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; background: #e6f7ff; }
+  .drop:hover { border-color: #1890ff; background: #d7eef9; }
+  .drop input { display: none; }
+  pre { background: #f0f8ff; border: 1px solid #c8e0ef; border-radius: 8px; padding: 14px; font-size: 11px; overflow: auto; max-height: 320px; white-space: pre-wrap; word-break: break-all; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; margin: 2px; }
+  .tag-ok   { background: #d4f4e6; color: #1a7a4a; }
+  .tag-warn { background: #fff3cd; color: #7a5800; }
+  .tag-err  { background: #fde8e8; color: #9b1c1c; }
+  .section { margin-bottom: 20px; }
+  h3 { color: #0b3c5d; font-size: .95rem; margin: 0 0 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  td, th { padding: 5px 10px; border: 1px solid #dbe9f3; text-align: left; }
+  th { background: #e6f7ff; color: #0b3c5d; font-weight: 700; }
+  .btn { border: none; border-radius: 8px; padding: 9px 16px; background: #0b3c5d; color: #fff; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  .btn:hover { background: #1d6fa5; }
+  #status { color: #1d6fa5; font-weight: 700; font-size: .9rem; margin-top: 8px; }
 </style>
 </head>
 <body>
-<div class="box"><svg></svg></div>
+
+<div class="card">
+  <h2>🔍 IFC JSON Structure Probe</h2>
+  <p style="color:#4f6780;font-size:.92rem">Drop your .ifc file — this tool calls the backend and shows you exactly what JSON structure is returned, so we know what the viewer needs to parse.</p>
+
+  <div class="drop" id="drop">
+    <input type="file" id="fi" accept=".ifc"/>
+    <div style="font-size:1.8rem;color:#1d6fa5">⬡</div>
+    <div style="font-weight:700;color:#0b3c5d">Drop .ifc or click</div>
+    <div style="font-size:.88rem;color:#4f6780;margin-top:4px">Sends to backend and diagnoses the JSON</div>
+  </div>
+  <div id="status"></div>
+</div>
+
+<div class="card" id="results" style="display:none">
+  <h2>Diagnosis</h2>
+
+  <div class="section">
+    <h3>📦 Top-level JSON shape</h3>
+    <pre id="topLevel"></pre>
+  </div>
+
+  <div class="section">
+    <h3>📊 Entity type breakdown</h3>
+    <table id="typeTable">
+      <tr><th>IFC Type</th><th>Count</th><th>Has Representation?</th><th>Rep types found</th></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>🔎 First entity with Representation — full structure</h3>
+    <pre id="firstRepFull"></pre>
+  </div>
+
+  <div class="section">
+    <h3>🔎 First IfcWall (or any wall-like entity)</h3>
+    <pre id="firstWall"></pre>
+  </div>
+
+  <div class="section">
+    <h3>🔎 Raw JSON (first 6000 chars)</h3>
+    <pre id="rawJson"></pre>
+  </div>
+
+  <button class="btn" onclick="downloadJson()">⬇ Download full JSON</button>
+</div>
 
 <script>
-const svg = d3.select("svg");
-const margin = {top:60, right:60, bottom:60, left:80};
+const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
+let fullJson = null;
 
-function drawChart() {
-  svg.selectAll("*").remove();
-  const width = window.innerWidth - margin.left - margin.right;
-  const height = window.innerHeight - margin.top - margin.bottom;
+const drop   = document.getElementById("drop");
+const fi     = document.getElementById("fi");
+const status = document.getElementById("status");
 
-  d3.csv("data.csv", d=>({
-    Minute: d["Minute"].trim(),
-    Power: +d["Power"].trim(),
-    Nominal: +d["Nominal"].trim()
-  })).then(rawData => {
-    const grouped = d3.groups(rawData, d=>d.Minute);
-    const data = grouped.map(([minute, rows])=>({
-      Minute: minute,
-      Power: d3.mean(rows,r=>r.Power),
-      Nominal: +rows[0].Nominal
-    }));
+drop.addEventListener("click", () => fi.click());
+fi.addEventListener("change", e => { const f = e.target.files[0]; if (f) run(f); fi.value=""; });
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.style.borderColor="#1890ff"; });
+drop.addEventListener("dragleave", () => { drop.style.borderColor=""; });
+drop.addEventListener("drop", e => { e.preventDefault(); drop.style.borderColor=""; const f = e.dataTransfer.files[0]; if (f) run(f); });
 
-    // Function to detect if the user is on a mobile device
-    function isMobileDevice() {
-        return !!/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
-    }
+async function run(file) {
+  status.textContent = "Uploading " + file.name + "…";
+  document.getElementById("results").style.display = "none";
 
-     // Desktop horizontal chart
-      const chartGroup = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-      const x = d3.scaleBand().domain(data.map(d=>d.Minute)).range([0,width]).padding(0.2);
-      const y = d3.scaleLinear().domain([0,d3.max(data,d=>Math.max(d.Power,d.Nominal))*1.1]).nice().range([height,0]);
-
-      chartGroup.append("g").attr("transform",`translate(0,${height})`).call(d3.axisBottom(x));
-      chartGroup.append("g").call(d3.axisLeft(y));
-
-      chartGroup.selectAll(".bar")
-        .data(data).join("rect")
-          .attr("class","bar")
-          .attr("x",d=>x(d.Minute))
-          .attr("y",d=>y(d.Power))
-          .attr("width",x.bandwidth())
-          .attr("height",d=>height - y(d.Power));
-
-      const line = d3.line()
-        .x(d=>x(d.Minute)+x.bandwidth()/2)
-        .y(d=>y(d.Nominal))
-        .curve(d3.curveMonotoneX);
-
-      chartGroup.append("path").datum(data).attr("class","line").attr("d",line);
-      chartGroup.selectAll(".dot")
-        .data(data).join("circle")
-          .attr("class","dot")
-          .attr("cx",d=>x(d.Minute)+x.bandwidth()/2)
-          .attr("cy",d=>y(d.Nominal))
-          .attr("r",5);
-
-    if (isMobileDevice()) {
-      
-      const svg = d3.select("svg");
-      const root = svg.append("g").attr("id", "rootChart");
-
-      root.attr("transform", "rotate(180)");
-
-    }
-    
-  });
+  try {
+    const form = new FormData();
+    form.append("file", file, file.name);
+    const res = await fetch(BACKEND, { method:"POST", body:form });
+    if (!res.ok) throw new Error("HTTP " + res.status + " " + res.statusText + "\n" + await res.text());
+    const json = await res.json();
+    fullJson = json;
+    status.textContent = "✅ Got response — analysing…";
+    analyse(json);
+  } catch(e) {
+    status.textContent = "❌ " + e.message;
+  }
 }
 
-drawChart();
-window.addEventListener("resize", drawChart);
+function analyse(json) {
+  // ── Top-level shape ──
+  const topKeys = Object.keys(json);
+  const data = Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : null;
+  const dataLen = data ? data.length : "n/a";
+
+  document.getElementById("topLevel").textContent =
+    "Top-level keys: " + JSON.stringify(topKeys) + "\n" +
+    "data array length: " + dataLen + "\n" +
+    "Top-level schema fields:\n" +
+    JSON.stringify(json, null, 2).slice(0, 800) + (JSON.stringify(json).length > 800 ? "\n…(truncated)" : "");
+
+  if (!data) {
+    document.getElementById("results").style.display = "";
+    return;
+  }
+
+  // ── Type breakdown ──
+  const typeMap = {};
+  for (const e of data) {
+    const t = (e.type || e.Type || "UNKNOWN").toUpperCase();
+    if (!typeMap[t]) typeMap[t] = { count:0, withRep:0, repTypes:new Set() };
+    typeMap[t].count++;
+    const reps = e.Representation && e.Representation.Representations;
+    if (reps && reps.length) {
+      typeMap[t].withRep++;
+      for (const r of reps) {
+        for (const item of (r.Items || [])) {
+          typeMap[t].repTypes.add((item.type || item.Type || "?").toUpperCase());
+        }
+      }
+    }
+  }
+
+  const tbody = document.getElementById("typeTable");
+  const sorted = Object.entries(typeMap).sort((a,b) => b[1].count - a[1].count);
+  for (const [t, info] of sorted) {
+    const tr = document.createElement("tr");
+    const repBadge = info.withRep > 0
+      ? `<span class="tag tag-ok">${info.withRep} with rep</span>`
+      : `<span class="tag tag-err">0 with rep</span>`;
+    tr.innerHTML = `<td><b>${t}</b></td><td>${info.count}</td><td>${repBadge}</td><td>${[...info.repTypes].join(", ") || "—"}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  // ── First entity with Representation ──
+  const withRep = data.find(e => e.Representation && e.Representation.Representations && e.Representation.Representations.length);
+  document.getElementById("firstRepFull").textContent = withRep
+    ? JSON.stringify(withRep, null, 2).slice(0, 3000)
+    : "No entity with Representation found in data array.";
+
+  // ── First wall ──
+  const wall = data.find(e => {
+    const t = (e.type || e.Type || "").toUpperCase();
+    return t.includes("WALL") || t.includes("BEAM") || t.includes("SLAB") || t.includes("COLUMN");
+  });
+  document.getElementById("firstWall").textContent = wall
+    ? JSON.stringify(wall, null, 2).slice(0, 3000)
+    : "No WALL/BEAM/SLAB/COLUMN found in data array.";
+
+  // ── Raw ──
+  document.getElementById("rawJson").textContent = JSON.stringify(json, null, 2).slice(0, 6000);
+
+  document.getElementById("results").style.display = "";
+}
+
+function downloadJson() {
+  if (!fullJson) return;
+  const blob = new Blob([JSON.stringify(fullJson, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="ifc-probe.json"; a.click();
+  URL.revokeObjectURL(url);
+}
 </script>
 </body>
 </html>
