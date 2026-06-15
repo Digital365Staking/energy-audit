@@ -3,31 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FullBIM · IFC → JSON</title>
+<title>FullBIM · IFC Viewer</title>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
 <style>
   :root {
-    --bg: #b0e2ff;
-    --card: #ffffff;
-    --ink: #1a1a1a;
-    --title: #0b3c5d;
-    --accent: #b0e2ff;
+    --bg:       #b0e2ff;
+    --card:     #ffffff;
+    --ink:      #1a1a1a;
+    --title:    #0b3c5d;
+    --accent:   #1890ff;
     --accent-2: #1d6fa5;
-    --soft: #e6f7ff;
-    --line: rgba(11, 60, 93, 0.12);
-    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --soft:     #e6f7ff;
+    --line:     rgba(11,60,93,0.12);
+    --shadow:   0 10px 30px rgba(0,0,0,0.10);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-  }
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; }
 
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,339 +33,825 @@
     flex-direction: column;
   }
 
+  /* ── PAGE SHELL ── */
   .page {
+    display: flex;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    gap: 14px;
     padding: 16px;
-    gap: 12px;
   }
 
-  .top {
+  /* ── PANEL ── */
+  .panel {
+    width: 300px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow: hidden;
   }
 
+  /* ── DROP AREA ── */
   .drop-area {
-    width: min(100%, 720px);
-    border: 2px dashed #cfe0ea;
+    border: 2px dashed #99cee8;
     border-radius: 14px;
-    padding: 28px;
+    padding: 24px 16px;
     background: var(--soft);
     cursor: pointer;
-    transition: 0.15s ease;
-    display: inline-block;
+    transition: .15s ease;
+    text-align: center;
+    user-select: none;
   }
   .drop-area:hover,
   .drop-area.drag-over {
     border-color: var(--accent);
-    background: #dbeef8;
+    background: #d7eef9;
+    transform: translateY(-1px);
   }
+  .drop-area input { display:none; }
 
-  .drop-area input { display: none; }
+  .drop-icon { font-size: 2rem; color: var(--accent-2); margin-bottom: 8px; }
+  .drop-title { font-weight:700; color:var(--title); font-size:1rem; margin-bottom:4px; }
+  .drop-sub   { font-size:.88rem; color:#4f6780; line-height:1.45; }
 
-  .drop-title {
-    font-weight: 700;
-    color: var(--title);
-    font-size: 1.05rem;
-    margin-bottom: 6px;
-  }
-  .drop-sub {
-    font-size: 0.92rem;
-    color: #4f6780;
-  }
-
-  .actions {
-    display: flex;
-    gap: 12px;
-  }
+  /* ── BUTTONS ── */
+  .btn-row { display:flex; gap:8px; }
 
   .btn {
-    border: none;
-    border-radius: 10px;
-    padding: 11px 18px;
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding: 10px 12px;
     background: var(--title);
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s ease;
+    color:#fff;
+    font-weight:700;
+    font-size:.88rem;
+    cursor:pointer;
+    transition:.2s ease;
+    white-space: nowrap;
   }
-  .btn:hover {
-    transform: translateY(-1px);
-    background: var(--accent-2);
-  }
-  .btn:disabled {
-    opacity: 0.35;
-    cursor: default;
-    transform: none;
-  }
-
-  .log {
-    padding: 12px;
-    background: #ffffff;
-    border: 1px solid #dbe9f3;
-    border-radius: 10px;
-    font-family: 'Segoe UI', monospace;
-    font-size: 12px;
-    color: #37566f;
-    max-height: 100px;
-    overflow: auto;
-    white-space: pre-wrap;
-  }
-
-  .viewport {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    touch-action: none;
-    background: radial-gradient(circle at center, #ffffff 0%, #eaf7ff 52%, #d5efff 100%);
-    border: 1px solid #dbe9f3;
-  }
-
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
-  }
-
-  .empty {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-  .empty-card {
-    background: rgba(255,255,255,0.88);
-    border: 1px solid #dbe9f3;
-    border-radius: 12px;
-    padding: 16px 20px;
-    text-align: center;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-    max-width: 320px;
-  }
-  .empty-card strong {
-    display: block;
+  .btn:hover:not(:disabled) { background:var(--accent-2); transform:translateY(-1px); }
+  .btn:disabled { opacity:.35; cursor:default; transform:none; }
+  .btn.secondary {
+    background: transparent;
     color: var(--title);
-    margin-bottom: 6px;
-    font-size: 1.05rem;
+    border: 2px solid var(--line);
   }
-  .empty-card span {
+  .btn.secondary:hover:not(:disabled) {
+    background: var(--soft);
+    border-color: var(--accent-2);
+  }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-cell {
+    background: var(--soft);
+    border: 1px solid #c8e0ef;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .stat-value { font-size:1.35rem; font-weight:800; color:var(--title); line-height:1; }
+  .stat-key   { font-size:.78rem; color:#4f6780; text-transform:uppercase; letter-spacing:.06em; margin-top:3px; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    height: 4px;
+    background: #c8e0ef;
+    border-radius: 2px;
+    overflow: hidden;
+    display: none;
+  }
+  .progress-wrap.active { display:block; }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width: 40%;
+    animation: slide 1.2s ease-in-out infinite;
+  }
+  @keyframes slide {
+    0%   { transform: translateX(-120%); }
+    100% { transform: translateX(350%); }
+  }
+
+  /* ── STATUS BADGE ── */
+  .status-badge {
+    display: inline-block;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #e0eef8;
     color: #4f6780;
-    font-size: 0.92rem;
+    align-self: flex-start;
   }
+  .status-badge.ready   { background:#d4f4e6; color:#1a7a4a; }
+  .status-badge.loading { background:#fff3cd; color:#7a5800; }
+  .status-badge.error   { background:#fde8e8; color:#9b1c1c; }
+
+  /* ── LOG ── */
+  .log-wrap {
+    flex:1;
+    min-height:0;
+    background:var(--card);
+    border:1px solid #dbe9f3;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .log-header {
+    padding: 8px 12px;
+    font-size:.78rem;
+    font-weight:700;
+    color: var(--title);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    border-bottom:1px solid #edf4fa;
+    background:#f5fbff;
+    flex-shrink:0;
+  }
+  #log {
+    flex:1;
+    overflow-y:auto;
+    padding:10px 12px;
+    font-family:'Courier New', monospace;
+    font-size:.8rem;
+    color:#37566f;
+    line-height:1.7;
+    white-space:pre-wrap;
+    scrollbar-width:thin;
+    scrollbar-color:#99cee8 transparent;
+  }
+  #log .ok   { color:#1a7a4a; }
+  #log .err  { color:#9b1c1c; }
+  #log .warn { color:#7a5800; }
+  #log .info { color:var(--accent-2); }
+
+  /* ── VIEWPORT ── */
+  .viewport {
+    flex:1;
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+    background: radial-gradient(circle at 50% 40%, #ffffff 0%, #eaf7ff 55%, #d5efff 100%);
+    border:1px solid #c8e0ef;
+    box-shadow: var(--shadow);
+    touch-action:none;
+    min-width:0;
+  }
+
+  canvas { display:block; width:100%; height:100%; touch-action:none; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  .empty-state.hidden { display:none; }
+  .empty-card {
+    background:rgba(255,255,255,0.88);
+    border:1px solid #dbe9f3;
+    border-radius:14px;
+    padding:22px 28px;
+    text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  }
+  .empty-icon   { font-size:2.2rem; margin-bottom:8px; }
+  .empty-title  { font-weight:700; color:var(--title); font-size:1.05rem; margin-bottom:6px; }
+  .empty-hint   { color:#4f6780; font-size:.88rem; }
+
+  /* ── HUD ── */
+  .hud {
+    position:absolute; bottom:14px; right:14px;
+    font-size:.75rem;
+    background:rgba(255,255,255,0.7);
+    border:1px solid #c8e0ef;
+    border-radius:10px;
+    padding:8px 12px;
+    backdrop-filter:blur(8px);
+    color:#4f6780;
+    line-height:1.9;
+    pointer-events:none;
+  }
+  .hud-key { color:var(--accent-2); font-weight:700; }
+
+  /* ── ERROR BANNER ── */
+  .err-banner {
+    display:none;
+    background:#fde8e8;
+    border:1px solid #f5a3a3;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:.83rem;
+    color:#9b1c1c;
+    white-space:pre-wrap;
+    line-height:1.5;
+  }
+  .err-banner.visible { display:block; }
 </style>
 </head>
 <body>
-
 <div class="page">
-  <div class="top">
+
+  <!-- ── LEFT PANEL ── -->
+  <aside class="panel">
+
     <div class="drop-area" id="dropArea">
       <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
-      <div class="drop-title">Drop .ifc here or click to upload</div>
-      <div class="drop-sub">Upload your IFC file to the backend</div>
+      <div class="drop-icon">⬡</div>
+      <div class="drop-title">Drop .ifc or click to upload</div>
+      <div class="drop-sub">Converts via IfcJSON backend &amp; renders real geometry</div>
     </div>
 
-    <div class="actions">
-      <button class="btn" id="btnDownload">Download JSON</button>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"></div>
     </div>
 
-    <div class="log" id="log">Ready.</div>
-  </div>
+    <div class="btn-row">
+      <button class="btn" id="btnDownload" disabled>↓ Download JSON</button>
+      <button class="btn secondary" id="btnFit" disabled>⊡ Fit</button>
+      <button class="btn secondary" id="btnReset" disabled>✕</button>
+    </div>
 
-  <div class="viewport" id="viewport">
-    <canvas id="canvas"></canvas>
-    <div class="empty" id="empty">
-      <div class="empty-card">
-        <strong>No model</strong>
-        <span>Upload an IFC file to see the 3D model.</span>
+    <div id="statusBadge" class="status-badge">IDLE</div>
+
+    <div id="statsBlock" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Entities</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Meshes</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Verts</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Tris</div></div>
       </div>
     </div>
-  </div>
+
+    <div class="err-banner" id="errBanner"></div>
+
+    <div class="log-wrap">
+      <div class="log-header">Console</div>
+      <div id="log"></div>
+    </div>
+
+  </aside>
+
+  <!-- ── 3D VIEWPORT ── -->
+  <section class="viewport" id="viewport">
+    <canvas id="canvas"></canvas>
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-card">
+        <div class="empty-icon">🏗</div>
+        <div class="empty-title">No model loaded</div>
+        <div class="empty-hint">Drop an .ifc file to begin</div>
+      </div>
+    </div>
+
+    <div class="hud" id="hud" style="display:none">
+      <div><span class="hud-key">LMB </span>orbit</div>
+      <div><span class="hud-key">RMB </span>pan</div>
+      <div><span class="hud-key">SCR </span>zoom</div>
+    </div>
+  </section>
+
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
+/* ═══════════════════════════════════════════════
+   SCENE SETUP
+═══════════════════════════════════════════════ */
+const canvas   = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const btnDownload = document.getElementById("btnDownload");
-const logEl = document.getElementById("log");
-
-const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
-
-let jsonText = null;
-let modelGroup = new THREE.Group();
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-renderer.setSize(viewport.clientWidth, viewport.clientHeight, false);
 
-const scene = new THREE.Scene();
+const scene  = new THREE.Scene();
 scene.background = new THREE.Color(0xeaf7ff);
 
-const camera = new THREE.PerspectiveCamera(60, viewport.clientWidth / viewport.clientHeight, 0.1, 10000);
-camera.position.set(10, 10, 10);
+const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 10000);
+camera.position.set(15, 12, 15);
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
+controls.enableDamping    = true;
+controls.dampingFactor    = 0.08;
+controls.screenSpacePanning = true;
+controls.minDistance      = 0.1;
+controls.maxDistance      = 5000;
 controls.mouseButtons = {
   LEFT: THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
   RIGHT: THREE.MOUSE.PAN
 };
-controls.touches = {
-  ONE: THREE.TOUCH.ROTATE,
-  TWO: THREE.TOUCH.DOLLY_PAN
-};
-controls.screenSpacePanning = true;
-controls.minDistance = 0.1;
-controls.maxDistance = 5000;
 
+/* Lights */
 scene.add(new THREE.AmbientLight(0xffffff, 0.75));
-const light = new THREE.DirectionalLight(0xffffff, 1.2);
-light.position.set(20, 40, 20);
-scene.add(light);
+const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+sun.position.set(20, 40, 20);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x7ccfff, 0.3);
+fill.position.set(-10, 5, -15);
+scene.add(fill);
 
+/* Grid */
 const grid = new THREE.GridHelper(100, 100, 0x78a6c8, 0xc5dce9);
 scene.add(grid);
+
+/* Model group */
+let modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
-function fitCameraToObject(object) {
-  const box = new THREE.Box3().setFromObject(object);
-  if (box.isEmpty()) return;
-
-  const center = box.getCenter(new THREE.Vector3());
-  const size = box.getSize(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z);
-
-  const fov = camera.fov * (Math.PI / 180);
-  const distance = (maxDim / 2) / Math.tan(fov / 2);
-
-  camera.position.set(
-    center.x + distance * 0.8,
-    center.y + distance * 0.6,
-    center.z + distance * 0.8
-  );
-
-  controls.target.copy(center);
-  controls.update();
-}
-
+/* Resize */
 function resize() {
-  const w = viewport.clientWidth;
-  const h = viewport.clientHeight;
+  const w = viewport.clientWidth, h = viewport.clientHeight;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-window.addEventListener("resize", resize);
 resize();
+window.addEventListener("resize", resize);
+new ResizeObserver(resize).observe(viewport);
 
-function animate() {
+/* Render loop */
+(function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
-}
-animate();
+})();
 
-function log(msg) {
-  logEl.textContent += `\n${msg}`;
+/* ═══════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════ */
+const logEl      = document.getElementById("log");
+const badgeEl    = document.getElementById("statusBadge");
+const progressW  = document.getElementById("progressWrap");
+const errBanner  = document.getElementById("errBanner");
+const emptyState = document.getElementById("emptyState");
+const hudEl      = document.getElementById("hud");
+
+function log(msg, type = "") {
+  const div = document.createElement("div");
+  if (type) div.className = type;
+  div.textContent = msg;
+  logEl.appendChild(div);
   logEl.scrollTop = logEl.scrollHeight;
 }
 
-function loadDemo() {
-  modelGroup.clear();
-  const geo = new THREE.BoxGeometry(1, 1, 1);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
-  const cube = new THREE.Mesh(geo, mat);
-  modelGroup.add(cube);
-  fitCameraToObject(modelGroup);
-  empty.style.display = "none";
-  jsonText = JSON.stringify({ demo: true, name: "demo-box" }, null, 2);
-  btnDownload.disabled = false;
-  log("Demo cube loaded and centered.");
+function setStatus(text, cls = "") {
+  badgeEl.textContent = text;
+  badgeEl.className = "status-badge " + cls;
 }
 
-function uploadFile(file) {
-  const form = new FormData();
-  form.append("file", file, file.name);
+function setLoading(on) {
+  progressW.classList.toggle("active", on);
+}
 
-  log(`Uploading: ${file.name}`);
+function setEnabled(on) {
+  document.getElementById("btnDownload").disabled = !on;
+  document.getElementById("btnFit").disabled      = !on;
+  document.getElementById("btnReset").disabled    = !on;
+}
 
-  fetch(BACKEND, { method: "POST", body: form })
-    .then(res => {
-      log(`Response status: ${res.status} ${res.statusText}`);
-      if (!res.ok) {
-        throw new Error(`File upload failed: ${res.status} ${res.statusText}`);
+function showError(msg) {
+  errBanner.textContent = msg;
+  errBanner.classList.add("visible");
+}
+function hideError() {
+  errBanner.classList.remove("visible");
+  errBanner.textContent = "";
+}
+
+function fmt(n) {
+  if (!Number.isFinite(n)) return "—";
+  return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n);
+}
+
+function setStats(entities, meshes, verts, tris) {
+  document.getElementById("statsBlock").style.display = "";
+  document.getElementById("statEntities").textContent = fmt(entities);
+  document.getElementById("statMeshes").textContent   = fmt(meshes);
+  document.getElementById("statVerts").textContent    = fmt(verts);
+  document.getElementById("statTris").textContent     = fmt(tris);
+}
+
+/* ═══════════════════════════════════════════════
+   GEOMETRY ENGINE
+═══════════════════════════════════════════════ */
+
+/* IFC type → mesh color */
+const TYPE_COLORS = {
+  IFCWALL:              0x9ecfff,
+  IFCWALLSTANDARDCASE:  0x9ecfff,
+  IFCSLAB:              0xc2d8e8,
+  IFCCOLUMN:            0x8ec7ff,
+  IFCBEAM:              0x7fb7f0,
+  IFCDOOR:              0xffd9a3,
+  IFCWINDOW:            0xb0e2ff,
+  IFCSTAIR:             0xd5b0ff,
+  IFCROOF:              0x91aee8,
+  IFCFURNISHINGELEMENT: 0xd3b68c,
+  DEFAULT:              0x90c8f0,
+};
+function colorForType(type) {
+  return TYPE_COLORS[(type || "").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
+}
+
+/* IFC entities that carry no geometry */
+const SKIP_TYPES = new Set([
+  "IFCPROJECT","IFCSITE","IFCBUILDING","IFCBUILDINGSTOREY",
+  "IFCRELCONTAINEDINSPATIALSTRUCTURE","IFCRELASSOCIATESMATERIAL",
+  "IFCRELAGGREGATES","IFCRELDECLARES","IFCRELDEFINESBYPROPERTIES",
+  "IFCRELDEFINESBYTYPE","IFCPROPERTYSET","IFCPROPERTYSINGLEVALUE",
+  "IFCMATERIAL","IFCMATERIALLAYER","IFCMATERIALLAYERSET",
+  "IFCMATERIALLAYERSETUSAGE","IFCUNITASSIGNMENT","IFCSIUNIT",
+  "IFCGEOMETRICREPRESENTATIONCONTEXT","IFCGEOMETRICREPRESENTATIONSUBCONTEXT",
+  "IFCAXIS2PLACEMENT3D","IFCLOCALPLACEMENT","IFCPERSON","IFCORGANIZATION",
+  "IFCPERSONANDORGANIZATION","IFCAPPLICATION","IFCOWNERHISTORY",
+]);
+
+/**
+ * Resolve IIfcLocalPlacement chain → THREE.Matrix4
+ */
+function extractPlacementMatrix(placement) {
+  const mat = new THREE.Matrix4();
+  if (!placement) return mat;
+
+  const rel = placement.RelativePlacement;
+  if (rel) {
+    const loc  = (rel.Location  && rel.Location.Coordinates)  || [0,0,0];
+    const axis = (rel.Axis      && rel.Axis.DirectionRatios)   || [0,0,1];
+    const ref  = (rel.RefDirection && rel.RefDirection.DirectionRatios) || [1,0,0];
+
+    const Z = new THREE.Vector3(axis[0],axis[1],axis[2]).normalize();
+    const X = new THREE.Vector3(ref[0], ref[1], ref[2]).normalize();
+    const Y = new THREE.Vector3().crossVectors(Z, X).normalize();
+
+    mat.makeBasis(X, Y, Z);
+    mat.setPosition(loc[0], loc[1], loc[2]);
+  }
+
+  if (placement.PlacementRelTo) {
+    const parent = extractPlacementMatrix(placement.PlacementRelTo);
+    parent.multiply(mat);
+    return parent;
+  }
+  return mat;
+}
+
+/**
+ * Build a BufferGeometry from one IFC entity's Representation.
+ * Returns null if nothing usable is found (caller uses a fallback box).
+ *
+ * Handles:
+ *   IfcTriangulatedFaceSet  – preferred: real triangles
+ *   IfcFacetedBrep          – polygon faces, fan-triangulated
+ *   IfcExtrudedAreaSolid    – box approximation from profile dims + depth
+ *   IfcBoundingBox          – direct box dims
+ */
+function buildGeometryFromEntity(entity) {
+  const reps = (entity && entity.Representation && entity.Representation.Representations) || [];
+
+  for (let ri = 0; ri < reps.length; ri++) {
+    const items = reps[ri].Items || [];
+
+    for (let ii = 0; ii < items.length; ii++) {
+      const item = items[ii];
+      const t = (item.type || item.Type || "").toUpperCase();
+
+      /* ── IfcTriangulatedFaceSet ── */
+      if (t === "IFCTRIANGULATEDFACESET") {
+        try {
+          const coords  = (item.Coordinates && item.Coordinates.CoordList)
+                         || item.CoordList || [];
+          const indices = item.CoordIndex || [];
+
+          if (coords.length && indices.length) {
+            const pos = [], nrm = [];
+
+            for (let fi = 0; fi < indices.length; fi++) {
+              const face = indices[fi];
+              if (!Array.isArray(face) || face.length < 3) continue;
+
+              /* IFC spec uses 1-based indices; ifcJSON may use 0-based */
+              const off = (face[0] > 0) ? 1 : 0;
+              const i0 = face[0]-off, i1 = face[1]-off, i2 = face[2]-off;
+              if (!coords[i0] || !coords[i1] || !coords[i2]) continue;
+
+              const p0 = coords[i0], p1 = coords[i1], p2 = coords[i2];
+              const A = new THREE.Vector3(p0[0],p0[1],p0[2]);
+              const B = new THREE.Vector3(p1[0],p1[1],p1[2]);
+              const C = new THREE.Vector3(p2[0],p2[1],p2[2]);
+              const n = new THREE.Vector3()
+                .crossVectors(B.clone().sub(A), C.clone().sub(A))
+                .normalize();
+
+              pos.push(p0[0],p0[1],p0[2], p1[0],p1[1],p1[2], p2[0],p2[1],p2[2]);
+              nrm.push(n.x,n.y,n.z, n.x,n.y,n.z, n.x,n.y,n.z);
+            }
+
+            if (pos.length) {
+              const geo = new THREE.BufferGeometry();
+              geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+              geo.setAttribute("normal",   new THREE.Float32BufferAttribute(nrm, 3));
+              return geo;
+            }
+          }
+        } catch(e) { /* fall through to next item */ }
       }
-      return res.json();
-    })
-    .then(json => {
-      jsonText = JSON.stringify(json, null, 2);
-      modelGroup.clear();
-      const geo = new THREE.BoxGeometry(1, 1, 1);
-      const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
-      const cube = new THREE.Mesh(geo, mat);
-      modelGroup.add(cube);
-      fitCameraToObject(modelGroup);
-      empty.style.display = "none";
-      btnDownload.disabled = false;
-      log("Upload successful. JSON ready for download.");
-    })
-    .catch(err => {
-      log("Upload error: " + err.message);
-      console.error(err);
-    });
+
+      /* ── IfcFacetedBrep ── */
+      if (t === "IFCFACETEDBREP") {
+        try {
+          const faces = (item.Outer && item.Outer.CfsFaces) || [];
+          const pos = [], nrm = [];
+
+          for (let fi = 0; fi < faces.length; fi++) {
+            const bounds = faces[fi].Bounds || [];
+            for (let bi = 0; bi < bounds.length; bi++) {
+              const pts = (bounds[bi].Bound && bounds[bi].Bound.Polygon) || [];
+              if (pts.length < 3) continue;
+
+              const p0c = pts[0].Coordinates || pts[0];
+              const A   = new THREE.Vector3(p0c[0],p0c[1],p0c[2]);
+
+              for (let k = 1; k < pts.length - 1; k++) {
+                const pb = pts[k].Coordinates   || pts[k];
+                const pc = pts[k+1].Coordinates || pts[k+1];
+                const B  = new THREE.Vector3(pb[0],pb[1],pb[2]);
+                const C  = new THREE.Vector3(pc[0],pc[1],pc[2]);
+                const n  = new THREE.Vector3()
+                  .crossVectors(B.clone().sub(A), C.clone().sub(A))
+                  .normalize();
+
+                pos.push(p0c[0],p0c[1],p0c[2], pb[0],pb[1],pb[2], pc[0],pc[1],pc[2]);
+                nrm.push(n.x,n.y,n.z, n.x,n.y,n.z, n.x,n.y,n.z);
+              }
+            }
+          }
+
+          if (pos.length) {
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+            geo.setAttribute("normal",   new THREE.Float32BufferAttribute(nrm, 3));
+            return geo;
+          }
+        } catch(e) { /* fall through */ }
+      }
+
+      /* ── IfcExtrudedAreaSolid → box approximation ── */
+      if (t === "IFCEXTRUDEDAREASOLID") {
+        try {
+          const depth = item.Depth || 1;
+          const prof  = item.SweptArea;
+          const sx = (prof && prof.XDim) ? prof.XDim : 1;
+          const sy = (prof && prof.YDim) ? prof.YDim : 1;
+          return new THREE.BoxGeometry(sx, depth, sy);
+        } catch(e) {}
+      }
+
+      /* ── IfcBoundingBox ── */
+      if (t === "IFCBOUNDINGBOX") {
+        try {
+          return new THREE.BoxGeometry(
+            item.XDim || 1, item.YDim || 1, item.ZDim || 1
+          );
+        } catch(e) {}
+      }
+    }
+  }
+  return null;
 }
+
+/* ═══════════════════════════════════════════════
+   SCENE BUILD
+═══════════════════════════════════════════════ */
+function clearModel() {
+  while (modelGroup.children.length) {
+    const obj = modelGroup.children[modelGroup.children.length - 1];
+    modelGroup.remove(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) {
+      if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+      else obj.material.dispose();
+    }
+  }
+}
+
+function fitCamera() {
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  if (box.isEmpty()) return;
+
+  const center = box.getCenter(new THREE.Vector3());
+  const size   = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov    = camera.fov * Math.PI / 180;
+  const dist   = (maxDim / (2 * Math.tan(fov / 2))) * 1.7;
+
+  camera.position.set(
+    center.x + dist * 0.8,
+    center.y + dist * 0.6,
+    center.z + dist * 0.8
+  );
+  controls.target.copy(center);
+  controls.update();
+
+  grid.position.y = box.min.y;
+}
+
+function buildScene(json) {
+  clearModel();
+
+  /* Normalise: ifcJSON schema wraps entities in .data[] */
+  const data = Array.isArray(json && json.data) ? json.data
+             : Array.isArray(json)               ? json
+             : [];
+
+  if (!data.length) {
+    log("Warning: no entities found in JSON response.", "warn");
+  } else {
+    log("Entities in JSON: " + data.length, "info");
+  }
+
+  let meshCount = 0, vertCount = 0, triCount = 0;
+  let fallbackIdx = 0;
+  const FALLBACK_STEP = 1.2;
+
+  for (let i = 0; i < data.length; i++) {
+    const entity = data[i];
+    const type   = (entity.type || entity.Type || "").toUpperCase();
+
+    if (SKIP_TYPES.has(type)) continue;
+
+    /* --- real geometry first --- */
+    let geo = buildGeometryFromEntity(entity);
+    let isFallback = false;
+
+    if (!geo) {
+      /* placeholder cube so the scene is never empty */
+      geo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+      isFallback = true;
+    }
+
+    const mat  = new THREE.MeshStandardMaterial({
+      color:     colorForType(type),
+      roughness: 0.7,
+      metalness: 0.04,
+      side:      THREE.DoubleSide,
+    });
+
+    const mesh = new THREE.Mesh(geo, mat);
+
+    if (isFallback) {
+      /* lay fallback cubes out on a grid so they're visible */
+      mesh.position.set(
+        (fallbackIdx % 20) * FALLBACK_STEP,
+        0.2,
+        Math.floor(fallbackIdx / 20) * FALLBACK_STEP
+      );
+      fallbackIdx++;
+    } else {
+      /* apply IFC placement chain */
+      mesh.applyMatrix4(extractPlacementMatrix(entity.ObjectPlacement));
+    }
+
+    modelGroup.add(mesh);
+
+    const posAttr = geo.attributes.position;
+    const verts   = posAttr ? posAttr.count : 8;
+    const tris    = geo.index ? geo.index.count / 3 : Math.round(verts / 3);
+    vertCount += verts;
+    triCount  += tris;
+    meshCount++;
+  }
+
+  log("Meshes built: " + meshCount, "ok");
+  log("Verts: " + vertCount.toLocaleString() + "  Tris: " + triCount.toLocaleString(), "ok");
+
+  setStats(data.length, meshCount, vertCount, triCount);
+  setStatus("READY", "ready");
+  emptyState.classList.add("hidden");
+  hudEl.style.display = "";
+  setEnabled(true);
+  fitCamera();
+}
+
+/* ═══════════════════════════════════════════════
+   UPLOAD
+═══════════════════════════════════════════════ */
+const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
+let currentJsonStr = null;
+let uploadSeq = 0;
+
+async function loadIFC(file) {
+  const seq = ++uploadSeq;
+
+  const name = (file.name || "").toLowerCase();
+  if (!name.endsWith(".ifc") && file.type !== "application/octet-stream" && file.type !== "") {
+    log("Rejected: not an .ifc file.", "err");
+    return;
+  }
+
+  log("Uploading: " + file.name, "info");
+  setStatus("UPLOADING…", "loading");
+  setLoading(true);
+  hideError();
+
+  try {
+    const form = new FormData();
+    form.append("file", file, file.name);
+
+    const res = await fetch(BACKEND, { method: "POST", body: form });
+    if (seq !== uploadSeq) return;
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error("Backend " + res.status + ": " + (txt || res.statusText));
+    }
+
+    log("Upload OK – parsing JSON…", "ok");
+    setStatus("PARSING…", "loading");
+
+    const json = await res.json();
+    if (seq !== uploadSeq) return;
+
+    currentJsonStr = JSON.stringify(json, null, 2);
+    buildScene(json);
+
+  } catch(err) {
+    if (seq !== uploadSeq) return;
+    log("Error: " + err.message, "err");
+    setStatus("ERROR", "error");
+    showError(err.message);
+  } finally {
+    if (seq === uploadSeq) setLoading(false);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   UI WIRING
+═══════════════════════════════════════════════ */
+const dropArea  = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
 
 dropArea.addEventListener("click", () => fileInput.click());
+
 fileInput.addEventListener("change", e => {
-  const file = e.target.files?.[0];
-  if (file) uploadFile(file);
+  const f = e.target.files && e.target.files[0];
+  if (f) loadIFC(f);
   fileInput.value = "";
 });
 
 dropArea.addEventListener("dragover", e => {
-  e.preventDefault();
+  e.preventDefault(); e.stopPropagation();
   dropArea.classList.add("drag-over");
 });
 dropArea.addEventListener("dragleave", e => {
-  e.preventDefault();
+  e.preventDefault(); e.stopPropagation();
   dropArea.classList.remove("drag-over");
 });
 dropArea.addEventListener("drop", e => {
-  e.preventDefault();
+  e.preventDefault(); e.stopPropagation();
   dropArea.classList.remove("drag-over");
-  const file = e.dataTransfer?.files?.[0];
-  if (file) uploadFile(file);
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) loadIFC(f);
 });
 
-btnDownload.addEventListener("click", () => {
-  if (!jsonText) {
-    log("No JSON yet. Upload an IFC file first.");
-    return;
-  }
-  const blob = new Blob([jsonText], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ifc.json";
-  a.click();
+/* Prevent browser from navigating on accidental drop outside zone */
+window.addEventListener("dragover", e => { if (e.dataTransfer) e.preventDefault(); });
+window.addEventListener("drop",     e => { if (e.dataTransfer) e.preventDefault(); });
+
+document.getElementById("btnDownload").addEventListener("click", () => {
+  if (!currentJsonStr) return;
+  const blob = new Blob([currentJsonStr], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = "ifc.json"; a.click();
   URL.revokeObjectURL(url);
-  log("JSON downloaded.");
+  log("JSON downloaded.", "ok");
 });
 
-// Load demo on start so you can see the 3D viewer working
-loadDemo();
+document.getElementById("btnFit").addEventListener("click", fitCamera);
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  uploadSeq++;
+  clearModel();
+  currentJsonStr = null;
+  logEl.textContent = "";
+  document.getElementById("statsBlock").style.display = "none";
+  emptyState.classList.remove("hidden");
+  hudEl.style.display = "none";
+  grid.position.y = 0;
+  hideError();
+  setEnabled(false);
+  setStatus("IDLE");
+  setLoading(false);
+});
 </script>
 </body>
 </html>
