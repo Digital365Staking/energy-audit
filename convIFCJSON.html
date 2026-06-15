@@ -22,15 +22,20 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
 
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg);
     color: var(--ink);
     line-height: 1.6;
-    overflow: hidden;
     display: flex;
+    flex-direction: column;
   }
 
   .page {
@@ -38,7 +43,14 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .top {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .drop-area {
@@ -50,7 +62,6 @@
     cursor: pointer;
     transition: 0.15s ease;
     display: inline-block;
-    margin-bottom: 18px;
   }
   .drop-area:hover,
   .drop-area.drag-over {
@@ -72,7 +83,6 @@
   }
 
   .actions {
-    margin-top: 12px;
     display: flex;
     gap: 12px;
   }
@@ -96,28 +106,8 @@
     cursor: default;
     transform: none;
   }
-  .btn.secondary {
-    background: #eaf5fb;
-    color: var(--title);
-    border: 1px solid #cfe0ea;
-  }
-  .btn.secondary:hover {
-    background: #dff0fa;
-  }
-
-  .status {
-    font-size: 0.9rem;
-    color: #245b7d;
-    background: var(--soft);
-    border: 1px solid #cfefff;
-    border-radius: 999px;
-    padding: 8px 12px;
-    margin-top: 10px;
-    display: inline-block;
-  }
 
   .log {
-    margin-top: 14px;
     padding: 12px;
     background: #ffffff;
     border: 1px solid #dbe9f3;
@@ -125,21 +115,21 @@
     font-family: 'Segoe UI', monospace;
     font-size: 12px;
     color: #37566f;
-    max-height: 140px;
+    max-height: 100px;
     overflow: auto;
     white-space: pre-wrap;
   }
 
   .viewport {
     position: relative;
-    height: 320px;
-    width: min(100%, 720px);
+    width: 100%;
+    height: 100%;
+    min-height: 0;
     border-radius: 12px;
     overflow: hidden;
     touch-action: none;
     background: radial-gradient(circle at center, #ffffff 0%, #eaf7ff 52%, #d5efff 100%);
     border: 1px solid #dbe9f3;
-    margin-top: 16px;
   }
 
   canvas {
@@ -181,27 +171,26 @@
 <body>
 
 <div class="page">
-  <div class="drop-area" id="dropArea">
-    <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
-    <div class="drop-title">Drop .ifc here or click to upload</div>
-    <div class="drop-sub">Upload your IFC file to the backend</div>
+  <div class="top">
+    <div class="drop-area" id="dropArea">
+      <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
+      <div class="drop-title">Drop .ifc here or click to upload</div>
+      <div class="drop-sub">Upload your IFC file to the backend</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="btnDownload">Download JSON</button>
+    </div>
+
+    <div class="log" id="log">Ready.</div>
   </div>
-
-  <div class="actions">
-    <button class="btn" id="btnDownload">Download JSON</button>
-    <button class="btn secondary" id="btnTest">Test download (dummy JSON)</button>
-  </div>
-
-  <div class="status" id="status">IDLE</div>
-
-  <div class="log" id="log">Ready.</div>
 
   <div class="viewport" id="viewport">
     <canvas id="canvas"></canvas>
     <div class="empty" id="empty">
       <div class="empty-card">
         <strong>No model</strong>
-        <span>Upload an IFC file or test with the dummy JSON.</span>
+        <span>Upload an IFC file to see the 3D model.</span>
       </div>
     </div>
   </div>
@@ -213,9 +202,6 @@ const viewport = document.getElementById("viewport");
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const btnDownload = document.getElementById("btnDownload");
-const btnTest = document.getElementById("btnTest");
-const statusEl = document.getElementById("status");
-const empty = document.getElementById("empty");
 const logEl = document.getElementById("log");
 
 const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
@@ -258,6 +244,27 @@ const grid = new THREE.GridHelper(100, 100, 0x78a6c8, 0xc5dce9);
 scene.add(grid);
 scene.add(modelGroup);
 
+function fitCameraToObject(object) {
+  const box = new THREE.Box3().setFromObject(object);
+  if (box.isEmpty()) return;
+
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+
+  const fov = camera.fov * (Math.PI / 180);
+  const distance = (maxDim / 2) / Math.tan(fov / 2);
+
+  camera.position.set(
+    center.x + distance * 0.8,
+    center.y + distance * 0.6,
+    center.z + distance * 0.8
+  );
+
+  controls.target.copy(center);
+  controls.update();
+}
+
 function resize() {
   const w = viewport.clientWidth;
   const h = viewport.clientHeight;
@@ -280,11 +287,23 @@ function log(msg) {
   logEl.scrollTop = logEl.scrollHeight;
 }
 
+function loadDemo() {
+  modelGroup.clear();
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
+  const cube = new THREE.Mesh(geo, mat);
+  modelGroup.add(cube);
+  fitCameraToObject(modelGroup);
+  empty.style.display = "none";
+  jsonText = JSON.stringify({ demo: true, name: "demo-box" }, null, 2);
+  btnDownload.disabled = false;
+  log("Demo cube loaded and centered.");
+}
+
 function uploadFile(file) {
   const form = new FormData();
   form.append("file", file, file.name);
 
-  statusEl.textContent = "UPLOADING";
   log(`Uploading: ${file.name}`);
 
   fetch(BACKEND, { method: "POST", body: form })
@@ -302,12 +321,12 @@ function uploadFile(file) {
       const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
       const cube = new THREE.Mesh(geo, mat);
       modelGroup.add(cube);
+      fitCameraToObject(modelGroup);
       empty.style.display = "none";
-      statusEl.textContent = "READY";
+      btnDownload.disabled = false;
       log("Upload successful. JSON ready for download.");
     })
     .catch(err => {
-      statusEl.textContent = "ERROR";
       log("Upload error: " + err.message);
       console.error(err);
     });
@@ -337,7 +356,7 @@ dropArea.addEventListener("drop", e => {
 
 btnDownload.addEventListener("click", () => {
   if (!jsonText) {
-    log("No JSON yet. Upload an IFC file first, or use 'Test download' to try a dummy JSON.");
+    log("No JSON yet. Upload an IFC file first.");
     return;
   }
   const blob = new Blob([jsonText], { type: "application/json" });
@@ -350,30 +369,8 @@ btnDownload.addEventListener("click", () => {
   log("JSON downloaded.");
 });
 
-btnTest.addEventListener("click", () => {
-  const dummy = {
-    test: true,
-    message: "This is a dummy JSON for testing the download button.",
-    timestamp: new Date().toISOString()
-  };
-  jsonText = JSON.stringify(dummy, null, 2);
-  log("Test JSON created.");
-  const blob = new Blob([jsonText], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "test.json";
-  a.click();
-  URL.revokeObjectURL(url);
-  log("Test JSON downloaded.");
-  modelGroup.clear();
-  const geo = new THREE.BoxGeometry(1, 1, 1);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
-  const cube = new THREE.Mesh(geo, mat);
-  modelGroup.add(cube);
-  empty.style.display = "none";
-  statusEl.textContent = "READY";
-});
+// Load demo on start so you can see the 3D viewer working
+loadDemo();
 </script>
 </body>
 </html>
