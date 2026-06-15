@@ -11,7 +11,7 @@
     --card: #ffffff;
     --ink: #1a1a1a;
     --title: #0b3c5d;
-    --accent: #1890ff;
+    --accent: #b0e2ff;
     --accent-2: #1d6fa5;
     --soft: #e6f7ff;
     --line: rgba(11, 60, 93, 0.12);
@@ -28,65 +28,53 @@
     line-height: 1.6;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
-  .card {
-    width: min(100%, 920px);
-    background: var(--card);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    padding: 32px;
-  }
-
-  h1 {
-    font-size: 1.6rem;
-    margin: 0 0 8px 0;
-    color: var(--title);
-  }
-
-  .subtitle {
-    font-size: 0.95rem;
-    color: #4f6780;
-    margin-bottom: 20px;
-  }
-
-  .drop {
-    border: 1px dashed #cfe0ea;
-    border-radius: 12px;
+  .page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    background: var(--soft);
-    transition: 0.15s ease;
   }
-  .drop:hover, .drop.drag-over {
+
+  .drop-area {
+    width: min(100%, 720px);
+    border: 2px dashed #cfe0ea;
+    border-radius: 14px;
+    padding: 28px;
+    background: var(--soft);
+    cursor: pointer;
+    transition: 0.15s ease;
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+  .drop-area:hover,
+  .drop-area.drag-over {
     border-color: var(--accent);
     background: #dbeef8;
   }
-  .drop input { display: none; }
+  .drop-area input { display: none; }
 
   .drop-title {
     font-weight: 700;
     color: var(--title);
-    margin-bottom: 4px;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
   }
   .drop-sub {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: #4f6780;
   }
 
   .actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 18px;
+    margin-top: 12px;
   }
 
   .btn {
     border: none;
     border-radius: 10px;
-    padding: 11px 16px;
+    padding: 11px 18px;
     background: var(--title);
     color: #fff;
     font-weight: 700;
@@ -97,14 +85,6 @@
     transform: translateY(-1px);
     background: var(--accent-2);
   }
-  .btn.secondary {
-    background: #eaf5fb;
-    color: var(--title);
-    border: 1px solid #cfe0ea;
-  }
-  .btn.secondary:hover {
-    background: #dff0fa;
-  }
   .btn:disabled {
     opacity: 0.35;
     cursor: default;
@@ -112,26 +92,26 @@
   }
 
   .status {
-    font-family: 'Segoe UI', sans-serif;
     font-size: 0.9rem;
     color: #245b7d;
     background: var(--soft);
     border: 1px solid #cfefff;
     border-radius: 999px;
     padding: 8px 12px;
-    margin-top: 16px;
+    margin-top: 10px;
     display: inline-block;
   }
 
   .viewport {
-    margin-top: 22px;
     position: relative;
     height: 320px;
+    width: min(100%, 720px);
     border-radius: 12px;
     overflow: hidden;
     touch-action: none;
     background: radial-gradient(circle at center, #ffffff 0%, #eaf7ff 52%, #d5efff 100%);
     border: 1px solid #dbe9f3;
+    margin-top: 16px;
   }
 
   canvas {
@@ -168,29 +148,19 @@
     color: #4f6780;
     font-size: 0.92rem;
   }
-
-  .note {
-    font-size: 0.9rem;
-    color: #35556e;
-    margin-top: 16px;
-  }
 </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>FullBIM · IFC → JSON</h1>
-  <div class="subtitle">Upload an IFC file and download the JSON result.</div>
-
-  <div class="drop" id="drop">
+<div class="page">
+  <div class="drop-area" id="dropArea">
     <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
-    <div class="drop-title">Drop .ifc here or click</div>
-    <div class="drop-sub">Uploads to the backend, then you can download JSON</div>
+    <div class="drop-title">Drop .ifc here or click to upload</div>
+    <div class="drop-sub">Upload your IFC file to the backend</div>
   </div>
 
   <div class="actions">
     <button class="btn" id="btnDownload" disabled>Download JSON</button>
-    <button class="btn secondary" id="btnDemo">Load demo IFC</button>
   </div>
 
   <div class="status" id="status">IDLE</div>
@@ -200,13 +170,9 @@
     <div class="empty" id="empty">
       <div class="empty-card">
         <strong>No model</strong>
-        <span>Upload an IFC or use the demo.</span>
+        <span>Upload an IFC file or use the demo.</span>
       </div>
     </div>
-  </div>
-
-  <div class="note">
-    Drag or click to upload. After upload, the JSON appears in the browser and you can download it.
   </div>
 </div>
 
@@ -216,10 +182,9 @@ import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples
 
 const canvas = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
-const drop = document.getElementById("drop");
+const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const btnDownload = document.getElementById("btnDownload");
-const btnDemo = document.getElementById("btnDemo");
 const statusEl = document.getElementById("status");
 const empty = document.getElementById("empty");
 
@@ -280,26 +245,11 @@ function animate() {
 }
 animate();
 
-function loadDemo() {
-  modelGroup.clear();
-  const geo = new THREE.BoxGeometry(1, 1, 1);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff });
-  const cube = new THREE.Mesh(geo, mat);
-  modelGroup.add(cube);
-  empty.style.display = "none";
-  statusEl.textContent = "DEMO READY";
-  btnDownload.disabled = false;
-  jsonText = JSON.stringify({ demo: true, name: "demo-box" }, null, 2);
-}
-
-btnDemo.addEventListener("click", loadDemo);
-
 function uploadFile(file) {
   const form = new FormData();
   form.append("file", file, file.name);
 
   statusEl.textContent = "UPLOADING";
-  drop.style.cursor = "wait";
 
   fetch(BACKEND, { method: "POST", body: form })
     .then(res => {
@@ -316,33 +266,31 @@ function uploadFile(file) {
       empty.style.display = "none";
       statusEl.textContent = "READY";
       btnDownload.disabled = false;
-      drop.style.cursor = "pointer";
     })
     .catch(err => {
       statusEl.textContent = "ERROR";
       console.error(err);
-      drop.style.cursor = "pointer";
     });
 }
 
-drop.addEventListener("click", () => fileInput.click());
+dropArea.addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", e => {
   const file = e.target.files?.[0];
   if (file) uploadFile(file);
   fileInput.value = "";
 });
 
-drop.addEventListener("dragover", e => {
+dropArea.addEventListener("dragover", e => {
   e.preventDefault();
-  drop.classList.add("drag-over");
+  dropArea.classList.add("drag-over");
 });
-drop.addEventListener("dragleave", e => {
+dropArea.addEventListener("dragleave", e => {
   e.preventDefault();
-  drop.classList.remove("drag-over");
+  dropArea.classList.remove("drag-over");
 });
-drop.addEventListener("drop", e => {
+dropArea.addEventListener("drop", e => {
   e.preventDefault();
-  drop.classList.remove("drag-over");
+  dropArea.classList.remove("drag-over");
   const file = e.dataTransfer?.files?.[0];
   if (file) uploadFile(file);
 });
