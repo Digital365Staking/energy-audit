@@ -8,61 +8,421 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
 <style>
-/* (keep ALL your existing CSS unchanged — omitted here for brevity) */
+  :root {
+    --bg: #b0e2ff;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --title: #0b3c5d;
+    --accent: #1890ff;
+    --accent-2: #1d6fa5;
+    --soft: #e6f7ff;
+    --line: rgba(11, 60, 93, 0.12);
+    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --shadow-2: 0 8px 20px rgba(0,0,0,0.15);
+    --mono: 'JetBrains Mono', monospace;
+  }
 
-html, body { height: 100%; margin: 0; overflow: hidden; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
 
-.viewport {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  touch-action: none; /* 🔥 IMPORTANT FIX */
-}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none; /* 🔥 IMPORTANT FIX */
-}
+  .container {
+    width: min(100%, 1600px);
+    margin: 0 auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+    flex: 1;
+  }
+
+  .shell {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--title), var(--accent-2));
+    box-shadow: 0 8px 18px rgba(11, 60, 93, 0.18);
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    min-width: 0;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--title);
+    font-family: var(--mono);
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #4f6780;
+    margin-top: 2px;
+  }
+
+  .status {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: #245b7d;
+    background: var(--soft);
+    border: 1px solid #cfefff;
+    border-radius: 999px;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  .content {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .panel {
+    width: 360px;
+    background: #fbfdff;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .panel-scroll {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+  }
+
+  .panel-block {
+    padding: 18px 18px 0 18px;
+  }
+
+  .panel-block:last-child {
+    padding-bottom: 18px;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    color: var(--title);
+    font-size: 1rem;
+    font-family: var(--mono);
+  }
+
+  .highlight {
+    background: var(--soft);
+    padding: 15px;
+    border-left: 5px solid var(--accent);
+    border-radius: 8px;
+    margin: 12px 0;
+    color: #20445f;
+    font-size: 0.95rem;
+  }
+
+  .video-container {
+    margin: 14px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-2);
+    border: 1px solid #d8ecfa;
+    background: #fff;
+  }
+
+  .controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 12px;
+    background: var(--title);
+    color: #fff;
+    font-family: var(--mono);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    background: var(--accent-2);
+  }
+
+  .btn.secondary {
+    background: #eaf5fb;
+    color: var(--title);
+    border: 1px solid #cfe0ea;
+  }
+
+  .btn.secondary:hover {
+    background: #dff0fa;
+  }
+
+  .ad-section {
+    margin-top: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--title), var(--accent-2));
+    color: white;
+    border-radius: 12px;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .cta {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #ffffff;
+    color: var(--title);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.3s;
+  }
+
+  .cta:hover {
+    background: var(--soft);
+  }
+
+  #log {
+    margin: 18px;
+    padding: 12px;
+    background: #ffffff;
+    border: 1px solid #dbe9f3;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #37566f;
+    max-height: 180px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+
+  .viewport {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
+    background: radial-gradient(circle at center, #ffffff 0%, #eaf7ff 52%, #d5efff 100%);
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  .viewer-hud {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(255,255,255,0.86);
+    color: #214862;
+    border: 1px solid #d4e6f4;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.7;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    pointer-events: none;
+  }
+
+  .empty-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .empty-card {
+    background: rgba(255,255,255,0.88);
+    border: 1px solid #dbe9f3;
+    border-radius: 16px;
+    padding: 22px 24px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    max-width: 360px;
+    margin: 18px;
+  }
+
+  .empty-card strong {
+    display: block;
+    color: var(--title);
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+
+  .empty-card span {
+    color: #4f6780;
+    font-size: 0.95rem;
+  }
+
+  .footer-note {
+    font-size: 0.9rem;
+    color: #35556e;
+    padding: 0 4px 2px;
+  }
+
+  @media (max-width: 980px) {
+    .content {
+      flex-direction: column;
+    }
+    .panel {
+      width: 100%;
+      max-height: 360px;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+  }
 </style>
 </head>
 
 <body>
+  <div class="container">
+    <div class="shell">
+      <header>
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div class="brand-text">
+            <h1>FullBIM · IFC Viewer</h1>
+            <div class="subtitle">A cleaner light theme with reliable 3D controls</div>
+          </div>
+        </div>
+        <div class="status" id="headerStatus">IDLE</div>
+      </header>
 
-<!-- (keep your full UI unchanged) -->
+      <div class="content">
+        <aside class="panel">
+          <div class="panel-scroll">
+            <div class="panel-block">
+              <h2>Model tools</h2>
+              <div class="controls-grid">
+                <button class="btn" id="btnFit">Fit camera</button>
+                <button class="btn secondary" id="btnReset">Reset</button>
+                <button class="btn secondary" id="btnDemo">Load demo</button>
+                <button class="btn" id="btnClearLog">Clear log</button>
+              </div>
+            </div>
 
-<main>
-  <aside class="panel">
-    <!-- unchanged -->
-  </aside>
+            <div class="panel-block">
+              <h2>Notes</h2>
+              <div class="highlight">
+                Drag your IFC file into the viewer or use your own loader logic here.
+                The canvas keeps <b>touch-action: none</b> so OrbitControls can handle touch input properly [web:44][web:46][web:45].
+              </div>
+            </div>
 
-  <section class="viewport" id="viewport">
-    <canvas id="canvas"></canvas>
-  </section>
-</main>
+            <div class="panel-block">
+              <h2>Info</h2>
+              <p class="footer-note">
+                This layout uses the requested light blue style model with a white card shell and a bright blue accent.
+              </p>
+            </div>
+
+            <div class="panel-block">
+              <div id="log">Ready.</div>
+            </div>
+
+            <div class="panel-block">
+              <div class="ad-section">
+                <strong>FullBIM</strong>
+                <p>Clean BIM visualization, IFC workflow, and interactive model inspection.</p>
+                <div class="cta-group">
+                  <a class="cta" href="#" onclick="return false;">Download</a>
+                  <a class="cta" href="#" onclick="return false;">Docs</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="viewport" id="viewport">
+          <canvas id="canvas"></canvas>
+
+          <div class="empty-state" id="emptyState">
+            <div class="empty-card">
+              <strong>No model loaded</strong>
+              <span>Drop an IFC file or use the demo cube to verify controls.</span>
+            </div>
+          </div>
+
+          <div class="viewer-hud">
+            LMB orbit<br>
+            RMB pan<br>
+            Scroll zoom
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
 
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
 
-/* -----------------------------
-   BASIC SETUP
------------------------------- */
-
 const canvas = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
+const logEl = document.getElementById("log");
+const statusEl = document.getElementById("headerStatus");
+const emptyState = document.getElementById("emptyState");
 
-const renderer = new THREE.WebGLRenderer({
-  canvas,
-  antialias: true
-});
-
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(viewport.clientWidth, viewport.clientHeight, false);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b1118);
+scene.background = new THREE.Color(0xeaf7ff);
 
 const camera = new THREE.PerspectiveCamera(
   60,
@@ -70,89 +430,69 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   10000
 );
-
 camera.position.set(10, 10, 10);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-
-/* 🔥 CRITICAL FIX: proper interaction */
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-
 controls.enableZoom = true;
 controls.enablePan = true;
 controls.enableRotate = true;
-
-/* mouse buttons (fixes “can’t move properly”) */
 controls.mouseButtons = {
   LEFT: THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
   RIGHT: THREE.MOUSE.PAN
 };
-
-/* touch support */
 controls.touches = {
   ONE: THREE.TOUCH.ROTATE,
   TWO: THREE.TOUCH.DOLLY_PAN
 };
-
 controls.screenSpacePanning = true;
 controls.minDistance = 0.1;
 controls.maxDistance = 5000;
 
-/* LIGHTS */
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+scene.add(new THREE.AmbientLight(0xffffff, 0.75));
 
-const light = new THREE.DirectionalLight(0xffffff, 1);
+const light = new THREE.DirectionalLight(0xffffff, 1.2);
 light.position.set(20, 40, 20);
 scene.add(light);
 
-/* GRID */
-const grid = new THREE.GridHelper(100, 100, 0x34506d, 0x1a2633);
+const fill = new THREE.DirectionalLight(0x8fcfff, 0.35);
+fill.position.set(-20, 10, -10);
+scene.add(fill);
+
+const grid = new THREE.GridHelper(100, 100, 0x78a6c8, 0xc5dce9);
 scene.add(grid);
 
-/* MODEL ROOT */
 const modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
-/* -----------------------------
-   FIXED RESIZE
------------------------------- */
-function resize() {
-  const w = viewport.clientWidth;
-  const h = viewport.clientHeight;
-
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
+function log(msg) {
+  logEl.textContent += `\n${msg}`;
+  logEl.scrollTop = logEl.scrollHeight;
 }
-window.addEventListener("resize", resize);
-resize();
 
-/* -----------------------------
-   ANIMATION LOOP
------------------------------- */
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+function setStatus(text) {
+  statusEl.textContent = text;
 }
-animate();
 
-/* -----------------------------
-   IMPORTANT FIX: FIT CAMERA
------------------------------- */
+function clearModel() {
+  while (modelGroup.children.length) {
+    const obj = modelGroup.children.pop();
+    obj.geometry?.dispose?.();
+    if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose?.());
+    else obj.material?.dispose?.();
+  }
+}
+
 function fitCamera() {
   const box = new THREE.Box3().setFromObject(modelGroup);
-
   if (box.isEmpty()) return;
 
   const size = box.getSize(new THREE.Vector3());
   const center = box.getCenter(new THREE.Vector3());
-
   const maxDim = Math.max(size.x, size.y, size.z);
   const fov = camera.fov * Math.PI / 180;
-
   let distance = maxDim / (2 * Math.tan(fov / 2));
   distance *= 1.5;
 
@@ -166,17 +506,50 @@ function fitCamera() {
   controls.update();
 }
 
-/* -----------------------------
-   TEMP DEMO OBJECT (REMOVE WHEN IFC LOADED)
------------------------------- */
-const testGeo = new THREE.BoxGeometry(1, 1, 1);
-const testMat = new THREE.MeshStandardMaterial({ color: 0x58a6ff });
-const cube = new THREE.Mesh(testGeo, testMat);
-modelGroup.add(cube);
+function resize() {
+  const w = viewport.clientWidth;
+  const h = viewport.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resize);
+resize();
 
-fitCamera();
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
 
+function loadDemo() {
+  clearModel();
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1890ff, roughness: 0.45, metalness: 0.05 });
+  const cube = new THREE.Mesh(geo, mat);
+  modelGroup.add(cube);
+  emptyState.style.display = "none";
+  setStatus("DEMO READY");
+  log("Demo cube loaded.");
+  fitCamera();
+}
+
+document.getElementById("btnFit").addEventListener("click", fitCamera);
+document.getElementById("btnReset").addEventListener("click", () => {
+  clearModel();
+  emptyState.style.display = "";
+  setStatus("IDLE");
+  log("Reset.");
+  grid.position.y = 0;
+  camera.position.set(10, 10, 10);
+  controls.target.set(0, 0, 0);
+  controls.update();
+});
+document.getElementById("btnDemo").addEventListener("click", loadDemo);
+document.getElementById("btnClearLog").addEventListener("click", () => {
+  logEl.textContent = "Ready.";
+});
 </script>
-
 </body>
 </html>
