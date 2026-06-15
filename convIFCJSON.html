@@ -1,98 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FullBIM · IFC Viewer</title>
-
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
-<style>
-:root{
-  --bg:#0D1117; --surface:#161B22; --surface2:#1C2128; --border:#21262D;
-  --accent:#58A6FF; --accent-dim:rgba(88,166,255,0.12); --accent2:#3FB950;
-  --danger:#F85149; --text:#E6EDF3; --muted:#8B949E;
-  --mono:'JetBrains Mono',monospace;
-  --panel-w:380px; --header-h:52px; --radius:6px;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:system-ui;display:flex;flex-direction:column}
-
-header{
-  height:var(--header-h);background:var(--surface);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 16px
-}
-
-.logo{font-family:var(--mono);font-weight:600}
-main{display:flex;flex:1;overflow:hidden}
-
-.panel{
-  width:var(--panel-w);background:var(--surface);
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column
-}
-
-.panel-section{padding:14px;border-bottom:1px solid var(--border)}
-
-.dropzone{
-  border:1px dashed var(--border);
-  padding:20px;text-align:center;cursor:pointer
-}
-
-.btn{
-  padding:8px 12px;border:1px solid var(--border);
-  background:var(--surface2);color:var(--text);
-  cursor:pointer
-}
-
-.btn:disabled{opacity:.5}
-
-.viewport{flex:1;position:relative;background:var(--bg)}
-
-canvas{width:100%;height:100%}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="logo">FullBIM IFC Viewer</div>
-</header>
-
-<main>
-
-<!-- LEFT PANEL -->
-<aside class="panel">
-
-  <div class="panel-section">
-    <div class="dropzone" id="dropzone">
-      <input type="file" id="fileInput" accept=".ifc" />
-      Drop IFC file or click
-    </div>
-  </div>
-
-  <div class="panel-section">
-    <button class="btn" id="btnDownload" disabled>Download JSON</button>
-    <button class="btn" id="btnReset" disabled>Reset</button>
-  </div>
-
-  <pre id="log" style="padding:10px;font-size:11px;overflow:auto;flex:1"></pre>
-
-</aside>
-
-<!-- VIEWPORT -->
-<div class="viewport">
-  <canvas id="canvas"></canvas>
-</div>
-
-</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
 let currentJson = null;
 let currentJsonStr = null;
+
+let scene, camera, renderer, controls;
 
 const log = (msg) => {
   document.getElementById("log").textContent += msg + "\n";
@@ -103,9 +15,107 @@ function setEnabled(state){
   document.getElementById("btnReset").disabled = !state;
 }
 
-/**
- * MAIN BACKEND INTEGRATION
- */
+/* -----------------------------
+   THREE.JS INIT
+------------------------------*/
+function init3D(){
+  const canvas = document.getElementById("canvas");
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0D1117);
+
+  camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    10000
+  );
+
+  camera.position.set(10, 10, 10);
+
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true
+  });
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 20, 10);
+  scene.add(light);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+  animate();
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+/* -----------------------------
+   CONVERT BACKEND → 3D
+------------------------------*/
+function buildGeometry(element){
+
+  if(!element.geometry) return null;
+
+  const geo = new THREE.BufferGeometry();
+
+  const vertices = new Float32Array(element.geometry.vertices.flat());
+  const indices = new Uint32Array(element.geometry.indices);
+
+  geo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(vertices, 3)
+  );
+
+  geo.setIndex(new THREE.BufferAttribute(indices, 1));
+  geo.computeVertexNormals();
+
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x58A6FF,
+    metalness: 0.1,
+    roughness: 0.8
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+
+  mesh.userData = element;
+
+  return mesh;
+}
+
+function renderScene(data){
+
+  // clear previous
+  scene.clear();
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 20, 10);
+  scene.add(light);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+  let count = 0;
+
+  data.forEach(el => {
+
+    const mesh = buildGeometry(el);
+
+    if(mesh){
+      scene.add(mesh);
+      count++;
+    }
+  });
+
+  log("3D objects rendered: " + count);
+}
+
+/* -----------------------------
+   BACKEND CALL
+------------------------------*/
 async function loadIFCFile(file){
   log("Uploading IFC to backend...");
 
@@ -121,40 +131,33 @@ async function loadIFCFile(file){
       }
     );
 
-    if (!res.ok) {
-      throw new Error(await res.text());
-    }
+    if (!res.ok) throw new Error(await res.text());
 
     const data = await res.json();
 
     currentJson = data;
     currentJsonStr = JSON.stringify(data, null, 2);
 
-    log("Backend conversion success");
-    log("Entities: " + (data.data?.length || 0));
+    log("Backend success");
+    log("Entities: " + data.data.length);
+    log("Geometry: " + (data.geometryCount || 0));
+
+    // 🚀 RENDER 3D
+    renderScene(data.data);
 
     setEnabled(true);
 
   } catch (err) {
+
     log("Backend failed: " + err.message);
-    log("Using fallback parser...");
 
-    // fallback minimal
-    const text = await file.text();
-
-    currentJson = {
-      type: "fallback",
-      data: text.slice(0, 1000)
-    };
-
-    currentJsonStr = JSON.stringify(currentJson, null, 2);
-    setEnabled(true);
+    setEnabled(false);
   }
 }
 
-/**
- * EVENTS
- */
+/* -----------------------------
+   EVENTS
+------------------------------*/
 document.getElementById("fileInput").addEventListener("change", (e)=>{
   const file = e.target.files[0];
   if(file) loadIFCFile(file);
@@ -176,10 +179,13 @@ document.getElementById("btnDownload").onclick = () => {
 document.getElementById("btnReset").onclick = () => {
   currentJson = null;
   currentJsonStr = null;
+  scene.clear();
   setEnabled(false);
   document.getElementById("log").textContent = "";
 };
-</script>
 
-</body>
-</html>
+/* -----------------------------
+   INIT
+------------------------------*/
+init3D();
+</script>
