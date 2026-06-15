@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>FullBIM · IFC Viewer</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #0b1118;
+    --bg-2: #0e1620;
     --surface: #101824;
     --surface-2: #141f2d;
+    --surface-3: #0c121a;
     --border: #223044;
     --border-hi: #34506d;
     --accent: #b0e2ff;
@@ -30,7 +33,9 @@
 
   body {
     font-family: var(--mono);
-    background: radial-gradient(1200px 800px at 70% 20%, rgba(176,226,255,0.06), transparent 55%), var(--bg);
+    background:
+      radial-gradient(1200px 800px at 70% 20%, rgba(176,226,255,0.06), transparent 55%),
+      linear-gradient(180deg, var(--bg), #081018 65%);
     color: var(--text);
     overflow: hidden;
     display: flex;
@@ -43,7 +48,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    background: linear-gradient(180deg, var(--surface), #0e1620);
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
     gap: 12px;
@@ -53,6 +58,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
   }
 
   .logo-mark {
@@ -70,6 +76,7 @@
     letter-spacing: 0.12em;
     color: var(--text-hi);
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .logo-text span { color: var(--accent); }
@@ -78,6 +85,7 @@
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 0.08em;
+    white-space: nowrap;
   }
   .header-status.ready { color: var(--ok); }
   .header-status.loading { color: var(--warn); }
@@ -87,16 +95,18 @@
     display: flex;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
   }
 
   .panel {
-    width: 300px;
+    width: 320px;
     background: linear-gradient(180deg, var(--surface), #0d141e);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     overflow: hidden;
+    min-height: 0;
   }
 
   .panel-block {
@@ -113,17 +123,41 @@
     margin-bottom: 10px;
   }
 
+  .progress-bar-wrap {
+    height: 2px;
+    background: var(--border);
+    overflow: hidden;
+    display: none;
+  }
+  .progress-bar-wrap.active { display: block; }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width: 0%;
+    transition: width 0.2s;
+  }
+  .progress-bar.indeterminate {
+    width: 40%;
+    animation: slide 1.2s ease-in-out infinite;
+  }
+  @keyframes slide {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(350%); }
+  }
+
   #dropzone {
     border: 1px dashed var(--border-hi);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 22px 12px;
     text-align: center;
     cursor: pointer;
     transition: 0.15s ease;
     position: relative;
     background: rgba(255,255,255,0.01);
+    user-select: none;
   }
-  #dropzone:hover, #dropzone.drag-over {
+  #dropzone:hover,
+  #dropzone.drag-over {
     border-color: var(--accent);
     background: var(--accent-soft);
     transform: translateY(-1px);
@@ -134,7 +168,7 @@
     display: block;
     font-size: 22px;
     margin-bottom: 6px;
-    opacity: 0.8;
+    opacity: 0.85;
     color: var(--accent);
   }
   .drop-title {
@@ -146,6 +180,7 @@
     font-size: 10px;
     color: var(--text-dim);
     margin-top: 4px;
+    line-height: 1.45;
   }
 
   .btn-row {
@@ -156,7 +191,7 @@
 
   .btn {
     flex: 1;
-    min-width: 82px;
+    min-width: 88px;
     padding: 8px 10px;
     font-family: var(--mono);
     font-size: 10px;
@@ -195,7 +230,7 @@
   }
 
   .stat-cell {
-    background: #0c121a;
+    background: var(--surface-3);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 8px;
@@ -214,6 +249,19 @@
     margin-top: 4px;
   }
 
+  #backendInfo {
+    display: none;
+    border: 1px solid rgba(255, 209, 102, 0.35);
+    background: rgba(255, 209, 102, 0.06);
+    color: #ffe9b0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 10px;
+    line-height: 1.55;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+
   #log {
     flex: 1;
     overflow-y: auto;
@@ -224,6 +272,7 @@
     white-space: pre-wrap;
     scrollbar-width: thin;
     scrollbar-color: var(--border-hi) transparent;
+    min-height: 0;
   }
 
   #log .log-ok { color: var(--ok); }
@@ -231,36 +280,20 @@
   #log .log-warn { color: var(--warn); }
   #log .log-info { color: var(--accent); }
 
-  .progress-bar-wrap {
-    height: 2px;
-    background: var(--border);
-    overflow: hidden;
-    display: none;
-  }
-  .progress-bar-wrap.active { display: block; }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    width: 0%;
-    transition: width 0.2s;
-  }
-  .progress-bar.indeterminate {
-    width: 40%;
-    animation: slide 1.2s ease-in-out infinite;
-  }
-  @keyframes slide {
-    0% { transform: translateX(-120%); }
-    100% { transform: translateX(350%); }
-  }
-
   .viewport {
     flex: 1;
     position: relative;
     overflow: hidden;
-    background: radial-gradient(900px 700px at 50% 40%, rgba(176,226,255,0.04), transparent 60%), var(--bg);
+    background:
+      radial-gradient(900px 700px at 50% 40%, rgba(176,226,255,0.04), transparent 60%),
+      var(--bg);
   }
 
-  canvas { display: block; width: 100%; height: 100%; }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
   .empty-state {
     position: absolute;
@@ -297,6 +330,8 @@
     font-size: 10px;
     color: var(--text-dim);
     opacity: 0.75;
+    text-align: center;
+    padding: 0 16px;
   }
 
   .hud {
@@ -318,10 +353,17 @@
 
   .hud-key { color: var(--accent); }
   .hud-val { color: var(--text); }
+
+  .tiny-note {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-top: 10px;
+  }
 </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="header-left">
     <div class="logo-mark"></div>
@@ -331,18 +373,21 @@
 </header>
 
 <main>
-  <div class="panel">
+  <aside class="panel">
     <div class="progress-bar-wrap" id="progressWrap">
       <div class="progress-bar indeterminate" id="progressBar"></div>
     </div>
 
     <div class="panel-block">
       <div class="panel-label">Load IFC</div>
-      <div id="dropzone">
+      <div id="dropzone" title="Click or drop an IFC file here">
         <input type="file" id="fileInput" accept=".ifc,application/octet-stream" />
         <span class="drop-icon">⬡</span>
         <div class="drop-title">Drop .ifc or click</div>
-        <div class="drop-sub">Uploads to the IFC backend</div>
+        <div class="drop-sub">Uploads the file to your backend and renders the returned IFC JSON.</div>
+      </div>
+      <div class="tiny-note">
+        If upload fails, open DevTools and check CORS, network, or backend response.
       </div>
     </div>
 
@@ -362,12 +407,13 @@
         <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Verts</div></div>
         <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Tris</div></div>
       </div>
+      <div id="backendInfo"></div>
     </div>
 
     <div id="log"></div>
-  </div>
+  </aside>
 
-  <div class="viewport" id="viewport">
+  <section class="viewport" id="viewport">
     <canvas id="canvas"></canvas>
 
     <div class="empty-state" id="emptyState">
@@ -381,7 +427,7 @@
       <div><span class="hud-key">RMB </span><span class="hud-val">pan</span></div>
       <div><span class="hud-key">SCR </span><span class="hud-val">zoom</span></div>
     </div>
-  </div>
+  </section>
 </main>
 
 <script type="module">
@@ -393,60 +439,22 @@ const viewport = document.getElementById("viewport");
 const logEl = document.getElementById("log");
 const statusEl = document.getElementById("headerStatus");
 const progressW = document.getElementById("progressWrap");
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const emptyState = document.getElementById("emptyState");
+const hud = document.getElementById("hud");
+const backendInfo = document.getElementById("backendInfo");
+
+const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
+
+let currentJson = null;
+let currentJsonStr = null;
+let modelGroup = new THREE.Group();
+let grid;
 
 function vpSize() {
   return { w: viewport.clientWidth, h: viewport.clientHeight };
 }
-
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(viewport.clientWidth, viewport.clientHeight, false);
-renderer.shadowMap.enabled = false;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b1118);
-
-const { w, h } = vpSize();
-const camera = new THREE.PerspectiveCamera(55, w / h, 0.01, 5000);
-camera.position.set(15, 12, 15);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.07;
-controls.screenSpacePanning = true;
-controls.minDistance = 0.1;
-controls.maxDistance = 1000;
-
-scene.add(new THREE.AmbientLight(0xcfe9ff, 0.65));
-const sun = new THREE.DirectionalLight(0xffffff, 0.95);
-sun.position.set(20, 40, 20);
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0x7ccfff, 0.25);
-fill.position.set(-10, 5, -15);
-scene.add(fill);
-
-const grid = new THREE.GridHelper(100, 100, 0x34506d, 0x1a2633);
-scene.add(grid);
-
-let modelGroup = new THREE.Group();
-scene.add(modelGroup);
-
-function onResize() {
-  const { w, h } = vpSize();
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-}
-window.addEventListener("resize", onResize);
-new ResizeObserver(onResize).observe(viewport);
-onResize();
-
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-animate();
 
 function log(msg, type = "") {
   const div = document.createElement("div");
@@ -471,7 +479,18 @@ function setEnabled(on) {
   document.getElementById("btnReset").disabled = !on;
 }
 
+function showBackendInfo(title, text) {
+  backendInfo.style.display = "block";
+  backendInfo.textContent = `${title}\n${text}`;
+}
+
+function hideBackendInfo() {
+  backendInfo.style.display = "none";
+  backendInfo.textContent = "";
+}
+
 function fmt(n) {
+  if (!Number.isFinite(n)) return "—";
   return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n);
 }
 
@@ -483,23 +502,71 @@ function setStats(entities, meshes, verts, tris) {
   document.getElementById("statTris").textContent = fmt(tris);
 }
 
-function fitCamera() {
-  const box = new THREE.Box3().setFromObject(modelGroup);
-  if (box.isEmpty()) return;
-  const center = box.getCenter(new THREE.Vector3());
-  const size = box.getSize(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z);
-  const fov = camera.fov * Math.PI / 180;
-  const dist = (maxDim / (2 * Math.tan(fov / 2))) * 1.6;
-  camera.position.set(center.x + dist * 0.7, center.y + dist * 0.6, center.z + dist * 0.7);
-  controls.target.copy(center);
-  controls.update();
-  grid.position.y = box.min.y;
+function normalizeIfcFile(file) {
+  if (!file) return false;
+  const name = (file.name || "").toLowerCase();
+  return name.endsWith(".ifc") || file.type === "application/octet-stream" || file.type === "";
 }
+
+function makeRenderer() {
+  const r = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: false,
+    preserveDrawingBuffer: false
+  });
+  r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  r.setSize(viewport.clientWidth, viewport.clientHeight, false);
+  return r;
+}
+
+const renderer = makeRenderer();
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b1118);
+
+const camera = new THREE.PerspectiveCamera(55, viewport.clientWidth / viewport.clientHeight, 0.01, 5000);
+camera.position.set(15, 12, 15);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.screenSpacePanning = true;
+controls.minDistance = 0.1;
+controls.maxDistance = 1000;
+
+scene.add(new THREE.AmbientLight(0xcfe9ff, 0.65));
+const sun = new THREE.DirectionalLight(0xffffff, 0.95);
+sun.position.set(20, 40, 20);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x7ccfff, 0.25);
+fill.position.set(-10, 5, -15);
+scene.add(fill);
+
+grid = new THREE.GridHelper(100, 100, 0x34506d, 0x1a2633);
+scene.add(grid);
+
+scene.add(modelGroup);
+
+function onResize() {
+  const { w, h } = vpSize();
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", onResize);
+new ResizeObserver(onResize).observe(viewport);
+onResize();
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
 
 function colorForType(type) {
   const key = (type || "").toUpperCase();
-  return {
+  return ({
     IFCWALL: 0x9ecfff,
     IFCWALLSTANDARDCASE: 0x9ecfff,
     IFCSLAB: 0xc2d8e8,
@@ -510,8 +577,8 @@ function colorForType(type) {
     IFCSTAIR: 0xd5b0ff,
     IFCROOF: 0x91aee8,
     IFCFURNISHINGELEMENT: 0xd3b68c,
-    DEFAULT: 0xb0e2ff,
-  }[key] ?? 0xb0e2ff;
+    DEFAULT: 0xb0e2ff
+  })[key] ?? 0xb0e2ff;
 }
 
 function extractPlacementMatrix(placement) {
@@ -542,6 +609,7 @@ function extractPlacementMatrix(placement) {
 
 function buildGeometryFromEntity(entity) {
   const reps = entity?.Representation?.Representations ?? [];
+
   for (const rep of reps) {
     for (const item of (rep.Items ?? [])) {
       const t = (item.type || item.Type || "").toUpperCase();
@@ -554,12 +622,15 @@ function buildGeometryFromEntity(entity) {
             const positions = [];
             const normals = [];
             for (const face of indices) {
+              if (!Array.isArray(face) || face.length < 3) continue;
               const detect1Based = face[0] > 0;
               const off = detect1Based ? 1 : 0;
               const i0 = face[0] - off, i1 = face[1] - off, i2 = face[2] - off;
               if (!coords[i0] || !coords[i1] || !coords[i2]) continue;
               const p0 = coords[i0], p1 = coords[i1], p2 = coords[i2];
-              const A = new THREE.Vector3(...p0), B = new THREE.Vector3(...p1), C = new THREE.Vector3(...p2);
+              const A = new THREE.Vector3(...p0);
+              const B = new THREE.Vector3(...p1);
+              const C = new THREE.Vector3(...p2);
               const n = new THREE.Vector3().crossVectors(B.clone().sub(A), C.clone().sub(A)).normalize();
               positions.push(...p0, ...p1, ...p2);
               normals.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
@@ -568,6 +639,8 @@ function buildGeometryFromEntity(entity) {
               const geo = new THREE.BufferGeometry();
               geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
               geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+              geo.computeBoundingBox();
+              geo.computeBoundingSphere();
               return geo;
             }
           }
@@ -600,6 +673,8 @@ function buildGeometryFromEntity(entity) {
             const geo = new THREE.BufferGeometry();
             geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
             geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+            geo.computeBoundingBox();
+            geo.computeBoundingSphere();
             return geo;
           }
         } catch {}
@@ -612,59 +687,57 @@ function buildGeometryFromEntity(entity) {
           let sx = 1, sy = 1;
           if (profile?.XDim) sx = profile.XDim;
           if (profile?.YDim) sy = profile.YDim;
-          return new THREE.BoxGeometry(sx, depth, sy);
+          const geo = new THREE.BoxGeometry(sx, depth, sy);
+          geo.computeBoundingBox();
+          geo.computeBoundingSphere();
+          return geo;
         } catch {}
       }
 
       if (t === "IFCBOUNDINGBOX") {
         try {
-          return new THREE.BoxGeometry(item.XDim ?? 1, item.YDim ?? 1, item.ZDim ?? 1);
+          const geo = new THREE.BoxGeometry(item.XDim ?? 1, item.YDim ?? 1, item.ZDim ?? 1);
+          geo.computeBoundingBox();
+          geo.computeBoundingSphere();
+          return geo;
         } catch {}
       }
     }
   }
+
   return null;
 }
 
-let currentJson = null;
-let currentJsonStr = null;
-const BACKEND = "https://ifcjsonbackend-production.up.railway.app/convert-ifc";
+function fitCamera() {
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  if (box.isEmpty()) return;
 
-async function loadIFC(file) {
-  log(`Loading: ${file.name}`, "info");
-  setStatus("UPLOADING", "loading");
-  setLoading(true);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov = camera.fov * Math.PI / 180;
+  const dist = (maxDim / (2 * Math.tan(fov / 2))) * 1.6;
 
-  try {
-    const form = new FormData();
-    form.append("file", file);
+  camera.position.set(center.x + dist * 0.7, center.y + dist * 0.6, center.z + dist * 0.7);
+  controls.target.copy(center);
+  controls.update();
 
-    const res = await fetch(BACKEND, { method: "POST", body: form });
+  grid.position.y = box.min.y;
+}
 
-    if (!res.ok) {
-      const msg = await res.text().catch(() => res.statusText);
-      throw new Error(`Backend ${res.status}: ${msg}`);
-    }
-
-    setStatus("PARSING", "loading");
-    const json = await res.json();
-    currentJson = json;
-    currentJsonStr = JSON.stringify(json, null, 2);
-
-    buildScene(json);
-    setEnabled(true);
-  } catch (err) {
-    log("Error: " + err.message, "err");
-    setStatus("ERROR", "error");
-  } finally {
-    setLoading(false);
+function clearModel() {
+  while (modelGroup.children.length) {
+    const obj = modelGroup.children.pop();
+    obj.geometry?.dispose?.();
+    if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose?.());
+    else obj.material?.dispose?.();
   }
 }
 
 function buildScene(json) {
-  modelGroup.clear();
+  clearModel();
 
-  const data = Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : [];
+  const data = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
   log(`Entities: ${data.length}`, "info");
 
   const SKIP_TYPES = new Set([
@@ -722,38 +795,108 @@ function buildScene(json) {
 
   setStats(data.length, meshCount, vertCount, triCount);
   setStatus("READY", "ready");
-  document.getElementById("emptyState").classList.add("hidden");
-  document.getElementById("hud").style.display = "";
+  hideBackendInfo();
+  emptyState.classList.add("hidden");
+  hud.style.display = "";
+  setEnabled(true);
   fitCamera();
 }
 
-const dropzone = document.getElementById("dropzone");
-const fileInput = document.getElementById("fileInput");
+let uploadSeq = 0;
+
+async function loadIFC(file) {
+  const mySeq = ++uploadSeq;
+
+  if (!normalizeIfcFile(file)) {
+    log(`Rejected file: ${file.name}. Please choose an .ifc file.`, "warn");
+    setStatus("INVALID FILE", "error");
+    return;
+  }
+
+  log(`Loading: ${file.name}`, "info");
+  setStatus("UPLOADING", "loading");
+  setLoading(true);
+  hideBackendInfo();
+
+  try {
+    const form = new FormData();
+    form.append("file", file, file.name);
+
+    const res = await fetch(BACKEND, {
+      method: "POST",
+      body: form
+    });
+
+    if (mySeq !== uploadSeq) return;
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      showBackendInfo("Backend error", txt || `${res.status} ${res.statusText}`);
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    currentJson = json;
+    currentJsonStr = JSON.stringify(json, null, 2);
+
+    if (mySeq !== uploadSeq) return;
+
+    log("Upload successful", "ok");
+    log(`Received JSON: ${Array.isArray(json.data) ? json.data.length : "?"} entities`, "ok");
+    buildScene(json);
+    setStatus("READY", "ready");
+  } catch (err) {
+    log(`Upload failed: ${err.message}`, "err");
+    setStatus("ERROR", "error");
+    showBackendInfo("Upload failed", String(err.message || err));
+  } finally {
+    if (mySeq === uploadSeq) setLoading(false);
+  }
+}
 
 dropzone.addEventListener("click", () => fileInput.click());
+
 fileInput.addEventListener("change", e => {
-  const f = e.target.files[0];
-  if (f) loadIFC(f);
+  const file = e.target.files?.[0];
+  if (file) loadIFC(file);
   fileInput.value = "";
 });
 
 dropzone.addEventListener("dragover", e => {
   e.preventDefault();
+  e.stopPropagation();
   dropzone.classList.add("drag-over");
 });
-dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag-over"));
+
+dropzone.addEventListener("dragleave", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropzone.classList.remove("drag-over");
+});
+
 dropzone.addEventListener("drop", e => {
   e.preventDefault();
+  e.stopPropagation();
   dropzone.classList.remove("drag-over");
-  const f = e.dataTransfer.files[0];
-  if (f) loadIFC(f);
+  const file = e.dataTransfer?.files?.[0];
+  if (file) loadIFC(file);
+});
+
+window.addEventListener("dragover", e => {
+  if (e.dataTransfer?.types?.includes?.("Files")) e.preventDefault();
+});
+
+window.addEventListener("drop", e => {
+  if (e.dataTransfer?.types?.includes?.("Files")) e.preventDefault();
 });
 
 document.getElementById("btnDownload").addEventListener("click", () => {
   if (!currentJsonStr) return;
   const blob = new Blob([currentJsonStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = Object.assign(document.createElement("a"), { href: url, download: "ifc.json" });
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ifc.json";
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -761,16 +904,18 @@ document.getElementById("btnDownload").addEventListener("click", () => {
 document.getElementById("btnFit").addEventListener("click", fitCamera);
 
 document.getElementById("btnReset").addEventListener("click", () => {
-  modelGroup.clear();
+  clearModel();
   currentJson = null;
   currentJsonStr = null;
+  uploadSeq++;
   logEl.textContent = "";
   document.getElementById("statsBlock").style.display = "none";
-  document.getElementById("emptyState").classList.remove("hidden");
-  document.getElementById("hud").style.display = "none";
-  grid.position.y = 0;
+  emptyState.classList.remove("hidden");
+  hud.style.display = "none";
+  hideBackendInfo();
   setEnabled(false);
   setStatus("IDLE");
+  grid.position.y = 0;
 });
 </script>
 </body>
