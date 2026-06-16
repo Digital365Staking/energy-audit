@@ -494,33 +494,34 @@ function buildDetailRow(key, val) {
 }
 
 function showDetailPopup(entity) {
-  const type = entity.type || entity.Type || "UNKNOWN";
-  const name = entity.name || entity.Name || entity.globalId || entity.GlobalId || "Unnamed element";
+  const props = entity.properties || {};
+  const type  = props.ifc_type || entity.type || "UNKNOWN";
+  const name  = entity.name || props.globalId || entity.id || "Unnamed element";
 
   detailTitle.textContent = name;
   detailType.textContent  = type;
 
   let html = "";
-  html += buildDetailRow("Express ID", entity.expressID ?? entity.expressId ?? "—");
-  html += buildDetailRow("Global ID",  entity.globalId ?? entity.GlobalId ?? "—");
-  html += buildDetailRow("Type",       type);
+  html += buildDetailRow("Express ID", props.expressID ?? "—");
+  html += buildDetailRow("Global ID",  props.globalId ?? "—");
+  html += buildDetailRow("IFC Type",   type);
+  html += buildDetailRow("Entity ID",  entity.id ?? "—");
 
-  const geo_data = entity.geometry;
-  if (geo_data) {
-    const vCount = Array.isArray(geo_data.vertices) ? geo_data.vertices.length : 0;
-    const iCount = Array.isArray(geo_data.indices)  ? geo_data.indices.length  : 0;
-    html += buildDetailRow("Vertices",  vCount.toLocaleString());
-    html += buildDetailRow("Triangles", Math.round(iCount / 3).toLocaleString());
+  const verts = entity.vertices;
+  const faces = entity.faces;
+  if (Array.isArray(verts) && Array.isArray(faces)) {
+    html += buildDetailRow("Vertices",  verts.length.toLocaleString());
+    html += buildDetailRow("Triangles", faces.length.toLocaleString());
   }
 
-  /* Any extra/custom properties present on the entity */
-  const knownKeys = new Set(["expressID","expressId","globalId","GlobalId","name","Name","type","Type","geometry"]);
-  const extraKeys = Object.keys(entity).filter(k => !knownKeys.has(k));
+  /* Any extra/custom properties present on the entity.properties object */
+  const knownPropKeys = new Set(["expressID","globalId","ifc_type"]);
+  const extraKeys = Object.keys(props).filter(k => !knownPropKeys.has(k));
 
   if (extraKeys.length) {
     html += `<div class="detail-props-title">Properties</div>`;
     for (const k of extraKeys) {
-      let v = entity[k];
+      let v = props[k];
       if (v !== null && typeof v === "object") {
         try { v = JSON.stringify(v); } catch(e) { v = String(v); }
       }
@@ -561,41 +562,59 @@ const TYPE_COLORS = {
   IFCSTAIR:             0xd5b0ff,
   IFCROOF:              0x91aee8,
   IFCFURNISHINGELEMENT: 0xd3b68c,
+  IFCFOOTING:           0xb09c84,
+  IFCPILE:              0x9c8a73,
+  IFCCURTAINWALL:       0xa9d4ff,
+  IFCRAMP:              0xd5b0ff,
+  IFCPLATE:             0xc7c7c7,
+  IFCMEMBER:            0xf0b27a,
   DEFAULT:              0x90c8f0,
 };
 const SELECT_COLOR = 0xffb703;
+
+/* CADJSON entities carry the real IFC class in properties.ifc_type
+   (e.g. "IfcWall"); the top-level "type" field is always "Mesh". */
+function getIfcType(entity) {
+  return (entity.properties && entity.properties.ifc_type) || entity.type || "UNKNOWN";
+}
 
 function colorForType(t) {
   return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
 }
 
 /**
- * Build a BufferGeometry from the backend's custom schema:
- *   geometry.vertices  – Array of [x,y,z] triplets
- *   geometry.indices   – Flat array of integer triangle indices (0-based)
+ * Build a BufferGeometry from the actual CADJSON backend schema:
+ *   entity.vertices – Array of {x, y, z} objects (NOT [x,y,z] arrays)
+ *   entity.faces    – Array of [i, j, k] triangle triplets (already
+ *                      grouped, NOT a flat index list)
  *
  * Returns null if there's nothing usable.
  */
 function buildGeometry(entity) {
-  const geo_data = entity.geometry;
-  if (!geo_data) return null;
+  const verts = entity.vertices;  // [{x,y,z}, ...]
+  const faces = entity.faces;     // [[i,j,k], ...]
 
-  const verts   = geo_data.vertices;   // [[x,y,z], ...]
-  const indices = geo_data.indices;    // [i0,i1,i2, ...]
+  if (!Array.isArray(verts) || !verts.length || !Array.isArray(faces) || !faces.length) return null;
 
-  if (!verts || !verts.length || !indices || !indices.length) return null;
-
-  /* Flatten [[x,y,z],...] → Float32Array */
+  /* Flatten [{x,y,z},...] → Float32Array */
   const positions = new Float32Array(verts.length * 3);
   for (let i = 0; i < verts.length; i++) {
-    positions[i*3]   = verts[i][0];
-    positions[i*3+1] = verts[i][1];
-    positions[i*3+2] = verts[i][2];
+    positions[i*3]   = verts[i].x;
+    positions[i*3+1] = verts[i].y;
+    positions[i*3+2] = verts[i].z;
+  }
+
+  /* Flatten [[i,j,k],...] → Uint32Array of indices */
+  const indices = new Uint32Array(faces.length * 3);
+  for (let i = 0; i < faces.length; i++) {
+    indices[i*3]   = faces[i][0];
+    indices[i*3+1] = faces[i][1];
+    indices[i*3+2] = faces[i][2];
   }
 
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geo.setIndex(new THREE.BufferAttribute(new Uint32Array(indices), 1));
+  geo.setIndex(new THREE.BufferAttribute(indices, 1));
 
   /* Compute smooth normals from the indexed mesh */
   geo.computeVertexNormals();
@@ -669,9 +688,13 @@ function buildScene(json) {
   clearModel();
   clearSelection();
 
-  const entities = Array.isArray(json.data) ? json.data
-                 : Array.isArray(json)       ? json
-                 : [];
+  /* CADJSON envelope: entities live under json.entities.
+     Keep fallbacks for json.data / bare array, just in case
+     the backend response shape changes again. */
+  const entities = Array.isArray(json.entities) ? json.entities
+                  : Array.isArray(json.data)     ? json.data
+                  : Array.isArray(json)          ? json
+                  : [];
 
   log("Entities received: " + entities.length, "info");
 
@@ -682,13 +705,13 @@ function buildScene(json) {
   let meshCount = 0, vertCount = 0, triCount = 0, skipped = 0;
 
   for (const entity of entities) {
-    const type = (entity.type || entity.Type || "UNKNOWN");
+    const type = getIfcType(entity);
 
     const geo = buildGeometry(entity);
 
     if (!geo) {
       /* No geometry in this entity (e.g. IfcRoof with empty arrays) */
-      log("  No geometry: " + type + " '" + (entity.name || entity.globalId || "?") + "'", "warn");
+      log("  No geometry: " + type + " '" + (entity.name || entity.id || "?") + "'", "warn");
       skipped++;
       continue;
     }
@@ -716,7 +739,7 @@ function buildScene(json) {
     triCount  += Math.round(t);
     meshCount++;
 
-    log("  ✓ " + type + " '" + (entity.name || entity.globalId || "") + "'"
+    log("  ✓ " + type + " '" + (entity.name || entity.id || "") + "'"
         + "  verts:" + v + "  tris:" + Math.round(t), "ok");
   }
 
