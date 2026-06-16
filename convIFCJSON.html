@@ -169,6 +169,107 @@
   /* ── HUD ── */
   .hud { position: absolute; bottom: 14px; right: 14px; font-size: .75rem; background: rgba(255,255,255,0.72); border: 1px solid #c8e0ef; border-radius: 10px; padding: 8px 12px; backdrop-filter: blur(8px); color: #4f6780; line-height: 1.9; pointer-events: none; }
   .hud-key { color: var(--accent-2); font-weight: 700; }
+
+  /* ── ELEMENT DETAIL POPUP ── */
+  .detail-popup {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 280px;
+    max-height: calc(100% - 28px);
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #c8e0ef;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(11,60,93,0.22);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 20;
+  }
+  .detail-popup.visible { display: flex; }
+  .detail-popup-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 14px 10px 16px;
+    background: linear-gradient(135deg, var(--title), var(--accent-2));
+    color: #fff;
+  }
+  .detail-popup-title {
+    font-weight: 700;
+    font-size: 0.98rem;
+    word-break: break-word;
+    line-height: 1.35;
+  }
+  .detail-popup-type {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+  .detail-popup-close {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .detail-popup-close:hover {
+    background: rgba(255,255,255,0.32);
+    transform: scale(1.08);
+  }
+  .detail-popup-body {
+    padding: 12px 16px 16px;
+    overflow-y: auto;
+    font-size: 0.84rem;
+    color: #2c4357;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid #edf4fa;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key {
+    color: #6f879a;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding-top: 1px;
+  }
+  .detail-val {
+    text-align: right;
+    word-break: break-word;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--title);
+  }
+  .detail-props-title {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #edf4fa;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: #6f879a;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
@@ -224,10 +325,23 @@
       </div>
     </div>
 
+    <!-- Element detail popup -->
+    <div class="detail-popup" id="detailPopup">
+      <div class="detail-popup-header">
+        <div>
+          <div class="detail-popup-title" id="detailTitle">—</div>
+          <div class="detail-popup-type" id="detailType">—</div>
+        </div>
+        <button class="detail-popup-close" id="detailClose" title="Close" aria-label="Close">✕</button>
+      </div>
+      <div class="detail-popup-body" id="detailBody"></div>
+    </div>
+
     <div class="hud" id="hud" style="display:none">
-      <div><span class="hud-key">LMB </span>orbit</div>
+      <div><span class="hud-key">LMB </span>orbit (drag any direction)</div>
       <div><span class="hud-key">RMB </span>pan</div>
       <div><span class="hud-key">SCR </span>zoom</div>
+      <div><span class="hud-key">CLICK </span>select element</div>
     </div>
   </section>
 
@@ -250,15 +364,34 @@ const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 10000);
 camera.position.set(15, 12, 15);
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping    = true;
-controls.dampingFactor    = 0.08;
+controls.enableDamping      = true;
+controls.dampingFactor      = 0.08;
 controls.screenSpacePanning = true;
-controls.minDistance      = 0.01;
-controls.maxDistance      = 5000;
+controls.minDistance        = 0.01;
+controls.maxDistance        = 5000;
+
+/* Explicit, unrestricted orbit rotation in both axes.
+   (azimuth = left/right, polar = up/down). Previously only
+   vertical movement worked because nothing was actually wrong
+   with mouseButtons, but to be safe we pin every relevant knob
+   explicitly so left-right drag is guaranteed to rotate azimuth. */
+controls.enableRotate    = true;
+controls.enableZoom      = true;
+controls.enablePan       = true;
+controls.rotateSpeed     = 1.0;
+controls.minPolarAngle   = 0;             // straight down
+controls.maxPolarAngle   = Math.PI;       // straight up
+controls.minAzimuthAngle = -Infinity;     // unlimited left/right spin
+controls.maxAzimuthAngle = Infinity;
+
 controls.mouseButtons = {
   LEFT:   THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
   RIGHT:  THREE.MOUSE.PAN
+};
+controls.touches = {
+  ONE: THREE.TOUCH.ROTATE,
+  TWO: THREE.TOUCH.DOLLY_PAN
 };
 
 /* Lights */
@@ -338,6 +471,74 @@ function setStats(entities, meshes, verts, tris) {
 }
 
 /* ═══════════════════════════════════
+   ELEMENT DETAIL POPUP
+═══════════════════════════════════ */
+const detailPopup = document.getElementById("detailPopup");
+const detailTitle = document.getElementById("detailTitle");
+const detailType  = document.getElementById("detailType");
+const detailBody  = document.getElementById("detailBody");
+const detailClose = document.getElementById("detailClose");
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function buildDetailRow(key, val) {
+  return `<div class="detail-row">
+    <div class="detail-key">${escapeHtml(key)}</div>
+    <div class="detail-val">${escapeHtml(val)}</div>
+  </div>`;
+}
+
+function showDetailPopup(entity) {
+  const type = entity.type || entity.Type || "UNKNOWN";
+  const name = entity.name || entity.Name || entity.globalId || entity.GlobalId || "Unnamed element";
+
+  detailTitle.textContent = name;
+  detailType.textContent  = type;
+
+  let html = "";
+  html += buildDetailRow("Express ID", entity.expressID ?? entity.expressId ?? "—");
+  html += buildDetailRow("Global ID",  entity.globalId ?? entity.GlobalId ?? "—");
+  html += buildDetailRow("Type",       type);
+
+  const geo_data = entity.geometry;
+  if (geo_data) {
+    const vCount = Array.isArray(geo_data.vertices) ? geo_data.vertices.length : 0;
+    const iCount = Array.isArray(geo_data.indices)  ? geo_data.indices.length  : 0;
+    html += buildDetailRow("Vertices",  vCount.toLocaleString());
+    html += buildDetailRow("Triangles", Math.round(iCount / 3).toLocaleString());
+  }
+
+  /* Any extra/custom properties present on the entity */
+  const knownKeys = new Set(["expressID","expressId","globalId","GlobalId","name","Name","type","Type","geometry"]);
+  const extraKeys = Object.keys(entity).filter(k => !knownKeys.has(k));
+
+  if (extraKeys.length) {
+    html += `<div class="detail-props-title">Properties</div>`;
+    for (const k of extraKeys) {
+      let v = entity[k];
+      if (v !== null && typeof v === "object") {
+        try { v = JSON.stringify(v); } catch(e) { v = String(v); }
+      }
+      html += buildDetailRow(k, v);
+    }
+  }
+
+  detailBody.innerHTML = html;
+  detailPopup.classList.add("visible");
+}
+
+function hideDetailPopup() {
+  detailPopup.classList.remove("visible");
+}
+
+detailClose.addEventListener("click", hideDetailPopup);
+
+/* ═══════════════════════════════════
    GEOMETRY ENGINE
    
    Backend schema (confirmed from ifc-probe.json):
@@ -362,6 +563,8 @@ const TYPE_COLORS = {
   IFCFURNISHINGELEMENT: 0xd3b68c,
   DEFAULT:              0x90c8f0,
 };
+const SELECT_COLOR = 0xffb703;
+
 function colorForType(t) {
   return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
 }
@@ -438,8 +641,33 @@ function fitCamera() {
   grid.position.y = box.min.y;
 }
 
+let selectedMesh = null;
+
+function clearSelection() {
+  if (selectedMesh) {
+    selectedMesh.material.color.setHex(selectedMesh.userData.baseColor);
+    selectedMesh.material.emissive && selectedMesh.material.emissive.setHex(0x000000);
+  }
+  selectedMesh = null;
+  hideDetailPopup();
+}
+
+function selectMesh(mesh) {
+  if (selectedMesh === mesh) return;
+  if (selectedMesh) {
+    selectedMesh.material.color.setHex(selectedMesh.userData.baseColor);
+    selectedMesh.material.emissive && selectedMesh.material.emissive.setHex(0x000000);
+  }
+  selectedMesh = mesh;
+  mesh.material.color.setHex(SELECT_COLOR);
+  if (mesh.material.emissive) mesh.material.emissive.setHex(0x402a00);
+
+  showDetailPopup(mesh.userData.entity);
+}
+
 function buildScene(json) {
   clearModel();
+  clearSelection();
 
   const entities = Array.isArray(json.data) ? json.data
                  : Array.isArray(json)       ? json
@@ -465,14 +693,19 @@ function buildScene(json) {
       continue;
     }
 
+    const baseColor = colorForType(type);
+
     const mat = new THREE.MeshStandardMaterial({
-      color:     colorForType(type),
+      color:     baseColor,
       roughness: 0.65,
       metalness: 0.05,
       side:      THREE.DoubleSide,
     });
 
     const mesh = new THREE.Mesh(geo, mat);
+    mesh.userData.entity    = entity;
+    mesh.userData.baseColor = baseColor;
+
     /* Geometry is already in world space — no placement transform needed */
     modelGroup.add(mesh);
 
@@ -502,6 +735,41 @@ function buildScene(json) {
   setEnabled(true);
   fitCamera();
 }
+
+/* ═══════════════════════════════════
+   PICKING (click-to-select)
+═══════════════════════════════════ */
+const raycaster = new THREE.Raycaster();
+const pointerNDC = new THREE.Vector2();
+
+let pointerDownPos = null;
+const CLICK_DRAG_TOLERANCE = 6; // px — beyond this, treat as orbit/pan, not a click
+
+canvas.addEventListener("pointerdown", (e) => {
+  pointerDownPos = { x: e.clientX, y: e.clientY };
+});
+
+canvas.addEventListener("pointerup", (e) => {
+  if (!pointerDownPos) return;
+  const dx = e.clientX - pointerDownPos.x;
+  const dy = e.clientY - pointerDownPos.y;
+  pointerDownPos = null;
+
+  if (Math.hypot(dx, dy) > CLICK_DRAG_TOLERANCE) return; // was a drag/orbit, not a click
+
+  const rect = canvas.getBoundingClientRect();
+  pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObjects(modelGroup.children, false);
+
+  if (hits.length > 0) {
+    selectMesh(hits[0].object);
+  } else {
+    clearSelection();
+  }
+});
 
 /* ═══════════════════════════════════
    UPLOAD
@@ -594,6 +862,7 @@ document.getElementById("btnFit").addEventListener("click", fitCamera);
 document.getElementById("btnReset").addEventListener("click", () => {
   uploadSeq++;
   clearModel();
+  clearSelection();
   currentJsonStr = null;
   logEl.textContent = "";
   document.getElementById("statsBlock").style.display = "none";
