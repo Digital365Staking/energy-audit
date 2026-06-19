@@ -605,25 +605,25 @@ detailClose.addEventListener("click", hideDetailPopup);
    }
 ═══════════════════════════════════ */
 const TYPE_COLORS = {
-  IFCWALL:              0x9ecfff,
-  IFCWALLSTANDARDCASE:  0x9ecfff,
-  IFCSLAB:              0xc2d8e8,
-  IFCCOLUMN:            0x8ec7ff,
-  IFCBEAM:              0xf4a460,   /* sandy brown — easy to spot */
-  IFCDOOR:              0xffd9a3,
-  IFCWINDOW:            0xb0e2ff,
-  IFCSTAIR:             0xd5b0ff,
-  IFCROOF:              0x91aee8,
-  IFCFURNISHINGELEMENT: 0xd3b68c,
-  IFCFOOTING:           0xb09c84,
-  IFCPILE:              0x9c8a73,
-  IFCCURTAINWALL:       0xa9d4ff,
-  IFCRAMP:              0xd5b0ff,
-  IFCPLATE:             0xc7c7c7,
-  IFCMEMBER:            0xf0b27a,
-  DEFAULT:              0x90c8f0,
+  IFCWALL:              0x5b8fc7,
+  IFCWALLSTANDARDCASE:  0x5b8fc7,
+  IFCSLAB:              0x6b7d99,
+  IFCCOLUMN:            0x3f7cb8,
+  IFCBEAM:              0xd17a3a,   /* burnt orange — easy to spot */
+  IFCDOOR:              0xc98a3e,
+  IFCWINDOW:            0x4fa8d8,
+  IFCSTAIR:             0x8a5fc2,
+  IFCROOF:              0x4a6fa1,
+  IFCFURNISHINGELEMENT: 0x9c7748,
+  IFCFOOTING:           0x7a6a55,
+  IFCPILE:              0x6b5d4d,
+  IFCCURTAINWALL:       0x4ea0d6,
+  IFCRAMP:              0x8a5fc2,
+  IFCPLATE:             0x7d8694,
+  IFCMEMBER:            0xc97650,
+  DEFAULT:              0x4d84b0,
 };
-const SELECT_COLOR = 0xffb703;
+const SELECT_COLOR = 0xff9d00;
 
 /* CADJSON entities carry the real IFC class in properties.ifc_type
    (e.g. "IfcWall"); the top-level "type" field is usually "Mesh". */
