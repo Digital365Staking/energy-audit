@@ -380,7 +380,7 @@
     }
 
     /* =========================
-       📱 MOBILE VIEW (DROP ZONE + BUTTONS ONLY)
+       📱 MOBILE VIEW (WITH TOGGLE FLOW)
     ========================== */
     .mobile-layout {
       display: none;
@@ -408,6 +408,13 @@
       gap: 16px;
       width: min(92%, 440px);
       pointer-events: auto;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .mobile-center-zone.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .mobile-center-zone .drop-area {
@@ -456,6 +463,50 @@
       height: 18px;
     }
 
+    /* Mobile close icon (top right) */
+    .mobile-close-icon {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      background: var(--card);
+      border: none;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      transition: all 0.2s ease;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .mobile-close-icon.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .mobile-close-icon:hover {
+      background: var(--error);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .mobile-close-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--ink-2);
+    }
+
+    .mobile-close-icon:hover svg {
+      stroke: #fff;
+    }
+
     /* Mobile sheet for additional controls */
     .mobile-sheet {
       position: absolute;
@@ -496,19 +547,9 @@
     }
 
     /* Mobile overlays */
-    .mobile-viewport .empty-state,
     .mobile-viewport .detail-popup {
       position: absolute;
       pointer-events: none;
-    }
-
-    .mobile-viewport .empty-state {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: var(--title);
-      z-index: 40;
     }
 
     .mobile-viewport .detail-popup {
@@ -627,13 +668,20 @@
       </section>
     </div>
 
-    <!-- 📱 MOBILE LAYOUT (DROP ZONE + BUTTONS ONLY) -->
+    <!-- 📱 MOBILE LAYOUT (WITH TOGGLE FLOW) -->
     <div class="mobile-layout" id="mobileLayout">
       <main class="mobile-viewport" id="mobileViewport" aria-label="3D Model Viewer">
         <canvas id="canvasMobile" aria-label="Three.js Canvas Mobile"></canvas>
 
+        <!-- Close icon (top right, visible after upload) -->
+        <button class="mobile-close-icon" id="mobileClose" aria-label="Close viewer and return to upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
         <!-- CENTERED DROP ZONE + BUTTONS -->
-        <div class="mobile-center-zone">
+        <div class="mobile-center-zone" id="mobileCenterZone">
           <div class="drop-area" id="dropAreaMobile">
             <input type="file" id="fileInputMobile" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
             <div class="drop-icon">⬡</div>
@@ -676,7 +724,8 @@
           <div class="sheet-content" id="mobilePanel">
             <p>Mobile panel content goes here</p>
           </div>
-        </div>        
+        </div>
+
         <div class="detail-popup" id="detailPopupMobile"></div>
       </main>
     </div>
@@ -693,6 +742,9 @@
     }
 
     if (isMobile) {
+      const mobileCenterZone = document.getElementById("mobileCenterZone");
+      const mobileClose = document.getElementById("mobileClose");
+      const fileInputMobile = document.getElementById("fileInputMobile");
       const mobileSheet = document.getElementById("mobileSheet");
       const sheetHeader = document.getElementById("sheetHeader");
 
@@ -701,6 +753,26 @@
       mobileSheet.addEventListener("click", (e) => {
         if (e.target === mobileSheet) mobileSheet.classList.remove("open");
       });
+
+      // File upload handler - hide drop zone, show viewer
+      fileInputMobile.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          // Hide drop zone
+          mobileCenterZone.classList.add("hidden");
+          // Show close icon
+          mobileClose.classList.add("visible");
+          // YOUR THREE.js INITIALIZATION / FILE UPLOAD LOGIC HERE
+          console.log("File uploaded:", e.target.files[0].name);
+        }
+      });
+
+      // Close icon handler - show drop zone, hide viewer
+      mobileClose.onclick = () => {
+        mobileCenterZone.classList.remove("hidden");
+        mobileClose.classList.remove("visible");
+        // YOUR CODE TO HIDE/CLEAR THREE.js VIEWER HERE
+        console.log("Viewer closed, returning to upload");
+      };
 
       // Mobile buttons trigger desktop equivalents
       document.getElementById("mDownload").onclick = () => {
