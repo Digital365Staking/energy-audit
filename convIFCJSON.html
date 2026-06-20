@@ -271,16 +271,83 @@
     <!-- 🖥 DESKTOP LAYOUT -->
     <div class="desktop-layout" id="desktopLayout">
       <aside class="panel" id="desktopPanel" aria-label="BIM Controls">
-        <!-- Inject your original left panel HTML here -->
-        <p>Desktop panel content goes here</p>
+            <div class="drop-area" id="dropArea">
+          <input type="file" id="fileInput" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
+          <div class="drop-icon">⬡</div>
+          <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
+          <div class="drop-sub">Sends to backend · renders real geometry</div>
+          <div class="drop-formats">
+            <span class="drop-fmt">.IFC</span>
+            <span class="drop-fmt">.DXF</span>
+            <span class="drop-fmt">.DWG</span>
+            <span class="drop-fmt">.JSON</span>
+          </div>
+        </div>
+    
+        <div class="progress-wrap" id="progressWrap"><div class="progress-bar"></div></div>
+    
+        <div class="btn-row">
+          <button class="btn" id="btnDownload" disabled>↓ JSON</button>
+          <button class="btn secondary" id="btnFit" disabled>⊡ Fit</button>
+          <button class="btn secondary" id="btnReset" disabled>✕</button>
+        </div>
+    
+        <div id="statusBadge" class="status-badge">IDLE</div>
+    
+        <div id="statsBlock" style="display:none">
+          <div class="stats-grid">
+            <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Entities</div></div>
+            <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Meshes</div></div>
+            <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Verts</div></div>
+            <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Tris</div></div>
+          </div>
+        </div>
+    
+        <div class="err-banner" id="errBanner"></div>
+        <div class="dwg-notice" id="dwgNotice"></div>
+    
+        <div class="log-wrap">
+          <div class="log-header">Console</div>
+          <div id="log"></div>
+        </div>
       </aside>
 
-      <main class="viewport" id="viewport" aria-label="3D Model Viewer">
-        <canvas id="canvas" aria-label="Three.js Canvas"></canvas>
-        <div class="empty-state" id="emptyState"></div>
-        <div class="detail-popup" id="detailPopup"></div>
-        <div class="hud" id="hud"></div>
-      </main>
+       <section class="viewport" id="viewport">
+          <canvas id="canvas"></canvas>
+      
+          <div class="empty-state" id="emptyState">
+            <div class="empty-card">
+              <div class="empty-icon">🏗</div>
+              <div class="empty-title">No model loaded</div>
+              <div class="empty-hint">Drop a file to begin</div>
+              <div class="empty-formats">
+                <span class="empty-fmt">.ifc</span>
+                <span class="empty-fmt">.dxf</span>
+                <span class="empty-fmt">.dwg</span>
+                <span class="empty-fmt">.json</span>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Element detail popup -->
+          <div class="detail-popup" id="detailPopup">
+            <div class="detail-popup-header">
+              <div>
+                <div class="detail-popup-title" id="detailTitle">—</div>
+                <div class="detail-popup-type" id="detailType">—</div>
+              </div>
+              <button class="detail-popup-close" id="detailClose" title="Close" aria-label="Close">✕</button>
+            </div>
+            <div class="detail-popup-body" id="detailBody"></div>
+          </div>
+      
+          <div class="hud" id="hud">
+            <div><span class="hud-key">LMB </span>orbit (drag any direction)</div>
+            <div><span class="hud-key">RMB </span>pan</div>
+            <div><span class="hud-key">SCR </span>zoom</div>
+            <div><span class="hud-key">CLICK </span>select element</div>
+          </div>
+        </section>
     </div>
 
     <!-- 📱 MOBILE LAYOUT -->
