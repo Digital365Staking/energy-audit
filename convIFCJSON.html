@@ -154,6 +154,55 @@
       cursor: pointer;
     }
 
+    /* Button row */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn:disabled {
+      background: var(--bg-2);
+      color: var(--ink-2);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn.secondary {
+      background: var(--card);
+      color: var(--title);
+      border: 1px solid var(--border-2);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.secondary:hover:not(:disabled) {
+      background: var(--soft);
+      border-color: var(--accent-3);
+      color: var(--accent);
+    }
+
     /* Desktop overlays */
     .viewport {
       flex: 1;
@@ -331,7 +380,7 @@
     }
 
     /* =========================
-       📱 MOBILE VIEW (WITH CENTERED DROP ZONE)
+       📱 MOBILE VIEW (DROP ZONE + BUTTONS ONLY)
     ========================== */
     .mobile-layout {
       display: none;
@@ -346,91 +395,68 @@
       overflow: hidden;
     }
 
-    /* CENTERED DROP ZONE IN MOBILE */
-    .mobile-drop-zone {
+    /* CENTERED DROP ZONE + BUTTONS IN MOBILE */
+    .mobile-center-zone {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 40;
-      width: min(90%, 420px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: min(92%, 440px);
       pointer-events: auto;
     }
 
-    .mobile-drop-zone .drop-area {
+    .mobile-center-zone .drop-area {
       padding: 32px 20px;
       background: var(--card);
       box-shadow: var(--shadow-lg);
       border: 2px dashed var(--accent-3);
+      width: 100%;
     }
 
-    .mobile-drop-zone .drop-icon {
+    .mobile-center-zone .drop-icon {
       font-size: 56px;
     }
 
-    .mobile-drop-zone .drop-title {
+    .mobile-center-zone .drop-title {
       font-size: 18px;
     }
 
-    .mobile-drop-zone .drop-sub {
+    .mobile-center-zone .drop-sub {
       font-size: 14px;
     }
 
-    .mobile-drop-zone .drop-fmt {
+    .mobile-center-zone .drop-fmt {
       padding: 8px 14px;
       font-size: 13px;
     }
 
-    /* Mobile topbar */
-    .mobile-topbar {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
+    /* Mobile action buttons below drop zone */
+    .mobile-action-buttons {
       display: flex;
-      justify-content: space-between;
-      z-index: 50;
-      pointer-events: none;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
     }
 
-    .mobile-btn {
-      background: var(--title);
-      color: #fff;
-      border: none;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      box-shadow: var(--shadow);
-      pointer-events: auto;
-      cursor: pointer;
-      font-size: 14px;
+    .mobile-action-buttons .btn {
+      padding: 14px 20px;
+      font-size: 15px;
+      min-width: 100px;
+      justify-content: center;
     }
 
-    /* Mobile actions */
-    .mobile-actions {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-      z-index: 50;
-      pointer-events: none;
+    .mobile-action-buttons .btn svg {
+      width: 18px;
+      height: 18px;
     }
 
-    .mobile-actions button {
-      background: var(--title);
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      pointer-events: auto;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    /* Mobile sheet */
+    /* Mobile sheet for additional controls */
     .mobile-sheet {
       position: absolute;
       left: 0;
@@ -601,13 +627,13 @@
       </section>
     </div>
 
-    <!-- 📱 MOBILE LAYOUT (WITH CENTERED DROP ZONE) -->
+    <!-- 📱 MOBILE LAYOUT (DROP ZONE + BUTTONS ONLY) -->
     <div class="mobile-layout" id="mobileLayout">
       <main class="mobile-viewport" id="mobileViewport" aria-label="3D Model Viewer">
         <canvas id="canvasMobile" aria-label="Three.js Canvas Mobile"></canvas>
 
-        <!-- CENTERED DROP ZONE -->
-        <div class="mobile-drop-zone">
+        <!-- CENTERED DROP ZONE + BUTTONS -->
+        <div class="mobile-center-zone">
           <div class="drop-area" id="dropAreaMobile">
             <input type="file" id="fileInputMobile" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
             <div class="drop-icon">⬡</div>
@@ -620,18 +646,31 @@
               <span class="drop-fmt">.JSON</span>
             </div>
           </div>
+
+          <!-- Action buttons below drop zone -->
+          <div class="mobile-action-buttons">
+            <button class="btn" id="mDownload" aria-label="Download JSON">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              JSON
+            </button>
+            <button class="btn secondary" id="mFit" aria-label="Fit Model">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 3 19 11 13 11 13 17 5 17 5 3"/>
+              </svg>
+              Fit
+            </button>
+            <button class="btn secondary" id="mReset" aria-label="Reset View">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Reset
+            </button>
+          </div>
         </div>
 
-        <div class="mobile-topbar">
-          <button class="mobile-btn" id="mMenu" aria-label="Open Controls">☰</button>
-          <button class="mobile-btn" id="mFit" aria-label="Fit Model">Fit</button>
-        </div>
-
-        <div class="mobile-actions">
-          <button id="mUpload" aria-label="Upload IFC File">Upload</button>
-          <button id="mReset" aria-label="Reset View">Reset</button>
-        </div>
-
+        <!-- Optional sheet for additional controls -->
         <div class="mobile-sheet" id="mobileSheet" aria-label="BIM Controls Panel">
           <div class="sheet-header" id="sheetHeader">BIM Controls</div>
           <div class="sheet-content" id="mobilePanel">
@@ -657,23 +696,21 @@
 
     if (isMobile) {
       const mobileSheet = document.getElementById("mobileSheet");
-      const mMenu = document.getElementById("mMenu");
       const sheetHeader = document.getElementById("sheetHeader");
 
-      mMenu.onclick = () => mobileSheet.classList.toggle("open");
       sheetHeader.onclick = () => mobileSheet.classList.toggle("open");
 
       mobileSheet.addEventListener("click", (e) => {
         if (e.target === mobileSheet) mobileSheet.classList.remove("open");
       });
 
-      document.getElementById("mFit").onclick = () => {
-        document.getElementById("btnFit")?.click();
+      // Mobile buttons trigger desktop equivalents
+      document.getElementById("mDownload").onclick = () => {
+        document.getElementById("btnDownload")?.click();
       };
 
-      document.getElementById("mUpload").onclick = () => {
-        // Use mobile file input
-        document.getElementById("fileInputMobile")?.click();
+      document.getElementById("mFit").onclick = () => {
+        document.getElementById("btnFit")?.click();
       };
 
       document.getElementById("mReset").onclick = () => {
