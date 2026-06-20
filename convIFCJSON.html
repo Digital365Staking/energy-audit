@@ -3,264 +3,245 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FullBIM · Mobile Viewer</title>
+<title>FullBIM · Adaptive Viewer</title>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
 <style>
 :root {
-  --bg:#eaf7ff;
-  --card:#ffffff;
+  --bg:#b0e2ff;
+  --card:#fff;
   --ink:#1a1a1a;
   --title:#0b3c5d;
   --accent:#1890ff;
   --accent2:#1d6fa5;
-  --soft:#f5fbff;
-  --line:#cfe3f3;
-  --shadow:0 10px 25px rgba(0,0,0,.12);
+  --soft:#eaf7ff;
+  --line:rgba(11,60,93,.12);
+  --shadow:0 10px 30px rgba(0,0,0,.10);
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui}
+html,body{margin:0;height:100%;overflow:hidden}
 
 body{
+  font-family:system-ui,Segoe UI;
   background:var(--bg);
-}
-
-/* ===== VIEWER ===== */
-.viewport{
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle at 50% 40%,#fff 0%,#dff3ff 60%,#cfeaff 100%);
-}
-canvas{width:100%;height:100%;display:block}
-
-/* ===== TOP BAR (minimal) ===== */
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:52px;
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 10px;
-  background:rgba(255,255,255,.75);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-  z-index:50;
+  flex-direction:column;
 }
 
-.brand{
-  font-weight:800;
-  color:var(--title);
-  font-size:.95rem;
+/* =========================
+   DESKTOP LAYOUT
+========================= */
+.page{
+  display:flex;
+  width:100%;
+  height:100%;
+  gap:12px;
+  padding:14px;
 }
 
-.status{
-  font-size:.7rem;
-  padding:3px 10px;
-  border-radius:20px;
-  background:#d7eef9;
-  color:#1d6fa5;
-  font-weight:700;
-}
-
-/* ===== FAB BUTTONS ===== */
-.fab-stack{
-  position:fixed;
-  right:12px;
-  bottom:90px;
+.panel{
+  width:320px;
   display:flex;
   flex-direction:column;
   gap:10px;
-  z-index:60;
 }
 
-.fab{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  border:none;
-  background:var(--title);
-  color:#fff;
-  font-size:18px;
+.viewport{
+  flex:1;
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+  background:radial-gradient(circle,#fff,#dff3ff);
   box-shadow:var(--shadow);
 }
 
-.fab.secondary{background:var(--accent2)}
+canvas{width:100%;height:100%;display:block}
 
-/* ===== MAIN BOTTOM SHEET ===== */
-.sheet{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  height:280px;
-  background:var(--card);
-  border-top-left-radius:18px;
-  border-top-right-radius:18px;
-  box-shadow:0 -10px 30px rgba(0,0,0,.12);
-  transform:translateY(210px);
-  transition:.25s ease;
-  z-index:70;
-  display:flex;
-  flex-direction:column;
-}
+/* =========================
+   UI ELEMENTS (desktop)
+========================= */
 
-.sheet.open{
-  transform:translateY(0);
-}
-
-.sheet-handle{
-  width:50px;
-  height:5px;
-  background:#cfe3f3;
-  border-radius:20px;
-  margin:8px auto;
-}
-
-.sheet-content{
-  padding:10px;
-  overflow:auto;
-}
-
-/* upload */
-.drop{
+.drop-area{
   border:2px dashed #99cee8;
   border-radius:14px;
-  padding:14px;
+  padding:16px;
+  background:#fff;
   text-align:center;
-  background:var(--soft);
-  margin-bottom:10px;
+  cursor:pointer;
 }
 
-/* buttons row */
-.row{
-  display:flex;
-  gap:8px;
-}
-
+.btn-row{display:flex;gap:8px}
 .btn{
   flex:1;
   padding:10px;
-  border-radius:10px;
   border:none;
-  font-weight:700;
+  border-radius:10px;
   background:var(--title);
   color:#fff;
+  font-weight:700;
 }
 
 .btn.secondary{
   background:#fff;
-  border:1px solid var(--line);
   color:var(--title);
+  border:1px solid #cfe3f3;
 }
 
-/* ===== POPUP ===== */
-.popup{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  z-index:100;
+.status{
+  font-size:.8rem;
+  font-weight:700;
+  color:#1d6fa5;
+  background:#d7eef9;
+  padding:4px 10px;
+  border-radius:20px;
+  display:inline-block;
 }
 
-.popup.visible{display:block}
-
-.popup-card{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
+/* log / stats (desktop only) */
+.log-wrap{
+  flex:1;
   background:#fff;
-  border-top-left-radius:18px;
-  border-top-right-radius:18px;
-  max-height:70%;
+  border:1px solid #dbe9f3;
+  border-radius:10px;
   overflow:auto;
-  padding:14px;
+  font-size:.8rem;
 }
 
-/* ===== EMPTY STATE ===== */
-.empty{
+.stats{
+  background:#fff;
+  border:1px solid #dbe9f3;
+  border-radius:10px;
+  padding:10px;
+  font-size:.8rem;
+}
+
+/* popup */
+.detail-popup{
   position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
+  top:10px;
+  left:10px;
+  width:420px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  display:none;
+  flex-direction:column;
+  z-index:10;
 }
 
-.empty-card{
-  background:rgba(255,255,255,.85);
-  padding:18px;
-  border-radius:14px;
-  text-align:center;
-  border:1px solid var(--line);
+.detail-popup.visible{display:flex}
+.detail-header{
+  background:linear-gradient(135deg,var(--title),var(--accent2));
+  color:#fff;
+  padding:10px;
 }
+.detail-body{padding:10px;font-size:.8rem}
 
-/* ===== hidden desktop junk ===== */
-.log,.stats,.hud,.dwg,.err{display:none}
+/* =========================
+   MOBILE ADAPTATION
+========================= */
+@media (max-width:768px){
+
+  .page{
+    flex-direction:column;
+    padding:0;
+    gap:0;
+  }
+
+  .panel{
+    width:100%;
+    flex-direction:row;
+    flex-wrap:wrap;
+    padding:8px;
+  }
+
+  .viewport{
+    border-radius:0;
+    height:calc(100vh - 170px);
+  }
+
+  /* reduce noise */
+  .log-wrap,
+  .stats{
+    display:none;
+  }
+
+  .drop-area{
+    flex:1 1 100%;
+    padding:12px;
+  }
+
+  .btn-row{
+    width:100%;
+  }
+
+  .btn{
+    font-size:.75rem;
+    padding:8px;
+  }
+
+  .status{
+    font-size:.7rem;
+  }
+
+  /* popup becomes bottom sheet */
+  .detail-popup{
+    top:auto;
+    left:0;
+    bottom:0;
+    width:100%;
+    border-radius:16px 16px 0 0;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="viewport">
-  <canvas id="canvas"></canvas>
+<div class="page">
 
-  <div class="empty" id="empty">
-    <div class="empty-card">
-      🏗<br>
-      Drop a BIM file
-    </div>
-  </div>
-</div>
+  <!-- PANEL -->
+  <aside class="panel">
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="brand">FullBIM</div>
-  <div class="status" id="status">IDLE</div>
-</div>
-
-<!-- FLOATING ACTIONS -->
-<div class="fab-stack">
-  <button class="fab" id="fabUpload">＋</button>
-  <button class="fab secondary" id="fabFit">⊡</button>
-</div>
-
-<!-- BOTTOM SHEET -->
-<div class="sheet" id="sheet">
-  <div class="sheet-handle"></div>
-
-  <div class="sheet-content">
-
-    <div class="drop" id="drop">
-      Tap or drop file (.ifc .dxf .dwg .json)
+    <div class="drop-area" id="drop">
+      Drop / Upload BIM file
       <input type="file" id="file" hidden />
     </div>
 
-    <div class="row">
-      <button class="btn" id="btnReset">Reset</button>
-      <button class="btn secondary" id="btnDownload">JSON</button>
+    <div class="btn-row">
+      <button class="btn" id="fit">Fit</button>
+      <button class="btn secondary" id="reset">Reset</button>
     </div>
 
-  </div>
-</div>
+    <div class="status" id="status">IDLE</div>
 
-<!-- POPUP -->
-<div class="popup" id="popup">
-  <div class="popup-card" id="popupCard">
-    <button id="closePopup">Close</button>
-    <div id="popupContent"></div>
-  </div>
+    <div class="stats" id="stats">No data</div>
+
+    <div class="log-wrap" id="log"></div>
+
+  </aside>
+
+  <!-- VIEWPORT -->
+  <section class="viewport">
+    <canvas id="c"></canvas>
+
+    <div class="detail-popup" id="popup">
+      <div class="detail-header" id="pTitle">Element</div>
+      <div class="detail-body" id="pBody"></div>
+    </div>
+  </section>
+
 </div>
 
 <script>
-/* ===== THREE SETUP ===== */
-const canvas = document.getElementById("canvas");
+
+/* =========================
+   THREE SETUP
+========================= */
+const canvas = document.getElementById("c");
 const renderer = new THREE.WebGLRenderer({canvas,antialias:true});
 renderer.setPixelRatio(devicePixelRatio);
 
@@ -268,13 +249,12 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeaf7ff);
 
 const camera = new THREE.PerspectiveCamera(60,1,0.1,10000);
-camera.position.set(10,10,10);
+camera.position.set(8,8,8);
 
 const controls = new THREE.OrbitControls(camera,renderer.domElement);
 controls.enableDamping = true;
 
-const light = new THREE.AmbientLight(0xffffff,1);
-scene.add(light);
+scene.add(new THREE.AmbientLight(0xffffff,1));
 
 const group = new THREE.Group();
 scene.add(group);
@@ -286,7 +266,8 @@ function resize(){
   camera.aspect=w/h;
   camera.updateProjectionMatrix();
 }
-addEventListener("resize",resize);resize();
+addEventListener("resize",resize);
+resize();
 
 (function loop(){
   requestAnimationFrame(loop);
@@ -294,42 +275,76 @@ addEventListener("resize",resize);resize();
   renderer.render(scene,camera);
 })();
 
-/* ===== UI STATE ===== */
-const sheet=document.getElementById("sheet");
-const status=document.getElementById("status");
-const empty=document.getElementById("empty");
+/* =========================
+   RESPONSIVE FLAG
+========================= */
+function isMobile(){
+  return window.matchMedia("(max-width:768px)").matches;
+}
 
-/* open sheet */
-document.getElementById("fabUpload").onclick=()=>sheet.classList.toggle("open");
+/* =========================
+   CAMERA FIT (adaptive)
+========================= */
+function fit(){
+  const box = new THREE.Box3().setFromObject(group);
+  if(box.isEmpty()) return;
 
-/* fit */
-document.getElementById("fabFit").onclick=()=>alert("fitCamera() hook here");
+  const size = box.getSize(new THREE.Vector3());
+  const max = Math.max(size.x,size.y,size.z);
 
-/* file input */
-document.getElementById("drop").onclick=()=>file.click();
-const file=document.getElementById("file");
+  const scale = isMobile() ? 2.2 : 1.7;
 
-/* simple loader placeholder */
-file.onchange=()=> {
-  status.textContent="LOADING";
-  empty.style.display="none";
-};
+  const dist = (max/(2*Math.tan(camera.fov*Math.PI/360)))*scale;
 
-/* reset */
-document.getElementById("btnReset").onclick=()=>{
+  const center = box.getCenter(new THREE.Vector3());
+
+  camera.position.set(center.x+dist,center.y+dist,center.z+dist);
+  controls.target.copy(center);
+}
+
+/* =========================
+   SIMPLE MOCK LOADER
+========================= */
+function log(msg){
+  document.getElementById("log").innerHTML += msg+"<br>";
+}
+
+function loadMock(){
+  const geo = new THREE.BoxGeometry(1,1,1);
+  const mat = new THREE.MeshStandardMaterial({color:0x1890ff});
+  const mesh = new THREE.Mesh(geo,mat);
+  group.add(mesh);
+  log("Loaded mock model");
+}
+
+/* =========================
+   UI EVENTS
+========================= */
+document.getElementById("fit").onclick=fit;
+
+document.getElementById("reset").onclick=()=>{
   group.clear();
-  status.textContent="IDLE";
-  empty.style.display="flex";
+  log("Reset");
 };
 
-/* download */
-document.getElementById("btnDownload").onclick=()=>{
-  alert("export JSON hook");
+document.getElementById("drop").onclick=()=>{
+  document.getElementById("file").click();
 };
 
-/* popup */
-const popup=document.getElementById("popup");
-document.getElementById("closePopup").onclick=()=>popup.classList.remove("visible");
+document.getElementById("file").onchange=(e)=>{
+  document.getElementById("status").innerText="LOADING";
+  loadMock();
+  fit();
+  document.getElementById("status").innerText="READY";
+};
+
+/* =========================
+   SELECTION POPUP (adaptive)
+========================= */
+window.addEventListener("click",(e)=>{
+  document.getElementById("popup").classList.remove("visible");
+});
+
 </script>
 
 </body>
