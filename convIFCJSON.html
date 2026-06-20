@@ -1,792 +1,956 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FullBIM · CAD Viewer</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
-
-  <style>
-    :root {
-      --bg: #f0f5f9;
-      --bg-2: #e8f1f8;
-      --card: #ffffff;
-      --card-2: #f8fafc;
-      --ink: #1e293b;
-      --ink-2: #475569;
-      --title: #0f395b;
-      --title-2: #155e75;
-      --accent: #2563eb;
-      --accent-2: #1d4ed8;
-      --accent-3: #3b82f6;
-      --soft: #eef5ff;
-      --soft-2: #dbeafe;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --border: #e2e8f0;
-      --border-2: #cbd5e1;
-      --shadow: 0 4px 12px rgba(15, 57, 91, 0.08);
-      --shadow-lg: 0 10px 40px rgba(15, 57, 91, 0.12);
-      --shadow-inset: 0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 100%);
-      color: var(--ink);
-    }
-
-    .page {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* =========================
-       🖥 DESKTOP VIEW (ENHANCED)
-    ========================== */
-    .desktop-layout {
-      display: flex;
-      gap: 18px;
-      padding: 20px;
-      height: 100%;
-      max-width: 1920px;
-      margin: 0 auto;
-    }
-
-    .panel {
-      width: 340px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      background: var(--card);
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      padding: 20px;
-      overflow: auto;
-      border: 1px solid var(--border);
-    }
-
-    /* Drop zone (shared styles) */
-    .drop-area {
-      background: var(--soft);
-      border: 2px dashed var(--border-2);
-      border-radius: 16px;
-      padding: 28px 20px;
-      text-align: center;
-      transition: all 0.25s ease;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .drop-area:hover {
-      background: var(--soft-2);
-      border-color: var(--accent-3);
-      transform: translateY(-2px);
-    }
-
-    .drop-area.dragging {
-      background: var(--soft-2);
-      border-color: var(--accent);
-      border-style: solid;
-      transform: scale(0.98);
-    }
-
-    .drop-icon {
-      font-size: 48px;
-      color: var(--accent);
-      margin-bottom: 12px;
-      transition: transform 0.25s ease;
-    }
-
-    .drop-area:hover .drop-icon {
-      transform: scale(1.1);
-    }
-
-    .drop-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--title);
-      margin-bottom: 6px;
-    }
-
-    .drop-sub {
-      font-size: 13px;
-      color: var(--ink-2);
-      margin-bottom: 16px;
-    }
-
-    .drop-formats {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .drop-fmt {
-      background: var(--card);
-      color: var(--title-2);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-    }
-
-    input[type="file"] {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    /* Button row */
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      color: #fff;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn:disabled {
-      background: var(--bg-2);
-      color: var(--ink-2);
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .btn.secondary {
-      background: var(--card);
-      color: var(--title);
-      border: 1px solid var(--border-2);
-      box-shadow: var(--shadow);
-    }
-
-    .btn.secondary:hover:not(:disabled) {
-      background: var(--soft);
-      border-color: var(--accent-3);
-      color: var(--accent);
-    }
-
-    /* Desktop overlays */
-    .viewport {
-      flex: 1;
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      background: radial-gradient(circle at 50% 40%, #fff 0%, #f0f8ff 45%, #e0f0ff 75%, #c8e6ff 100%);
-      border: 1px solid var(--border-2);
-      box-shadow: var(--shadow-lg);
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
-    }
-
-    .empty-state,
-    .detail-popup,
-    .hud {
-      position: absolute;
-      pointer-events: none;
-    }
-
-    .empty-state {
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.7);
-      z-index: 10;
-      pointer-events: auto;
-    }
-
-    .empty-card {
-      background: var(--card);
-      padding: 48px 40px;
-      border-radius: 24px;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
-      max-width: 380px;
-    }
-
-    .empty-icon {
-      font-size: 64px;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .empty-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--title);
-      margin-bottom: 8px;
-    }
-
-    .empty-hint {
-      font-size: 15px;
-      color: var(--ink-2);
-      margin-bottom: 20px;
-    }
-
-    .empty-formats {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .empty-fmt {
-      background: var(--soft);
-      color: var(--title-2);
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-    }
-
-    .detail-popup {
-      background: var(--card);
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      max-width: 320px;
-      pointer-events: auto;
-      z-index: 20;
-      border: 1px solid var(--border);
-      display: none;
-      position: absolute;
-      top: 80px;
-      right: 20px;
-    }
-
-    .detail-popup-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-    }
-
-    .detail-popup-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--title);
-      margin-bottom: 4px;
-    }
-
-    .detail-popup-type {
-      font-size: 13px;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .detail-popup-close {
-      background: var(--bg-2);
-      color: var(--ink-2);
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    .detail-popup-close:hover {
-      background: var(--error);
-      color: #fff;
-    }
-
-    .detail-popup-body {
-      padding: 16px 20px;
-      font-size: 14px;
-      color: var(--ink-2);
-    }
-
-    .hud {
-      top: 16px;
-      right: 16px;
-      background: var(--card);
-      padding: 14px 18px;
-      border-radius: 14px;
-      box-shadow: var(--shadow-lg);
-      pointer-events: auto;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      color: var(--ink-2);
-    }
-
-    .hud div {
-      margin-bottom: 6px;
-    }
-
-    .hud div:last-child {
-      margin-bottom: 0;
-    }
-
-    .hud-key {
-      background: var(--soft);
-      color: var(--title);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 12px;
-      margin-right: 6px;
-    }
-
-    /* =========================
-       📱 MOBILE VIEW (WITH TOGGLE FLOW)
-    ========================== */
-    .mobile-layout {
-      display: none;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .mobile-viewport {
-      flex: 1;
-      position: relative;
-      background: #eaf7ff;
-      overflow: hidden;
-    }
-
-    /* CENTERED DROP ZONE + BUTTONS IN MOBILE */
-    .mobile-center-zone {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 40;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      width: min(92%, 440px);
-      pointer-events: auto;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    .mobile-center-zone.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .mobile-center-zone .drop-area {
-      padding: 32px 20px;
-      background: var(--card);
-      box-shadow: var(--shadow-lg);
-      border: 2px dashed var(--accent-3);
-      width: 100%;
-    }
-
-    .mobile-center-zone .drop-icon {
-      font-size: 56px;
-    }
-
-    .mobile-center-zone .drop-title {
-      font-size: 18px;
-    }
-
-    .mobile-center-zone .drop-sub {
-      font-size: 14px;
-    }
-
-    .mobile-center-zone .drop-fmt {
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-
-    /* Mobile action buttons below drop zone */
-    .mobile-action-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      width: 100%;
-      flex-wrap: wrap;
-    }
-
-    .mobile-action-buttons .btn {
-      padding: 14px 20px;
-      font-size: 15px;
-      min-width: 100px;
-      justify-content: center;
-    }
-
-    .mobile-action-buttons .btn svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Mobile close icon (top right) */
-    .mobile-close-icon {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 44px;
-      height: 44px;
-      background: var(--card);
-      border: none;
-      border-radius: 12px;
-      box-shadow: var(--shadow-lg);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      transition: all 0.2s ease;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .mobile-close-icon.visible {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .mobile-close-icon:hover {
-      background: var(--error);
-      color: #fff;
-      transform: scale(1.05);
-    }
-
-    .mobile-close-icon svg {
-      width: 24px;
-      height: 24px;
-      stroke: var(--ink-2);
-    }
-
-    .mobile-close-icon:hover svg {
-      stroke: #fff;
-    }
-
-    /* Mobile sheet for additional controls */
-    .mobile-sheet {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      max-height: 60%;
-      background: #fff;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
-      transform: translateY(100%);
-      transition: transform 0.25s ease-out;
-      display: flex;
-      flex-direction: column;
-      z-index: 60;
-      overflow: hidden;
-    }
-
-    .mobile-sheet.open {
-      transform: translateY(0);
-    }
-
-    .sheet-header {
-      padding: 14px;
-      font-weight: 700;
-      text-align: center;
-      border-bottom: 1px solid #e5eef6;
-      background: var(--soft);
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    .sheet-content {
-      padding: 12px;
-      overflow: auto;
-      flex: 1;
-    }
-
-    /* Mobile overlays */
-    .mobile-viewport .detail-popup {
-      position: absolute;
-      pointer-events: none;
-    }
-
-    .mobile-viewport .detail-popup {
-      background: var(--card);
-      padding: 12px;
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      max-width: 260px;
-      pointer-events: auto;
-      z-index: 45;
-    }
-
-    /* =========================
-       RESPONSIVE SWITCH (STRICT)
-    ========================== */
-    @media (max-width: 768px) {
-      .desktop-layout {
-        display: none !important;
-      }
-      .mobile-layout {
-        display: flex !important;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .mobile-layout {
-        display: none !important;
-      }
-      .desktop-layout {
-        display: flex !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FullBIM · CAD Viewer</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+
+<style>
+  :root {
+    --bg:       #b0e2ff;
+    --card:     #ffffff;
+    --ink:      #1a1a1a;
+    --title:    #0b3c5d;
+    --accent:   #1890ff;
+    --accent-2: #1d6fa5;
+    --soft:     #e6f7ff;
+    --line:     rgba(11,60,93,0.12);
+    --shadow:   0 10px 30px rgba(0,0,0,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  /* ── PANEL ── */
+  .panel {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  /* ── DROP AREA ── */
+  .drop-area {
+    border: 2px dashed #99cee8;
+    border-radius: 14px;
+    padding: 24px 16px;
+    background: var(--soft);
+    cursor: pointer;
+    transition: .15s ease;
+    text-align: center;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .drop-area:hover, .drop-area.drag-over {
+    border-color: var(--accent);
+    background: #d7eef9;
+    transform: translateY(-1px);
+  }
+  .drop-area input { display: none; }
+  .drop-icon  { font-size: 2rem; color: var(--accent-2); margin-bottom: 8px; }
+  .drop-title { font-weight: 700; color: var(--title); font-size: 1rem; margin-bottom: 4px; }
+  .drop-sub   { font-size: .88rem; color: #4f6780; line-height: 1.45; }
+
+  /* Format pills inside drop area (display only — purely informational, not selectors) */
+  .drop-formats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .drop-fmt {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid #99cee8;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    background: #fff;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn {
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 10px;
+    background: var(--title);
+    color: #fff;
+    font-weight: 700;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: .2s ease;
+    white-space: nowrap;
+  }
+  .btn:hover:not(:disabled) { background: var(--accent-2); transform: translateY(-1px); }
+  .btn:disabled { opacity: .35; cursor: default; transform: none; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--title);
+    border: 2px solid rgba(11,60,93,0.2);
+  }
+  .btn.secondary:hover:not(:disabled) { background: var(--soft); border-color: var(--accent-2); }
+
+  /* ── STATUS BADGE ── */
+  .status-badge {
+    display: inline-block;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #e0eef8;
+    color: #4f6780;
+    align-self: flex-start;
+    flex-shrink: 0;
+  }
+  .status-badge.ready   { background: #d4f4e6; color: #1a7a4a; }
+  .status-badge.loading { background: #fff3cd; color: #7a5800; }
+  .status-badge.error   { background: #fde8e8; color: #9b1c1c; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { height: 4px; background: #c8e0ef; border-radius: 2px; overflow: hidden; display: none; flex-shrink: 0; }
+  .progress-wrap.active { display: block; }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width: 40%;
+    animation: slide 1.2s ease-in-out infinite;
+  }
+  @keyframes slide { 0% { transform: translateX(-120%); } 100% { transform: translateX(350%); } }
+
+  /* ── STATS ── */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+  .stat-cell { background: var(--soft); border: 1px solid #c8e0ef; border-radius: 10px; padding: 10px 12px; }
+  .stat-value { font-size: 1.35rem; font-weight: 800; color: var(--title); line-height: 1; }
+  .stat-key   { font-size: .78rem; color: #4f6780; text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+
+  /* ── ERROR BANNER ── */
+  .err-banner { display: none; background: #fde8e8; border: 1px solid #f5a3a3; border-radius: 10px; padding: 10px 12px; font-size: .83rem; color: #9b1c1c; white-space: pre-wrap; line-height: 1.5; flex-shrink: 0; }
+  .err-banner.visible { display: block; }
+
+  /* ── DWG NOTICE ── */
+  .dwg-notice { display: none; background: #fff3cd; border: 1px solid #f3dd8a; border-radius: 10px; padding: 10px 12px; font-size: .8rem; color: #7a5800; line-height: 1.5; flex-shrink: 0; }
+  .dwg-notice.visible { display: block; }
+
+  /* ── LOG ── */
+  .log-wrap { flex: 1; min-height: 0; background: var(--card); border: 1px solid #dbe9f3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .log-header { padding: 8px 12px; font-size: .78rem; font-weight: 700; color: var(--title); text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #edf4fa; background: #f5fbff; flex-shrink: 0; }
+  #log { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: 'Courier New', monospace; font-size: .8rem; color: #37566f; line-height: 1.7; scrollbar-width: thin; scrollbar-color: #99cee8 transparent; }
+  #log .ok   { color: #1a7a4a; }
+  #log .err  { color: #9b1c1c; }
+  #log .warn { color: #7a5800; }
+  #log .info { color: var(--accent-2); }
+
+  /* ── VIEWPORT ── */
+  .viewport {
+    flex: 1; min-width: 0;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, #ffffff 0%, #eaf7ff 55%, #d5efff 100%);
+    border: 1px solid #c8e0ef;
+    box-shadow: var(--shadow);
+    touch-action: none;
+  }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .empty-state.hidden { display: none; }
+  .empty-card { background: rgba(255,255,255,0.88); border: 1px solid #dbe9f3; border-radius: 14px; padding: 22px 28px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+  .empty-icon  { font-size: 2.2rem; margin-bottom: 8px; }
+  .empty-title { font-weight: 700; color: var(--title); font-size: 1.05rem; margin-bottom: 6px; }
+  .empty-hint  { color: #4f6780; font-size: .88rem; }
+  .empty-formats { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .empty-fmt { font-size: .7rem; font-weight: 700; letter-spacing: .06em; padding: 3px 9px; border-radius: 20px; border: 1px solid #c8e0ef; color: #4f6780; text-transform: uppercase; background: #f5fbff; }
+
+  /* ── HUD ── */
+  .hud { position: absolute; bottom: 14px; right: 14px; font-size: .75rem; background: rgba(255,255,255,0.72); border: 1px solid #c8e0ef; border-radius: 10px; padding: 8px 12px; backdrop-filter: blur(8px); color: #4f6780; line-height: 1.9; pointer-events: none; display: none; }
+  .hud-key { color: var(--accent-2); font-weight: 700; }
+
+  /* ── ELEMENT DETAIL POPUP ── */
+  .detail-popup {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    width: 480px;
+    max-height: calc(100% - 28px);
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #c8e0ef;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(11,60,93,0.22);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 20;
+  }
+  .detail-popup.visible { display: flex; }
+  .detail-popup-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 14px 10px 16px;
+    background: linear-gradient(135deg, var(--title), var(--accent-2));
+    color: #fff;
+  }
+  .detail-popup-title {
+    font-weight: 700;
+    font-size: 0.98rem;
+    word-break: break-word;
+    line-height: 1.35;
+  }
+  .detail-popup-type {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+  .detail-popup-close {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .detail-popup-close:hover {
+    background: rgba(255,255,255,0.32);
+    transform: scale(1.08);
+  }
+  .detail-popup-body {
+    padding: 12px 16px 16px;
+    overflow-y: auto;
+    font-size: 0.84rem;
+    color: #2c4357;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid #edf4fa;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key {
+    color: #6f879a;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding-top: 1px;
+  }
+  .detail-val {
+    text-align: right;
+    word-break: break-word;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--title);
+  }
+  .detail-props-title {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #edf4fa;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: #6f879a;
+    font-weight: 700;
+  }
+</style>
 </head>
-
 <body>
-  <div class="page">
-    <!-- 🖥 DESKTOP LAYOUT -->
-    <div class="desktop-layout" id="desktopLayout">
-      <aside class="panel" id="desktopPanel" aria-label="BIM Controls">
-        <div class="drop-area" id="dropArea">
-          <input type="file" id="fileInput" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
-          <div class="drop-icon">⬡</div>
-          <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
-          <div class="drop-sub">Sends to backend · renders real geometry</div>
-          <div class="drop-formats">
-            <span class="drop-fmt">.IFC</span>
-            <span class="drop-fmt">.DXF</span>
-            <span class="drop-fmt">.DWG</span>
-            <span class="drop-fmt">.JSON</span>
-          </div>
-        </div>
+<div class="page">
 
-        <div class="progress-wrap" id="progressWrap"><div class="progress-bar"></div></div>
+  <!-- ── LEFT PANEL ── -->
+  <aside class="panel">
 
-        <div class="btn-row">
-          <button class="btn" id="btnDownload" disabled>↓ JSON</button>
-          <button class="btn secondary" id="btnFit" disabled>⊡ Fit</button>
-          <button class="btn secondary" id="btnReset" disabled>✕</button>
-        </div>
-
-        <div id="statusBadge" class="status-badge">IDLE</div>
-
-        <div id="statsBlock" style="display:none">
-          <div class="stats-grid">
-            <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Entities</div></div>
-            <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Meshes</div></div>
-            <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Verts</div></div>
-            <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Tris</div></div>
-          </div>
-        </div>
-
-        <div class="err-banner" id="errBanner"></div>
-        <div class="dwg-notice" id="dwgNotice"></div>
-
-        <div class="log-wrap">
-          <div class="log-header">Console</div>
-          <div id="log"></div>
-        </div>
-      </aside>
-
-      <section class="viewport" id="viewport">
-        <canvas id="canvas"></canvas>
-
-        <div class="empty-state" id="emptyState">
-          <div class="empty-card">
-            <div class="empty-icon">🏗</div>
-            <div class="empty-title">No model loaded</div>
-            <div class="empty-hint">Drop a file to begin</div>
-            <div class="empty-formats">
-              <span class="empty-fmt">.ifc</span>
-              <span class="empty-fmt">.dxf</span>
-              <span class="empty-fmt">.dwg</span>
-              <span class="empty-fmt">.json</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="detail-popup" id="detailPopup">
-          <div class="detail-popup-header">
-            <div>
-              <div class="detail-popup-title" id="detailTitle">—</div>
-              <div class="detail-popup-type" id="detailType">—</div>
-            </div>
-            <button class="detail-popup-close" id="detailClose" title="Close" aria-label="Close">✕</button>
-          </div>
-          <div class="detail-popup-body" id="detailBody"></div>
-        </div>
-
-        <div class="hud" id="hud">
-          <div><span class="hud-key">LMB</span>orbit (drag any direction)</div>
-          <div><span class="hud-key">RMB</span>pan</div>
-          <div><span class="hud-key">SCR</span>zoom</div>
-          <div><span class="hud-key">CLICK</span>select element</div>
-        </div>
-      </section>
+    <div class="drop-area" id="dropArea">
+      <input type="file" id="fileInput" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
+      <div class="drop-icon">⬡</div>
+      <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
+      <div class="drop-sub">Sends to backend · renders real geometry</div>
+      <div class="drop-formats">
+        <span class="drop-fmt">.IFC</span>
+        <span class="drop-fmt">.DXF</span>
+        <span class="drop-fmt">.DWG</span>
+        <span class="drop-fmt">.JSON</span>
+      </div>
     </div>
 
-    <!-- 📱 MOBILE LAYOUT (WITH TOGGLE FLOW) -->
-    <div class="mobile-layout" id="mobileLayout">
-      <main class="mobile-viewport" id="mobileViewport" aria-label="3D Model Viewer">
-        <canvas id="canvasMobile" aria-label="Three.js Canvas Mobile"></canvas>
+    <div class="progress-wrap" id="progressWrap"><div class="progress-bar"></div></div>
 
-        <!-- Close icon (top right, visible after upload) -->
-        <button class="mobile-close-icon" id="mobileClose" aria-label="Close viewer and return to upload">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-
-        <!-- CENTERED DROP ZONE + BUTTONS -->
-        <div class="mobile-center-zone" id="mobileCenterZone">
-          <div class="drop-area" id="dropAreaMobile">
-            <input type="file" id="fileInputMobile" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
-            <div class="drop-icon">⬡</div>
-            <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
-            <div class="drop-sub">Sends to backend · renders real geometry</div>
-            <div class="drop-formats">
-              <span class="drop-fmt">.IFC</span>
-              <span class="drop-fmt">.DXF</span>
-              <span class="drop-fmt">.DWG</span>
-              <span class="drop-fmt">.JSON</span>
-            </div>
-          </div>
-
-          <!-- Action buttons below drop zone -->
-          <div class="mobile-action-buttons">
-            <button class="btn" id="mDownload" aria-label="Download JSON">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              JSON
-            </button>
-            <button class="btn secondary" id="mFit" aria-label="Fit Model">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="5 3 19 3 19 11 13 11 13 17 5 17 5 3"/>
-              </svg>
-              Fit
-            </button>
-            <button class="btn secondary" id="mReset" aria-label="Reset View">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <!-- Optional sheet for additional controls -->
-        <div class="mobile-sheet" id="mobileSheet" aria-label="BIM Controls Panel">
-          <div class="sheet-header" id="sheetHeader">BIM Controls</div>
-          <div class="sheet-content" id="mobilePanel">
-            <p>Mobile panel content goes here</p>
-          </div>
-        </div>
-
-        <div class="detail-popup" id="detailPopupMobile"></div>
-      </main>
+    <div class="btn-row">
+      <button class="btn" id="btnDownload" disabled>↓ JSON</button>
+      <button class="btn secondary" id="btnFit" disabled>⊡ Fit</button>
+      <button class="btn secondary" id="btnReset" disabled>✕</button>
     </div>
-  </div>
 
-  <script>
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const isMobile = mediaQuery.matches;
+    <div id="statusBadge" class="status-badge">IDLE</div>
 
-    function getCanvas() {
-      return isMobile
-        ? document.getElementById("canvasMobile")
-        : document.getElementById("canvas");
+    <div id="statsBlock" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Entities</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Meshes</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Verts</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Tris</div></div>
+      </div>
+    </div>
+
+    <div class="err-banner" id="errBanner"></div>
+    <div class="dwg-notice" id="dwgNotice"></div>
+
+    <div class="log-wrap">
+      <div class="log-header">Console</div>
+      <div id="log"></div>
+    </div>
+
+  </aside>
+
+  <!-- ── 3D VIEWPORT ── -->
+  <section class="viewport" id="viewport">
+    <canvas id="canvas"></canvas>
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-card">
+        <div class="empty-icon">🏗</div>
+        <div class="empty-title">No model loaded</div>
+        <div class="empty-hint">Drop a file to begin</div>
+        <div class="empty-formats">
+          <span class="empty-fmt">.ifc</span>
+          <span class="empty-fmt">.dxf</span>
+          <span class="empty-fmt">.dwg</span>
+          <span class="empty-fmt">.json</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Element detail popup -->
+    <div class="detail-popup" id="detailPopup">
+      <div class="detail-popup-header">
+        <div>
+          <div class="detail-popup-title" id="detailTitle">—</div>
+          <div class="detail-popup-type" id="detailType">—</div>
+        </div>
+        <button class="detail-popup-close" id="detailClose" title="Close" aria-label="Close">✕</button>
+      </div>
+      <div class="detail-popup-body" id="detailBody"></div>
+    </div>
+
+    <div class="hud" id="hud">
+      <div><span class="hud-key">LMB </span>orbit (drag any direction)</div>
+      <div><span class="hud-key">RMB </span>pan</div>
+      <div><span class="hud-key">SCR </span>zoom</div>
+      <div><span class="hud-key">CLICK </span>select element</div>
+    </div>
+  </section>
+
+</div><!-- .page -->
+
+<script>
+/* ═══════════════════════════════════
+   BACKEND CONFIG
+   File type is auto-detected from the uploaded file's extension —
+   no manual format tab/selector. Each extension maps to its own
+   conversion endpoint; .json is a pass-through (already converted).
+═══════════════════════════════════ */
+const BASE = "https://ifcjsonbackend-production.up.railway.app";
+
+const ENDPOINTS = {
+  ifc:  BASE + "/convert-ifc",
+  dxf:  BASE + "/convert-dxf",
+  dwg:  BASE + "/convert-dwg",
+  json: BASE + "/upload-json",
+};
+
+const ALLOWED_EXT = ["ifc", "dxf", "dwg", "json"];
+
+/* ═══════════════════════════════════
+   SCENE SETUP
+═══════════════════════════════════ */
+const canvas   = document.getElementById("canvas");
+const viewport = document.getElementById("viewport");
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xeaf7ff);
+
+const camera = new THREE.PerspectiveCamera(55, 1, 0.01, 10000);
+camera.position.set(15, 12, 15);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping      = true;
+controls.dampingFactor      = 0.08;
+controls.screenSpacePanning = true;
+controls.minDistance        = 0.01;
+controls.maxDistance        = 5000;
+
+/* Explicit, unrestricted orbit rotation in both axes
+   (azimuth = left/right, polar = up/down). */
+controls.enableRotate    = true;
+controls.enableZoom      = true;
+controls.enablePan       = true;
+controls.rotateSpeed     = 1.0;
+controls.minPolarAngle   = 0;
+controls.maxPolarAngle   = Math.PI;
+controls.minAzimuthAngle = -Infinity;
+controls.maxAzimuthAngle = Infinity;
+
+controls.mouseButtons = {
+  LEFT:   THREE.MOUSE.ROTATE,
+  MIDDLE: THREE.MOUSE.DOLLY,
+  RIGHT:  THREE.MOUSE.PAN
+};
+controls.touches = {
+  ONE: THREE.TOUCH.ROTATE,
+  TWO: THREE.TOUCH.DOLLY_PAN
+};
+
+/* Lights */
+scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+sun.position.set(20, 40, 20);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x7ccfff, 0.3);
+fill.position.set(-10, 5, -15);
+scene.add(fill);
+
+/* Grid */
+const grid = new THREE.GridHelper(200, 200, 0x78a6c8, 0xc5dce9);
+scene.add(grid);
+
+/* Model group */
+let modelGroup = new THREE.Group();
+scene.add(modelGroup);
+
+/* Resize */
+function resize() {
+  const w = viewport.clientWidth, h = viewport.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener("resize", resize);
+new ResizeObserver(resize).observe(viewport);
+
+/* Render loop */
+(function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+})();
+
+/* ═══════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════ */
+const logEl      = document.getElementById("log");
+const badgeEl    = document.getElementById("statusBadge");
+const progressW  = document.getElementById("progressWrap");
+const errBanner  = document.getElementById("errBanner");
+const dwgNotice  = document.getElementById("dwgNotice");
+const emptyState = document.getElementById("emptyState");
+const hudEl      = document.getElementById("hud");
+
+function log(msg, type) {
+  const div = document.createElement("div");
+  if (type) div.className = type;
+  div.textContent = msg;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function setStatus(text, cls) {
+  badgeEl.textContent = text;
+  badgeEl.className = "status-badge " + (cls || "");
+}
+function setLoading(on) { progressW.classList.toggle("active", on); }
+function setEnabled(on) {
+  ["btnDownload","btnFit","btnReset"].forEach(id => {
+    document.getElementById(id).disabled = !on;
+  });
+}
+function showError(msg) { errBanner.textContent = msg; errBanner.classList.add("visible"); }
+function hideError()    { errBanner.classList.remove("visible"); errBanner.textContent = ""; }
+function showDwgNotice(msg) { dwgNotice.textContent = msg; dwgNotice.classList.add("visible"); }
+function hideDwgNotice()    { dwgNotice.classList.remove("visible"); dwgNotice.textContent = ""; }
+function fmt(n) {
+  if (!Number.isFinite(n)) return "—";
+  return n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1000 ? (n/1000).toFixed(1)+"k" : String(n);
+}
+function setStats(entities, meshes, verts, tris) {
+  document.getElementById("statsBlock").style.display = "";
+  document.getElementById("statEntities").textContent = fmt(entities);
+  document.getElementById("statMeshes").textContent   = fmt(meshes);
+  document.getElementById("statVerts").textContent    = fmt(verts);
+  document.getElementById("statTris").textContent     = fmt(tris);
+}
+
+/* ═══════════════════════════════════
+   ELEMENT DETAIL POPUP
+═══════════════════════════════════ */
+const detailPopup = document.getElementById("detailPopup");
+const detailTitle = document.getElementById("detailTitle");
+const detailType  = document.getElementById("detailType");
+const detailBody  = document.getElementById("detailBody");
+const detailClose = document.getElementById("detailClose");
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function buildDetailRow(key, val) {
+  return `<div class="detail-row">
+    <div class="detail-key">${escapeHtml(key)}</div>
+    <div class="detail-val">${escapeHtml(val)}</div>
+  </div>`;
+}
+
+function showDetailPopup(entity) {
+  const props = entity.properties || {};
+  const type  = props.ifc_type || entity.type || "UNKNOWN";
+  const name  = entity.name || props.globalId || entity.id || "Unnamed element";
+
+  detailTitle.textContent = name;
+  detailType.textContent  = type;
+
+  let html = "";
+  html += buildDetailRow("Express ID", props.expressID ?? "—");
+  html += buildDetailRow("Global ID",  props.globalId ?? "—");
+  html += buildDetailRow("Type",       type);
+  html += buildDetailRow("Entity ID",  entity.id ?? "—");
+
+  if (Array.isArray(entity.vertices) && Array.isArray(entity.faces)) {
+    html += buildDetailRow("Vertices",  entity.vertices.length.toLocaleString());
+    html += buildDetailRow("Triangles", entity.faces.length.toLocaleString());
+  }
+
+  /* Any extra/custom properties present on the entity.properties object */
+  const knownPropKeys = new Set(["expressID","globalId","ifc_type"]);
+  const extraKeys = Object.keys(props).filter(k => !knownPropKeys.has(k));
+
+  if (extraKeys.length) {
+    html += `<div class="detail-props-title">Properties</div>`;
+    for (const k of extraKeys) {
+      let v = props[k];
+      if (v !== null && typeof v === "object") {
+        try { v = JSON.stringify(v); } catch(e) { v = String(v); }
+      }
+      html += buildDetailRow(k, v);
+    }
+  }
+
+  detailBody.innerHTML = html;
+  detailPopup.classList.add("visible");
+}
+
+function hideDetailPopup() {
+  detailPopup.classList.remove("visible");
+}
+
+detailClose.addEventListener("click", hideDetailPopup);
+
+/* ═══════════════════════════════════
+   GEOMETRY ENGINE
+
+   CADJSON entity schema (shared by IFC/DXF/DWG/JSON pass-through):
+   {
+     id, type: "Mesh", name,
+     properties: { expressID, globalId, ifc_type, ... },
+     vertices: [{x,y,z}, ...],
+     faces:    [[i,j,k], ...]
+   }
+═══════════════════════════════════ */
+const TYPE_COLORS = {
+  IFCWALL:              0x5b8fc7,
+  IFCWALLSTANDARDCASE:  0x5b8fc7,
+  IFCSLAB:              0x6b7d99,
+  IFCCOLUMN:            0x3f7cb8,
+  IFCBEAM:              0xd17a3a,   /* burnt orange — easy to spot */
+  IFCDOOR:              0xc98a3e,
+  IFCWINDOW:            0x4fa8d8,
+  IFCSTAIR:             0x8a5fc2,
+  IFCROOF:              0x4a6fa1,
+  IFCFURNISHINGELEMENT: 0x9c7748,
+  IFCFOOTING:           0x7a6a55,
+  IFCPILE:              0x6b5d4d,
+  IFCCURTAINWALL:       0x4ea0d6,
+  IFCRAMP:              0x8a5fc2,
+  IFCPLATE:             0x7d8694,
+  IFCMEMBER:            0xc97650,
+  DEFAULT:              0x4d84b0,
+};
+const SELECT_COLOR = 0xff9d00;
+
+/* CADJSON entities carry the real IFC class in properties.ifc_type
+   (e.g. "IfcWall"); the top-level "type" field is usually "Mesh". */
+function getIfcType(entity) {
+  return (entity.properties && entity.properties.ifc_type) || entity.type || "UNKNOWN";
+}
+
+function colorForType(t) {
+  return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
+}
+
+/**
+ * Build a BufferGeometry from the CADJSON schema:
+ *   entity.vertices – Array of {x, y, z} objects
+ *   entity.faces    – Array of [i, j, k] triangle triplets
+ *
+ * Returns null if there's nothing usable.
+ */
+function buildGeometry(entity) {
+  const verts = entity.vertices;
+  const faces = entity.faces;
+
+  if (!Array.isArray(verts) || !verts.length || !Array.isArray(faces) || !faces.length) return null;
+
+  const positions = new Float32Array(verts.length * 3);
+  for (let i = 0; i < verts.length; i++) {
+    positions[i*3]   = verts[i].x;
+    positions[i*3+1] = verts[i].y;
+    positions[i*3+2] = verts[i].z;
+  }
+
+  const indices = new Uint32Array(faces.length * 3);
+  for (let i = 0; i < faces.length; i++) {
+    indices[i*3]   = faces[i][0];
+    indices[i*3+1] = faces[i][1];
+    indices[i*3+2] = faces[i][2];
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setIndex(new THREE.BufferAttribute(indices, 1));
+  geo.computeVertexNormals();
+
+  return geo;
+}
+
+/* ═══════════════════════════════════
+   SCENE BUILD
+═══════════════════════════════════ */
+function clearModel() {
+  while (modelGroup.children.length) {
+    const obj = modelGroup.children[modelGroup.children.length - 1];
+    modelGroup.remove(obj);
+    obj.geometry && obj.geometry.dispose();
+    if (obj.material) {
+      Array.isArray(obj.material)
+        ? obj.material.forEach(m => m.dispose())
+        : obj.material.dispose();
+    }
+  }
+}
+
+function fitCamera() {
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  if (box.isEmpty()) return;
+
+  const center = box.getCenter(new THREE.Vector3());
+  const size   = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov    = camera.fov * Math.PI / 180;
+  const dist   = (maxDim / (2 * Math.tan(fov / 2))) * 1.7;
+
+  camera.position.set(
+    center.x + dist * 0.8,
+    center.y + dist * 0.6,
+    center.z + dist * 0.8
+  );
+  controls.target.copy(center);
+  controls.update();
+
+  grid.position.y = box.min.y;
+}
+
+let selectedMesh = null;
+
+function clearSelection() {
+  if (selectedMesh) {
+    selectedMesh.material.color.setHex(selectedMesh.userData.baseColor);
+    selectedMesh.material.emissive && selectedMesh.material.emissive.setHex(0x000000);
+  }
+  selectedMesh = null;
+  hideDetailPopup();
+}
+
+function selectMesh(mesh) {
+  if (selectedMesh === mesh) return;
+  if (selectedMesh) {
+    selectedMesh.material.color.setHex(selectedMesh.userData.baseColor);
+    selectedMesh.material.emissive && selectedMesh.material.emissive.setHex(0x000000);
+  }
+  selectedMesh = mesh;
+  mesh.material.color.setHex(SELECT_COLOR);
+  if (mesh.material.emissive) mesh.material.emissive.setHex(0x402a00);
+
+  showDetailPopup(mesh.userData.entity);
+}
+
+function buildScene(json) {
+  clearModel();
+  clearSelection();
+
+  const entities = Array.isArray(json.entities) ? json.entities
+                  : Array.isArray(json.data)     ? json.data
+                  : Array.isArray(json)          ? json
+                  : [];
+
+  log("Entities received: " + entities.length, "info");
+
+  if (json.geometryCount !== undefined) {
+    log("Backend geometryCount: " + json.geometryCount, "info");
+  }
+
+  let meshCount = 0, vertCount = 0, triCount = 0, skipped = 0;
+
+  for (const entity of entities) {
+    const type = getIfcType(entity);
+
+    const geo = buildGeometry(entity);
+
+    if (!geo) {
+      log("  No geometry: " + type + " '" + (entity.name || entity.id || "?") + "'", "warn");
+      skipped++;
+      continue;
     }
 
-    if (isMobile) {
-      const mobileCenterZone = document.getElementById("mobileCenterZone");
-      const mobileClose = document.getElementById("mobileClose");
-      const fileInputMobile = document.getElementById("fileInputMobile");
-      const mobileSheet = document.getElementById("mobileSheet");
-      const sheetHeader = document.getElementById("sheetHeader");
+    const baseColor = colorForType(type);
 
-      sheetHeader.onclick = () => mobileSheet.classList.toggle("open");
+    const mat = new THREE.MeshStandardMaterial({
+      color:     baseColor,
+      roughness: 0.65,
+      metalness: 0.05,
+      side:      THREE.DoubleSide,
+    });
 
-      mobileSheet.addEventListener("click", (e) => {
-        if (e.target === mobileSheet) mobileSheet.classList.remove("open");
-      });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.userData.entity    = entity;
+    mesh.userData.baseColor = baseColor;
 
-      // File upload handler - hide drop zone, show viewer
-      fileInputMobile.addEventListener("change", (e) => {
-        if (e.target.files && e.target.files[0]) {
-          // Hide drop zone
-          mobileCenterZone.classList.add("hidden");
-          // Show close icon
-          mobileClose.classList.add("visible");
-          // YOUR THREE.js INITIALIZATION / FILE UPLOAD LOGIC HERE
-          console.log("File uploaded:", e.target.files[0].name);
-        }
-      });
+    modelGroup.add(mesh);
 
-      // Close icon handler - show drop zone, hide viewer
-      mobileClose.onclick = () => {
-        mobileCenterZone.classList.remove("hidden");
-        mobileClose.classList.remove("visible");
-        // YOUR CODE TO HIDE/CLEAR THREE.js VIEWER HERE
-        console.log("Viewer closed, returning to upload");
-      };
+    const posAttr = geo.attributes.position;
+    const v = posAttr ? posAttr.count : 0;
+    const t = geo.index ? geo.index.count / 3 : Math.round(v / 3);
+    vertCount += v;
+    triCount  += Math.round(t);
+    meshCount++;
 
-      // Mobile buttons trigger desktop equivalents
-      document.getElementById("mDownload").onclick = () => {
-        document.getElementById("btnDownload")?.click();
-      };
+    log("  ✓ " + type + " '" + (entity.name || entity.id || "") + "'"
+        + "  verts:" + v + "  tris:" + Math.round(t), "ok");
+  }
 
-      document.getElementById("mFit").onclick = () => {
-        document.getElementById("btnFit")?.click();
-      };
+  if (skipped > 0) {
+    log(skipped + " entity/entities had no geometry.", "warn");
+  }
 
-      document.getElementById("mReset").onclick = () => {
-        document.getElementById("btnReset")?.click();
-      };
+  log("Meshes rendered: " + meshCount, "ok");
+  log("Total verts: " + vertCount.toLocaleString()
+      + "  tris: " + triCount.toLocaleString(), "ok");
+
+  setStats(entities.length, meshCount, vertCount, triCount);
+  setStatus("READY", "ready");
+  emptyState.classList.add("hidden");
+  hudEl.style.display = "";
+  setEnabled(true);
+  fitCamera();
+}
+
+/* ═══════════════════════════════════
+   PICKING (click-to-select)
+═══════════════════════════════════ */
+const raycaster = new THREE.Raycaster();
+const pointerNDC = new THREE.Vector2();
+
+let pointerDownPos = null;
+const CLICK_DRAG_TOLERANCE = 6;
+
+canvas.addEventListener("pointerdown", (e) => {
+  pointerDownPos = { x: e.clientX, y: e.clientY };
+});
+
+canvas.addEventListener("pointerup", (e) => {
+  if (!pointerDownPos) return;
+  const dx = e.clientX - pointerDownPos.x;
+  const dy = e.clientY - pointerDownPos.y;
+  pointerDownPos = null;
+
+  if (Math.hypot(dx, dy) > CLICK_DRAG_TOLERANCE) return;
+
+  const rect = canvas.getBoundingClientRect();
+  pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObjects(modelGroup.children, false);
+
+  if (hits.length > 0) {
+    selectMesh(hits[0].object);
+  } else {
+    clearSelection();
+  }
+});
+
+/* ═══════════════════════════════════
+   UPLOAD — format auto-detected from file extension
+═══════════════════════════════════ */
+let currentJsonStr = null;
+let uploadSeq = 0;
+
+async function loadFile(file) {
+  const seq = ++uploadSeq;
+  const ext = (file.name || "").split(".").pop().toLowerCase();
+
+  hideDwgNotice();
+
+  if (!ALLOWED_EXT.includes(ext)) {
+    log("Rejected: unsupported file type '." + ext + "'. Accepted: .ifc, .dxf, .dwg, .json", "err");
+    showError("Unsupported file type: ." + ext + ". Please upload an .ifc, .dxf, .dwg, or .json file.");
+    return;
+  }
+
+  const endpoint = ENDPOINTS[ext];
+  const fmtLabel = ext.toUpperCase();
+
+  if (ext === "dwg") {
+    showDwgNotice("⚠ DWG conversion requires the ODA File Converter on the server. If it isn't installed there, this upload will fail with a 501 error.");
+  }
+
+  log("[" + fmtLabel + "] Uploading: " + file.name, "info");
+  setStatus("UPLOADING…", "loading");
+  setLoading(true);
+  hideError();
+
+  try {
+    const form = new FormData();
+    form.append("file", file, file.name);
+
+    const res = await fetch(endpoint, { method: "POST", body: form });
+    if (seq !== uploadSeq) return;
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      let detail = txt;
+      try { detail = JSON.parse(txt).detail || txt; } catch(e) {}
+      throw new Error("Backend " + res.status + ": " + (detail || res.statusText));
     }
-  </script>
+
+    log("Upload OK – parsing…", "ok");
+    setStatus("PARSING…", "loading");
+
+    const json = await res.json();
+    if (seq !== uploadSeq) return;
+
+    currentJsonStr = JSON.stringify(json, null, 2);
+    buildScene(json);
+
+  } catch(err) {
+    if (seq !== uploadSeq) return;
+    log("Error: " + err.message, "err");
+    setStatus("ERROR", "error");
+    showError(err.message);
+  } finally {
+    if (seq === uploadSeq) setLoading(false);
+  }
+}
+
+/* ═══════════════════════════════════
+   UI WIRING
+═══════════════════════════════════ */
+const dropArea  = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+
+dropArea.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", e => {
+  const f = e.target.files && e.target.files[0];
+  if (f) loadFile(f);
+  fileInput.value = "";
+});
+
+dropArea.addEventListener("dragover",  e => { e.preventDefault(); e.stopPropagation(); dropArea.classList.add("drag-over"); });
+dropArea.addEventListener("dragleave", e => { e.preventDefault(); e.stopPropagation(); dropArea.classList.remove("drag-over"); });
+dropArea.addEventListener("drop", e => {
+  e.preventDefault(); e.stopPropagation();
+  dropArea.classList.remove("drag-over");
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+window.addEventListener("dragover", e => { if (e.dataTransfer) e.preventDefault(); });
+window.addEventListener("drop",     e => { if (e.dataTransfer) e.preventDefault(); });
+
+document.getElementById("btnDownload").addEventListener("click", () => {
+  if (!currentJsonStr) return;
+  const blob = new Blob([currentJsonStr], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = "cadjson-export.json"; a.click();
+  URL.revokeObjectURL(url);
+  log("JSON downloaded.", "ok");
+});
+
+document.getElementById("btnFit").addEventListener("click", fitCamera);
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  uploadSeq++;
+  clearModel();
+  clearSelection();
+  currentJsonStr = null;
+  logEl.textContent = "";
+  document.getElementById("statsBlock").style.display = "none";
+  emptyState.classList.remove("hidden");
+  hudEl.style.display = "none";
+  grid.position.y = 0;
+  hideError();
+  hideDwgNotice();
+  setEnabled(false);
+  setStatus("IDLE");
+  setLoading(false);
+});
+</script>
 </body>
 </html>
