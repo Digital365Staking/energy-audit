@@ -1,293 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FullBIM · CAD Viewer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FullBIM · CAD Viewer</title>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
-<style>
-:root {
-  --bg:#b0e2ff;
-  --card:#fff;
-  --ink:#1a1a1a;
-  --title:#0b3c5d;
-  --accent:#1890ff;
-  --accent-2:#1d6fa5;
-  --soft:#e6f7ff;
-  --shadow:0 10px 30px rgba(0,0,0,0.10);
-}
+  <style>
+    :root {
+      --bg: #b0e2ff;
+      --card: #fff;
+      --ink: #1a1a1a;
+      --title: #0b3c5d;
+      --accent: #1890ff;
+      --accent-2: #1d6fa5;
+      --soft: #e6f7ff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    }
 
-*,*::before,*::after{box-sizing:border-box;}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Segoe UI;}
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
 
-/* =========================
-   ROOT LAYOUT SWITCH
-========================= */
-.page{
-  width:100%;
-  height:100%;
-}
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
 
-/* =========================
-   🖥 DESKTOP VIEW (DEFAULT)
-========================= */
-.desktop-layout{
-  display:flex;
-  gap:14px;
-  padding:16px;
-  height:100%;
-}
+    .page {
+      width: 100%;
+      height: 100%;
+    }
 
-.panel{
-  width:300px;
-  flex-shrink:0;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
+    /* =========================
+       🖥 DESKTOP VIEW (DEFAULT)
+    ========================== */
+    .desktop-layout {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      height: 100%;
+    }
 
-.viewport{
-  flex:1;
-  position:relative;
-  border-radius:16px;
-  overflow:hidden;
-  background:radial-gradient(circle at 50% 40%,#fff 0%,#eaf7ff 55%,#d5efff 100%);
-  border:1px solid #c8e0ef;
-  box-shadow:var(--shadow);
-}
+    .panel {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      overflow: auto;
+    }
 
-canvas{width:100%;height:100%;display:block;touch-action:none;}
+    .viewport {
+      flex: 1;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 40%, #fff 0%, #eaf7ff 55%, #d5efff 100%);
+      border: 1px solid #c8e0ef;
+      box-shadow: var(--shadow);
+    }
 
-/* =========================
-   📱 MOBILE VIEW (NEW UI)
-========================= */
-.mobile-layout{
-  display:none;
-  flex-direction:column;
-  height:100%;
-}
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
 
-/* Fullscreen BIM viewport */
-.mobile-viewport{
-  flex:1;
-  position:relative;
-  background:#eaf7ff;
-}
+    /* Desktop UI overlays */
+    .empty-state,
+    .detail-popup,
+    .hud {
+      position: absolute;
+      pointer-events: none;
+    }
 
-/* Top bar */
-.mobile-topbar{
-  position:absolute;
-  top:10px;
-  left:10px;
-  right:10px;
-  display:flex;
-  justify-content:space-between;
-  z-index:50;
-}
+    .empty-state {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--title);
+    }
 
-.mobile-btn{
-  background:var(--title);
-  color:#fff;
-  border:none;
-  padding:10px 12px;
-  border-radius:12px;
-  font-weight:700;
-  box-shadow:var(--shadow);
-}
+    .detail-popup {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 280px;
+      pointer-events: auto;
+    }
 
-/* Bottom action bar */
-.mobile-actions{
-  position:absolute;
-  bottom:14px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:10px;
-  z-index:50;
-}
+    .hud {
+      top: 14px;
+      right: 14px;
+      background: var(--card);
+      padding: 8px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      pointer-events: auto;
+    }
 
-.mobile-actions button{
-  background:var(--title);
-  color:#fff;
-  border:none;
-  padding:10px 14px;
-  border-radius:12px;
-  font-weight:700;
-}
+    /* =========================
+       📱 MOBILE VIEW (STRICT)
+    ========================== */
+    .mobile-layout {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
 
-/* Slide panel */
-.mobile-sheet{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  max-height:60%;
-  background:#fff;
-  border-top-left-radius:16px;
-  border-top-right-radius:16px;
-  box-shadow:0 -10px 30px rgba(0,0,0,0.15);
-  transform:translateY(100%);
-  transition:.25s;
-  display:flex;
-  flex-direction:column;
-  z-index:60;
-}
+    .mobile-viewport {
+      flex: 1;
+      position: relative;
+      background: #eaf7ff;
+      overflow: hidden;
+    }
 
-.mobile-sheet.open{
-  transform:translateY(0);
-}
+    .mobile-topbar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 50;
+      pointer-events: none;
+    }
 
-.sheet-header{
-  padding:10px;
-  font-weight:700;
-  text-align:center;
-  border-bottom:1px solid #e5eef6;
-}
+    .mobile-btn {
+      background: var(--title);
+      color: #fff;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      pointer-events: auto;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-.sheet-content{
-  padding:12px;
-  overflow:auto;
-}
+    .mobile-actions {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 50;
+      pointer-events: none;
+    }
 
-/* =========================
-   RESPONSIVE SWITCH
-========================= */
-@media (max-width:768px){
+    .mobile-actions button {
+      background: var(--title);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      pointer-events: auto;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-  .desktop-layout{display:none;}
-  .mobile-layout{display:flex;}
+    .mobile-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-height: 60%;
+      background: #fff;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out;
+      display: flex;
+      flex-direction: column;
+      z-index: 60;
+      overflow: hidden;
+    }
 
-}
+    .mobile-sheet.open {
+      transform: translateY(0);
+    }
 
-/* =========================
-   YOUR ORIGINAL CSS GOES HERE
-   (UNCHANGED)
-========================= */
-/* KEEP ALL YOUR EXISTING PANEL / THREE / UI STYLES BELOW */
-</style>
+    .sheet-header {
+      padding: 14px;
+      font-weight: 700;
+      text-align: center;
+      border-bottom: 1px solid #e5eef6;
+      background: var(--soft);
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .sheet-content {
+      padding: 12px;
+      overflow: auto;
+      flex: 1;
+    }
+
+    /* Mobile overlays */
+    .mobile-viewport .empty-state,
+    .mobile-viewport .detail-popup {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .mobile-viewport .empty-state {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--title);
+      z-index: 40;
+    }
+
+    .mobile-viewport .detail-popup {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 260px;
+      pointer-events: auto;
+      z-index: 45;
+    }
+
+    /* =========================
+       RESPONSIVE SWITCH (STRICT)
+    ========================== */
+    @media (max-width: 768px) {
+      .desktop-layout {
+        display: none !important;
+      }
+
+      .mobile-layout {
+        display: flex !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-layout {
+        display: none !important;
+      }
+
+      .desktop-layout {
+        display: flex !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="page">
+    <!-- 🖥 DESKTOP LAYOUT -->
+    <div class="desktop-layout" id="desktopLayout">
+      <aside class="panel" id="desktopPanel" aria-label="BIM Controls">
+        <!-- Inject your original left panel HTML here -->
+        <p>Desktop panel content goes here</p>
+      </aside>
 
-<div class="page">
-
-  <!-- =========================
-       🖥 DESKTOP (EXACT ORIGINAL)
-  ========================== -->
-  <div class="desktop-layout">
-
-    <aside class="panel">
-      <!-- 🔥 YOUR ORIGINAL LEFT PANEL HTML UNCHANGED -->
-    </aside>
-
-    <section class="viewport" id="viewport">
-      <canvas id="canvas"></canvas>
-
-      <!-- your original popups / HUD -->
-      <div class="empty-state" id="emptyState"></div>
-      <div class="detail-popup" id="detailPopup"></div>
-      <div class="hud" id="hud"></div>
-
-    </section>
-
-  </div>
-
-  <!-- =========================
-       📱 MOBILE (NEW BIM UX)
-  ========================== -->
-  <div class="mobile-layout">
-
-    <div class="mobile-viewport" id="mobileViewport">
-      <canvas id="canvasMobile"></canvas>
-
-      <div class="mobile-topbar">
-        <button class="mobile-btn" id="mMenu">☰</button>
-        <button class="mobile-btn" id="mFit">Fit</button>
-      </div>
-
-      <div class="mobile-actions">
-        <button id="mUpload">Upload</button>
-        <button id="mReset">Reset</button>
-      </div>
-
-      <div class="mobile-sheet" id="mobileSheet">
-        <div class="sheet-header">BIM Controls</div>
-        <div class="sheet-content">
-
-          <!-- reuse SAME panel logically (JS can inject or simplify) -->
-          <div id="mobilePanel"></div>
-
-        </div>
-      </div>
-
-      <div class="empty-state" id="emptyStateMobile"></div>
-      <div class="detail-popup" id="detailPopupMobile"></div>
-
+      <main class="viewport" id="viewport" aria-label="3D Model Viewer">
+        <canvas id="canvas" aria-label="Three.js Canvas"></canvas>
+        <div class="empty-state" id="emptyState"></div>
+        <div class="detail-popup" id="detailPopup"></div>
+        <div class="hud" id="hud"></div>
+      </main>
     </div>
 
+    <!-- 📱 MOBILE LAYOUT -->
+    <div class="mobile-layout" id="mobileLayout">
+      <main class="mobile-viewport" id="mobileViewport" aria-label="3D Model Viewer">
+        <canvas id="canvasMobile" aria-label="Three.js Canvas Mobile"></canvas>
+
+        <div class="mobile-topbar">
+          <button class="mobile-btn" id="mMenu" aria-label="Open Controls">☰</button>
+          <button class="mobile-btn" id="mFit" aria-label="Fit Model">Fit</button>
+        </div>
+
+        <div class="mobile-actions">
+          <button id="mUpload" aria-label="Upload IFC File">Upload</button>
+          <button id="mReset" aria-label="Reset View">Reset</button>
+        </div>
+
+        <div class="mobile-sheet" id="mobileSheet" aria-label="BIM Controls Panel">
+          <div class="sheet-header" id="sheetHeader">BIM Controls</div>
+          <div class="sheet-content" id="mobilePanel">
+            <!-- Inject same panel logic here (JS will populate) -->
+            <p>Mobile panel content goes here</p>
+          </div>
+        </div>
+
+        <div class="empty-state" id="emptyStateMobile"></div>
+        <div class="detail-popup" id="detailPopupMobile"></div>
+      </main>
+    </div>
   </div>
 
-</div>
+  <script>
+    // =========================
+    // STRICT VIEW DETECTION
+    // =========================
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const isMobile = mediaQuery.matches;
 
-<script>
-/* =========================
-   VIEW DETECTION
-========================= */
-const isMobile = window.matchMedia("(max-width:768px)").matches;
+    // =========================
+    // THREE.JS CANVAS ADAPTER
+    // =========================
+    function getCanvas() {
+      return isMobile
+        ? document.getElementById("canvasMobile")
+        : document.getElementById("canvas");
+    }
 
-/* =========================
-   UI SWITCH LOGIC
-========================= */
-if (isMobile) {
+    // =========================
+    // MOBILE UI LOGIC
+    // =========================
+    if (isMobile) {
+      const mobileSheet = document.getElementById("mobileSheet");
+      const mMenu = document.getElementById("mMenu");
+      const sheetHeader = document.getElementById("sheetHeader");
 
-  document.getElementById("mMenu").onclick = () => {
-    document.getElementById("mobileSheet").classList.toggle("open");
-  };
+      // Open/close sheet
+      mMenu.onclick = () => mobileSheet.classList.toggle("open");
+      sheetHeader.onclick = () => mobileSheet.classList.toggle("open");
 
-  document.getElementById("mFit").onclick = () => {
-    document.getElementById("btnFit")?.click();
-  };
+      // Close on swipe outside (optional enhancement)
+      mobileSheet.addEventListener("click", (e) => {
+        if (e.target === mobileSheet) mobileSheet.classList.remove("open");
+      });
 
-  document.getElementById("mUpload").onclick = () => {
-    document.getElementById("fileInput")?.click();
-  };
+      // Hook mobile buttons to desktop equivalents
+      document.getElementById("mFit").onclick = () => {
+        document.getElementById("btnFit")?.click();
+      };
 
-  document.getElementById("mReset").onclick = () => {
-    document.getElementById("btnReset")?.click();
-  };
-}
+      document.getElementById("mUpload").onclick = () => {
+        document.getElementById("fileInput")?.click();
+      };
 
-/* =========================
-   IMPORTANT ARCHITECTURE NOTE
-========================= */
-/*
-  - Desktop uses: canvas + full panel + full UI (UNCHANGED)
-  - Mobile uses: separate canvas + simplified UI
-  - THREE.js must detect which canvas to bind:
+      document.getElementById("mReset").onclick = () => {
+        document.getElementById("btnReset")?.click();
+      };
 
-    const canvas = isMobile
-      ? document.getElementById("canvasMobile")
-      : document.getElementById("canvas");
+      // Sync panel content (optional: inject same DOM or simplify)
+      const desktopPanel = document.getElementById("desktopPanel");
+      const mobilePanel = document.getElementById("mobilePanel");
+      if (desktopPanel && mobilePanel) {
+        mobilePanel.innerHTML = desktopPanel.innerHTML;
+      }
+    }
 
-*/
-
-/* =========================
-   YOUR FULL THREE.JS ENGINE
-   (UNCHANGED — ONLY ADAPT CANVAS TARGET)
-========================= */
-
-/* EXAMPLE ONLY:
-const canvas = isMobile
-  ? document.getElementById("canvasMobile")
-  : document.getElementById("canvas");
-
-const renderer = new THREE.WebGLRenderer({ canvas });
-*/
-
-</script>
-
+    // =========================
+    // EXAMPLE: THREE.JS INIT
+    // =========================
+    // const canvas = getCanvas();
+    // const renderer = new THREE.WebGLRenderer({ canvas });
+    // const scene = new THREE.Scene();
+    // const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    // const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  </script>
 </body>
 </html>
