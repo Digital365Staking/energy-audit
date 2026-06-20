@@ -10,7 +10,6 @@
 
   <style>
     :root {
-      /* Professional BIM color palette */
       --bg: #f0f5f9;
       --bg-2: #e8f1f8;
       --card: #ffffff;
@@ -79,7 +78,7 @@
       border: 1px solid var(--border);
     }
 
-    /* Drop zone enhancements */
+    /* Drop zone (shared styles) */
     .drop-area {
       background: var(--soft);
       border: 2px dashed var(--border-2);
@@ -155,173 +154,7 @@
       cursor: pointer;
     }
 
-    /* Progress bar */
-    .progress-wrap {
-      background: var(--bg-2);
-      border-radius: 8px;
-      padding: 2px;
-      height: 8px;
-      overflow: hidden;
-      display: none;
-    }
-
-    .progress-bar {
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-3) 100%);
-      height: 100%;
-      width: 0%;
-      border-radius: 6px;
-      transition: width 0.3s ease;
-    }
-
-    /* Button row */
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      color: #fff;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn:disabled {
-      background: var(--bg-2);
-      color: var(--ink-2);
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .btn.secondary {
-      background: var(--card);
-      color: var(--title);
-      border: 1px solid var(--border-2);
-      box-shadow: var(--shadow);
-    }
-
-    .btn.secondary:hover:not(:disabled) {
-      background: var(--soft);
-      border-color: var(--accent-3);
-      color: var(--accent);
-    }
-
-    /* Status badge */
-    .status-badge {
-      background: var(--soft);
-      color: var(--title-2);
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      border: 1px solid var(--border);
-    }
-
-    .status-badge[id="statusBadge"]:not(:contains("IDLE")) {
-      background: var(--success);
-      color: #fff;
-      border: none;
-    }
-
-    /* Stats grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      background: var(--bg-2);
-      padding: 16px;
-      border-radius: 14px;
-    }
-
-    .stat-cell {
-      background: var(--card);
-      padding: 14px;
-      border-radius: 12px;
-      text-align: center;
-      border: 1px solid var(--border);
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-
-    .stat-key {
-      font-size: 12px;
-      color: var(--ink-2);
-      font-weight: 600;
-    }
-
-    /* Error banner */
-    .err-banner {
-      background: var(--error);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      display: none;
-    }
-
-    /* DWG notice */
-    .dwg-notice {
-      background: var(--warning);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 13px;
-      display: none;
-    }
-
-    /* Console log */
-    .log-wrap {
-      background: var(--bg-2);
-      border-radius: 14px;
-      overflow: hidden;
-      flex: 1;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .log-header {
-      background: var(--card);
-      padding: 12px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--title);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .log {
-      padding: 12px;
-      overflow: auto;
-      font-size: 12px;
-      color: var(--ink-2);
-      font-family: 'Consolas', 'Monaco', monospace;
-      line-height: 1.6;
-    }
-
-    /* Viewport enhancements */
+    /* Desktop overlays */
     .viewport {
       flex: 1;
       position: relative;
@@ -339,7 +172,6 @@
       touch-action: none;
     }
 
-    /* Desktop UI overlays */
     .empty-state,
     .detail-popup,
     .hud {
@@ -406,7 +238,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Detail popup */
     .detail-popup {
       background: var(--card);
       border-radius: 16px;
@@ -468,7 +299,6 @@
       color: var(--ink-2);
     }
 
-    /* HUD */
     .hud {
       top: 16px;
       right: 16px;
@@ -501,7 +331,7 @@
     }
 
     /* =========================
-       📱 MOBILE VIEW (UNCHANGED)
+       📱 MOBILE VIEW (WITH CENTERED DROP ZONE)
     ========================== */
     .mobile-layout {
       display: none;
@@ -516,6 +346,42 @@
       overflow: hidden;
     }
 
+    /* CENTERED DROP ZONE IN MOBILE */
+    .mobile-drop-zone {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 40;
+      width: min(90%, 420px);
+      pointer-events: auto;
+    }
+
+    .mobile-drop-zone .drop-area {
+      padding: 32px 20px;
+      background: var(--card);
+      box-shadow: var(--shadow-lg);
+      border: 2px dashed var(--accent-3);
+    }
+
+    .mobile-drop-zone .drop-icon {
+      font-size: 56px;
+    }
+
+    .mobile-drop-zone .drop-title {
+      font-size: 18px;
+    }
+
+    .mobile-drop-zone .drop-sub {
+      font-size: 14px;
+    }
+
+    .mobile-drop-zone .drop-fmt {
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+
+    /* Mobile topbar */
     .mobile-topbar {
       position: absolute;
       top: 10px;
@@ -540,6 +406,7 @@
       font-size: 14px;
     }
 
+    /* Mobile actions */
     .mobile-actions {
       position: absolute;
       bottom: 14px;
@@ -563,6 +430,7 @@
       font-size: 14px;
     }
 
+    /* Mobile sheet */
     .mobile-sheet {
       position: absolute;
       left: 0;
@@ -601,6 +469,7 @@
       flex: 1;
     }
 
+    /* Mobile overlays */
     .mobile-viewport .empty-state,
     .mobile-viewport .detail-popup {
       position: absolute;
@@ -651,7 +520,7 @@
 
 <body>
   <div class="page">
-    <!-- 🖥 DESKTOP LAYOUT (ENHANCED) -->
+    <!-- 🖥 DESKTOP LAYOUT -->
     <div class="desktop-layout" id="desktopLayout">
       <aside class="panel" id="desktopPanel" aria-label="BIM Controls">
         <div class="drop-area" id="dropArea">
@@ -732,22 +601,44 @@
       </section>
     </div>
 
-    <!-- 📱 MOBILE LAYOUT (unchanged) -->
+    <!-- 📱 MOBILE LAYOUT (WITH CENTERED DROP ZONE) -->
     <div class="mobile-layout" id="mobileLayout">
       <main class="mobile-viewport" id="mobileViewport" aria-label="3D Model Viewer">
         <canvas id="canvasMobile" aria-label="Three.js Canvas Mobile"></canvas>
+
+        <!-- CENTERED DROP ZONE -->
+        <div class="mobile-drop-zone">
+          <div class="drop-area" id="dropAreaMobile">
+            <input type="file" id="fileInputMobile" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
+            <div class="drop-icon">⬡</div>
+            <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
+            <div class="drop-sub">Sends to backend · renders real geometry</div>
+            <div class="drop-formats">
+              <span class="drop-fmt">.IFC</span>
+              <span class="drop-fmt">.DXF</span>
+              <span class="drop-fmt">.DWG</span>
+              <span class="drop-fmt">.JSON</span>
+            </div>
+          </div>
+        </div>
+
         <div class="mobile-topbar">
           <button class="mobile-btn" id="mMenu" aria-label="Open Controls">☰</button>
           <button class="mobile-btn" id="mFit" aria-label="Fit Model">Fit</button>
         </div>
+
         <div class="mobile-actions">
           <button id="mUpload" aria-label="Upload IFC File">Upload</button>
           <button id="mReset" aria-label="Reset View">Reset</button>
         </div>
+
         <div class="mobile-sheet" id="mobileSheet" aria-label="BIM Controls Panel">
           <div class="sheet-header" id="sheetHeader">BIM Controls</div>
-          <div class="sheet-content" id="mobilePanel">Mobile panel content goes here</div>
+          <div class="sheet-content" id="mobilePanel">
+            <p>Mobile panel content goes here</p>
+          </div>
         </div>
+
         <div class="empty-state" id="emptyStateMobile"></div>
         <div class="detail-popup" id="detailPopupMobile"></div>
       </main>
@@ -766,13 +657,28 @@
 
     if (isMobile) {
       const mobileSheet = document.getElementById("mobileSheet");
-      document.getElementById("mMenu").onclick = () => mobileSheet.classList.toggle("open");
-      document.getElementById("sheetHeader").onclick = () => mobileSheet.classList.toggle("open");
-      document.getElementById("mFit").onclick = () => document.getElementById("btnFit")?.click();
-      document.getElementById("mUpload").onclick = () => document.getElementById("fileInput")?.click();
-      document.getElementById("mReset").onclick = () => document.getElementById("btnReset")?.click();
-      const mobilePanel = document.getElementById("mobilePanel");
-      if (mobilePanel) mobilePanel.innerHTML = document.getElementById("desktopPanel").innerHTML;
+      const mMenu = document.getElementById("mMenu");
+      const sheetHeader = document.getElementById("sheetHeader");
+
+      mMenu.onclick = () => mobileSheet.classList.toggle("open");
+      sheetHeader.onclick = () => mobileSheet.classList.toggle("open");
+
+      mobileSheet.addEventListener("click", (e) => {
+        if (e.target === mobileSheet) mobileSheet.classList.remove("open");
+      });
+
+      document.getElementById("mFit").onclick = () => {
+        document.getElementById("btnFit")?.click();
+      };
+
+      document.getElementById("mUpload").onclick = () => {
+        // Use mobile file input
+        document.getElementById("fileInputMobile")?.click();
+      };
+
+      document.getElementById("mReset").onclick = () => {
+        document.getElementById("btnReset")?.click();
+      };
     }
   </script>
 </body>
