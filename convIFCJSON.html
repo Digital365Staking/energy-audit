@@ -73,7 +73,6 @@
   .drop-title { font-weight: 700; color: var(--title); font-size: 1rem; margin-bottom: 4px; }
   .drop-sub   { font-size: .88rem; color: #4f6780; line-height: 1.45; }
 
-  /* Format pills inside drop area (display only — purely informational, not selectors) */
   .drop-formats {
     display: flex;
     flex-wrap: wrap;
@@ -156,10 +155,6 @@
   .err-banner { display: none; background: #fde8e8; border: 1px solid #f5a3a3; border-radius: 10px; padding: 10px 12px; font-size: .83rem; color: #9b1c1c; white-space: pre-wrap; line-height: 1.5; flex-shrink: 0; }
   .err-banner.visible { display: block; }
 
-  /* ── DWG NOTICE ── */
-  .dwg-notice { display: none; background: #fff3cd; border: 1px solid #f3dd8a; border-radius: 10px; padding: 10px 12px; font-size: .8rem; color: #7a5800; line-height: 1.5; flex-shrink: 0; }
-  .dwg-notice.visible { display: block; }
-
   /* ── LOG ── */
   .log-wrap { flex: 1; min-height: 0; background: var(--card); border: 1px solid #dbe9f3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
   .log-header { padding: 8px 12px; font-size: .78rem; font-weight: 700; color: var(--title); text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #edf4fa; background: #f5fbff; flex-shrink: 0; }
@@ -223,79 +218,21 @@
     background: linear-gradient(135deg, var(--title), var(--accent-2));
     color: #fff;
   }
-  .detail-popup-title {
-    font-weight: 700;
-    font-size: 0.98rem;
-    word-break: break-word;
-    line-height: 1.35;
-  }
-  .detail-popup-type {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    opacity: 0.85;
-    margin-top: 2px;
-  }
+  .detail-popup-title { font-weight: 700; font-size: 0.98rem; word-break: break-word; line-height: 1.35; }
+  .detail-popup-type  { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .07em; opacity: 0.85; margin-top: 2px; }
   .detail-popup-close {
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(255,255,255,0.18); color: #fff; font-size: 1rem; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: background .15s ease, transform .15s ease;
   }
-  .detail-popup-close:hover {
-    background: rgba(255,255,255,0.32);
-    transform: scale(1.08);
-  }
-  .detail-popup-body {
-    padding: 12px 16px 16px;
-    overflow-y: auto;
-    font-size: 0.84rem;
-    color: #2c4357;
-  }
-  .detail-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 7px 0;
-    border-bottom: 1px solid #edf4fa;
-  }
+  .detail-popup-close:hover { background: rgba(255,255,255,0.32); transform: scale(1.08); }
+  .detail-popup-body { padding: 12px 16px 16px; overflow-y: auto; font-size: 0.84rem; color: #2c4357; }
+  .detail-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #edf4fa; }
   .detail-row:last-child { border-bottom: none; }
-  .detail-key {
-    color: #6f879a;
-    font-weight: 600;
-    flex-shrink: 0;
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    padding-top: 1px;
-  }
-  .detail-val {
-    text-align: right;
-    word-break: break-word;
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    color: var(--title);
-  }
-  .detail-props-title {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 2px solid #edf4fa;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    color: #6f879a;
-    font-weight: 700;
-  }
+  .detail-key { color: #6f879a; font-weight: 600; flex-shrink: 0; font-size: 0.76rem; text-transform: uppercase; letter-spacing: .05em; padding-top: 1px; }
+  .detail-val { text-align: right; word-break: break-word; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--title); }
+  .detail-props-title { margin-top: 10px; padding-top: 10px; border-top: 2px solid #edf4fa; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .07em; color: #6f879a; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -305,14 +242,13 @@
   <aside class="panel">
 
     <div class="drop-area" id="dropArea">
-      <input type="file" id="fileInput" accept=".ifc,.dxf,.dwg,.json,application/octet-stream,application/json" />
+      <input type="file" id="fileInput" accept=".ifc,.dxf,.json,application/octet-stream,application/json" />
       <div class="drop-icon">⬡</div>
       <div class="drop-title">Drop a CAD/BIM file or click to upload</div>
       <div class="drop-sub">Sends to backend · renders real geometry</div>
       <div class="drop-formats">
         <span class="drop-fmt">.IFC</span>
         <span class="drop-fmt">.DXF</span>
-        <span class="drop-fmt">.DWG</span>
         <span class="drop-fmt">.JSON</span>
       </div>
     </div>
@@ -337,7 +273,6 @@
     </div>
 
     <div class="err-banner" id="errBanner"></div>
-    <div class="dwg-notice" id="dwgNotice"></div>
 
     <div class="log-wrap">
       <div class="log-header">Console</div>
@@ -358,7 +293,6 @@
         <div class="empty-formats">
           <span class="empty-fmt">.ifc</span>
           <span class="empty-fmt">.dxf</span>
-          <span class="empty-fmt">.dwg</span>
           <span class="empty-fmt">.json</span>
         </div>
       </div>
@@ -369,7 +303,7 @@
       <div class="detail-popup-header">
         <div>
           <div class="detail-popup-title" id="detailTitle">—</div>
-          <div class="detail-popup-type" id="detailType">—</div>
+          <div class="detail-popup-type"  id="detailType">—</div>
         </div>
         <button class="detail-popup-close" id="detailClose" title="Close" aria-label="Close">✕</button>
       </div>
@@ -389,20 +323,20 @@
 <script>
 /* ═══════════════════════════════════
    BACKEND CONFIG
-   File type is auto-detected from the uploaded file's extension —
-   no manual format tab/selector. Each extension maps to its own
-   conversion endpoint; .json is a pass-through (already converted).
+   Supported formats: .ifc → /convert-ifc
+                      .dxf → /convert-dxf
+                      .json → /upload-json  (pre-converted CADJSON pass-through)
+   .dwg is NOT supported in this build.
 ═══════════════════════════════════ */
 const BASE = "https://ifcjsonbackend-production.up.railway.app";
 
 const ENDPOINTS = {
   ifc:  BASE + "/convert-ifc",
   dxf:  BASE + "/convert-dxf",
-  dwg:  BASE + "/convert-dwg",
   json: BASE + "/upload-json",
 };
 
-const ALLOWED_EXT = ["ifc", "dxf", "dwg", "json"];
+const ALLOWED_EXT = ["ifc", "dxf", "json"];
 
 /* ═══════════════════════════════════
    SCENE SETUP
@@ -425,18 +359,14 @@ controls.dampingFactor      = 0.08;
 controls.screenSpacePanning = true;
 controls.minDistance        = 0.01;
 controls.maxDistance        = 5000;
-
-/* Explicit, unrestricted orbit rotation in both axes
-   (azimuth = left/right, polar = up/down). */
-controls.enableRotate    = true;
-controls.enableZoom      = true;
-controls.enablePan       = true;
-controls.rotateSpeed     = 1.0;
-controls.minPolarAngle   = 0;
-controls.maxPolarAngle   = Math.PI;
-controls.minAzimuthAngle = -Infinity;
-controls.maxAzimuthAngle = Infinity;
-
+controls.enableRotate       = true;
+controls.enableZoom         = true;
+controls.enablePan          = true;
+controls.rotateSpeed        = 1.0;
+controls.minPolarAngle      = 0;
+controls.maxPolarAngle      = Math.PI;
+controls.minAzimuthAngle    = -Infinity;
+controls.maxAzimuthAngle    = Infinity;
 controls.mouseButtons = {
   LEFT:   THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
@@ -489,7 +419,6 @@ const logEl      = document.getElementById("log");
 const badgeEl    = document.getElementById("statusBadge");
 const progressW  = document.getElementById("progressWrap");
 const errBanner  = document.getElementById("errBanner");
-const dwgNotice  = document.getElementById("dwgNotice");
 const emptyState = document.getElementById("emptyState");
 const hudEl      = document.getElementById("hud");
 
@@ -512,8 +441,6 @@ function setEnabled(on) {
 }
 function showError(msg) { errBanner.textContent = msg; errBanner.classList.add("visible"); }
 function hideError()    { errBanner.classList.remove("visible"); errBanner.textContent = ""; }
-function showDwgNotice(msg) { dwgNotice.textContent = msg; dwgNotice.classList.add("visible"); }
-function hideDwgNotice()    { dwgNotice.classList.remove("visible"); dwgNotice.textContent = ""; }
 function fmt(n) {
   if (!Number.isFinite(n)) return "—";
   return n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1000 ? (n/1000).toFixed(1)+"k" : String(n);
@@ -541,37 +468,36 @@ function escapeHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
-
 function buildDetailRow(key, val) {
   return `<div class="detail-row">
     <div class="detail-key">${escapeHtml(key)}</div>
     <div class="detail-val">${escapeHtml(val)}</div>
   </div>`;
 }
-
 function showDetailPopup(entity) {
   const props = entity.properties || {};
-  const type  = props.ifc_type || entity.type || "UNKNOWN";
+  const type  = props.ifc_type || props.dxf_type || entity.type || "UNKNOWN";
   const name  = entity.name || props.globalId || entity.id || "Unnamed element";
 
   detailTitle.textContent = name;
   detailType.textContent  = type;
 
   let html = "";
-  html += buildDetailRow("Express ID", props.expressID ?? "—");
-  html += buildDetailRow("Global ID",  props.globalId ?? "—");
-  html += buildDetailRow("Type",       type);
-  html += buildDetailRow("Entity ID",  entity.id ?? "—");
+  if (props.expressID !== undefined) html += buildDetailRow("Express ID", props.expressID);
+  if (props.globalId)                html += buildDetailRow("Global ID",  props.globalId);
+  if (props.ifc_type)                html += buildDetailRow("IFC Type",   props.ifc_type);
+  if (props.dxf_type)                html += buildDetailRow("DXF Type",   props.dxf_type);
+  if (props.layer)                   html += buildDetailRow("Layer",      props.layer);
+  if (props.color)                   html += buildDetailRow("Color",      props.color);
+  html += buildDetailRow("Entity ID", entity.id ?? "—");
 
   if (Array.isArray(entity.vertices) && Array.isArray(entity.faces)) {
     html += buildDetailRow("Vertices",  entity.vertices.length.toLocaleString());
     html += buildDetailRow("Triangles", entity.faces.length.toLocaleString());
   }
 
-  /* Any extra/custom properties present on the entity.properties object */
-  const knownPropKeys = new Set(["expressID","globalId","ifc_type"]);
-  const extraKeys = Object.keys(props).filter(k => !knownPropKeys.has(k));
-
+  const knownKeys = new Set(["expressID","globalId","ifc_type","dxf_type","layer","color"]);
+  const extraKeys = Object.keys(props).filter(k => !knownKeys.has(k));
   if (extraKeys.length) {
     html += `<div class="detail-props-title">Properties</div>`;
     for (const k of extraKeys) {
@@ -586,30 +512,21 @@ function showDetailPopup(entity) {
   detailBody.innerHTML = html;
   detailPopup.classList.add("visible");
 }
-
-function hideDetailPopup() {
-  detailPopup.classList.remove("visible");
-}
-
+function hideDetailPopup() { detailPopup.classList.remove("visible"); }
 detailClose.addEventListener("click", hideDetailPopup);
 
 /* ═══════════════════════════════════
    GEOMETRY ENGINE
-
-   CADJSON entity schema (shared by IFC/DXF/DWG/JSON pass-through):
-   {
-     id, type: "Mesh", name,
-     properties: { expressID, globalId, ifc_type, ... },
-     vertices: [{x,y,z}, ...],
-     faces:    [[i,j,k], ...]
-   }
+   CADJSON Mesh schema:
+     { type:"Mesh", id, name, properties:{...},
+       vertices:[{x,y,z},...], faces:[[i,j,k],...] }
 ═══════════════════════════════════ */
 const TYPE_COLORS = {
   IFCWALL:              0x5b8fc7,
   IFCWALLSTANDARDCASE:  0x5b8fc7,
   IFCSLAB:              0x6b7d99,
   IFCCOLUMN:            0x3f7cb8,
-  IFCBEAM:              0xd17a3a,   /* burnt orange — easy to spot */
+  IFCBEAM:              0xd17a3a,
   IFCDOOR:              0xc98a3e,
   IFCWINDOW:            0x4fa8d8,
   IFCSTAIR:             0x8a5fc2,
@@ -625,27 +542,17 @@ const TYPE_COLORS = {
 };
 const SELECT_COLOR = 0xff9d00;
 
-/* CADJSON entities carry the real IFC class in properties.ifc_type
-   (e.g. "IfcWall"); the top-level "type" field is usually "Mesh". */
 function getIfcType(entity) {
-  return (entity.properties && entity.properties.ifc_type) || entity.type || "UNKNOWN";
+  return (entity.properties && (entity.properties.ifc_type || entity.properties.dxf_type))
+         || entity.type || "UNKNOWN";
 }
-
 function colorForType(t) {
   return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
 }
 
-/**
- * Build a BufferGeometry from the CADJSON schema:
- *   entity.vertices – Array of {x, y, z} objects
- *   entity.faces    – Array of [i, j, k] triangle triplets
- *
- * Returns null if there's nothing usable.
- */
 function buildGeometry(entity) {
   const verts = entity.vertices;
   const faces = entity.faces;
-
   if (!Array.isArray(verts) || !verts.length || !Array.isArray(faces) || !faces.length) return null;
 
   const positions = new Float32Array(verts.length * 3);
@@ -654,19 +561,16 @@ function buildGeometry(entity) {
     positions[i*3+1] = verts[i].y;
     positions[i*3+2] = verts[i].z;
   }
-
   const indices = new Uint32Array(faces.length * 3);
   for (let i = 0; i < faces.length; i++) {
     indices[i*3]   = faces[i][0];
     indices[i*3+1] = faces[i][1];
     indices[i*3+2] = faces[i][2];
   }
-
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   geo.setIndex(new THREE.BufferAttribute(indices, 1));
   geo.computeVertexNormals();
-
   return geo;
 }
 
@@ -689,13 +593,11 @@ function clearModel() {
 function fitCamera() {
   const box = new THREE.Box3().setFromObject(modelGroup);
   if (box.isEmpty()) return;
-
   const center = box.getCenter(new THREE.Vector3());
   const size   = box.getSize(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z);
   const fov    = camera.fov * Math.PI / 180;
   const dist   = (maxDim / (2 * Math.tan(fov / 2))) * 1.7;
-
   camera.position.set(
     center.x + dist * 0.8,
     center.y + dist * 0.6,
@@ -703,7 +605,6 @@ function fitCamera() {
   );
   controls.target.copy(center);
   controls.update();
-
   grid.position.y = box.min.y;
 }
 
@@ -727,7 +628,6 @@ function selectMesh(mesh) {
   selectedMesh = mesh;
   mesh.material.color.setHex(SELECT_COLOR);
   if (mesh.material.emissive) mesh.material.emissive.setHex(0x402a00);
-
   showDetailPopup(mesh.userData.entity);
 }
 
@@ -737,21 +637,16 @@ function buildScene(json) {
 
   const entities = Array.isArray(json.entities) ? json.entities
                   : Array.isArray(json.data)     ? json.data
-                  : Array.isArray(json)          ? json
+                  : Array.isArray(json)           ? json
                   : [];
 
   log("Entities received: " + entities.length, "info");
-
-  if (json.geometryCount !== undefined) {
-    log("Backend geometryCount: " + json.geometryCount, "info");
-  }
 
   let meshCount = 0, vertCount = 0, triCount = 0, skipped = 0;
 
   for (const entity of entities) {
     const type = getIfcType(entity);
-
-    const geo = buildGeometry(entity);
+    const geo  = buildGeometry(entity);
 
     if (!geo) {
       log("  No geometry: " + type + " '" + (entity.name || entity.id || "?") + "'", "warn");
@@ -760,7 +655,6 @@ function buildScene(json) {
     }
 
     const baseColor = colorForType(type);
-
     const mat = new THREE.MeshStandardMaterial({
       color:     baseColor,
       roughness: 0.65,
@@ -771,7 +665,6 @@ function buildScene(json) {
     const mesh = new THREE.Mesh(geo, mat);
     mesh.userData.entity    = entity;
     mesh.userData.baseColor = baseColor;
-
     modelGroup.add(mesh);
 
     const posAttr = geo.attributes.position;
@@ -785,13 +678,9 @@ function buildScene(json) {
         + "  verts:" + v + "  tris:" + Math.round(t), "ok");
   }
 
-  if (skipped > 0) {
-    log(skipped + " entity/entities had no geometry.", "warn");
-  }
-
+  if (skipped > 0) log(skipped + " entity/entities had no geometry.", "warn");
   log("Meshes rendered: " + meshCount, "ok");
-  log("Total verts: " + vertCount.toLocaleString()
-      + "  tris: " + triCount.toLocaleString(), "ok");
+  log("Total verts: " + vertCount.toLocaleString() + "  tris: " + triCount.toLocaleString(), "ok");
 
   setStats(entities.length, meshCount, vertCount, triCount);
   setStatus("READY", "ready");
@@ -804,40 +693,35 @@ function buildScene(json) {
 /* ═══════════════════════════════════
    PICKING (click-to-select)
 ═══════════════════════════════════ */
-const raycaster = new THREE.Raycaster();
+const raycaster  = new THREE.Raycaster();
 const pointerNDC = new THREE.Vector2();
-
 let pointerDownPos = null;
 const CLICK_DRAG_TOLERANCE = 6;
 
 canvas.addEventListener("pointerdown", (e) => {
   pointerDownPos = { x: e.clientX, y: e.clientY };
 });
-
 canvas.addEventListener("pointerup", (e) => {
   if (!pointerDownPos) return;
   const dx = e.clientX - pointerDownPos.x;
   const dy = e.clientY - pointerDownPos.y;
   pointerDownPos = null;
-
   if (Math.hypot(dx, dy) > CLICK_DRAG_TOLERANCE) return;
-
   const rect = canvas.getBoundingClientRect();
-  pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
+  pointerNDC.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+  pointerNDC.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
   raycaster.setFromCamera(pointerNDC, camera);
   const hits = raycaster.intersectObjects(modelGroup.children, false);
-
-  if (hits.length > 0) {
-    selectMesh(hits[0].object);
-  } else {
-    clearSelection();
-  }
+  if (hits.length > 0) selectMesh(hits[0].object);
+  else clearSelection();
 });
 
 /* ═══════════════════════════════════
-   UPLOAD — format auto-detected from file extension
+   UPLOAD
+   Format is auto-detected from the file extension.
+   Supported: .ifc  → /convert-ifc
+              .dxf  → /convert-dxf
+              .json → /upload-json
 ═══════════════════════════════════ */
 let currentJsonStr = null;
 let uploadSeq = 0;
@@ -846,20 +730,14 @@ async function loadFile(file) {
   const seq = ++uploadSeq;
   const ext = (file.name || "").split(".").pop().toLowerCase();
 
-  hideDwgNotice();
-
   if (!ALLOWED_EXT.includes(ext)) {
-    log("Rejected: unsupported file type '." + ext + "'. Accepted: .ifc, .dxf, .dwg, .json", "err");
-    showError("Unsupported file type: ." + ext + ". Please upload an .ifc, .dxf, .dwg, or .json file.");
+    log("Rejected: unsupported file type '." + ext + "'. Accepted: .ifc, .dxf, .json", "err");
+    showError("Unsupported file type: ." + ext + ". Please upload an .ifc, .dxf, or .json file.");
     return;
   }
 
   const endpoint = ENDPOINTS[ext];
   const fmtLabel = ext.toUpperCase();
-
-  if (ext === "dwg") {
-    showDwgNotice("⚠ DWG conversion requires the ODA File Converter on the server. If it isn't installed there, this upload will fail with a 501 error.");
-  }
 
   log("[" + fmtLabel + "] Uploading: " + file.name, "info");
   setStatus("UPLOADING…", "loading");
@@ -946,7 +824,6 @@ document.getElementById("btnReset").addEventListener("click", () => {
   hudEl.style.display = "none";
   grid.position.y = 0;
   hideError();
-  hideDwgNotice();
   setEnabled(false);
   setStatus("IDLE");
   setLoading(false);
