@@ -131,7 +131,7 @@
   .type-count-badge { flex-shrink:0; font-size:.67rem; font-weight:700; background:#e0eef8; color:#4f6780; padding:1px 6px; border-radius:20px; min-width:22px; text-align:center; }
 
   /* ── LOG ── */
-  .log-wrap { flex:1; min-height:70px; max-height:160px; background:var(--card); border:1px solid #dbe9f3; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .log-wrap { flex:1; min-height:70px; background:var(--card); border:1px solid #dbe9f3; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
   .log-header { padding:7px 12px; font-size:.75rem; font-weight:700; color:var(--title); text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid #edf4fa; background:#f5fbff; flex-shrink:0; }
   #log { flex:1; overflow-y:auto; padding:8px 12px; font-family:'Courier New',monospace; font-size:.78rem; color:#37566f; line-height:1.65; scrollbar-width:thin; scrollbar-color:#99cee8 transparent; }
   #log .ok   { color:#1a7a4a; }
@@ -298,7 +298,7 @@
 
   <!-- ── 3D VIEWPORT ── -->
   <section class="viewport" id="viewport">
-    <p>
+    <p style="margin-left:5px">
       This page allows 3D visualization of BIM files in .IFC format (Autodesk Revit) or .DXF format (AutoCAD). The underlying algorithm converts these proprietary formats into a JSON format, which can be saved and reused, thereby optimizing 3D rendering. The JSON format used is inspired by specifications provided by buildingSMART (https://www.buildingsmart.org/), an international non-profit organization: https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec <br>Feel free to send us feedback about this page at info@digitalenergyaudit.com. Your input will help us improve our next-generation, cross-platform collaborative BIM solution (Windows, Linux, macOS), scheduled for release by the end of August 2026.
     </p>
     <canvas id="canvas"></canvas>
