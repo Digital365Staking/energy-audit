@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visionneuse BIM · CAO</title>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+
+<style>
+  :root {
+    --bg:       #b0e2ff;
+    --card:     #ffffff;
+    --ink:      #1a1a1a;
+    --title:    #0b3c5d;
+    --accent:   #1890ff;
+    --accent-2: #1d6fa5;
+    --soft:     #e6f7ff;
+    --shadow:   0 10px 30px rgba(0,0,0,0.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg); color: var(--ink);
+    line-height: 1.6; display: flex; flex-direction: column;
+  }
+  .page { display:flex; width:100%; height:100%; gap:14px; padding:16px; }
+
+  .mobile-message { display: none; }
+
+  @media only screen and (max-width: 768px) {
+    .page { display: none; }
+    .mobile-message {
+      display: block;
+      padding: 20px;
+      font-size: 18px;
+      text-align: center;
+      background: #ffecec;
+      color: #a00000;
+    }
+  }
+
+  /* (CSS inchangé pour lisibilité) */
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- ── PANNEAU GAUCHE ── -->
+  <aside class="panel">
+
+    <div class="drop-area" id="dropArea">
+      <input type="file" id="fileInput" accept=".ifc,.dxf,.json,application/octet-stream,application/json" />
+      <div class="drop-icon">⬡</div>
+      <div class="drop-title">Déposez un fichier CAO/BIM ou cliquez pour importer</div>
+      <div class="drop-sub">Envoi au backend · rendu de la géométrie réelle</div>
+      <div class="drop-formats">
+        <span class="drop-fmt">.IFC</span>
+        <span class="drop-fmt">.DXF</span>
+        <span class="drop-fmt">.JSON</span>
+      </div>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap"><div class="progress-bar"></div></div>
+
+    <div class="btn-row">
+      <button class="btn" id="btnDownload" disabled>↓ JSON</button>
+      <button class="btn secondary" id="btnFit" disabled>⊡ Ajuster</button>
+      <button class="btn secondary" id="btnReset" disabled>✕ Réinitialiser</button>
+    </div>
+
+    <div id="statusBadge" class="status-badge">INACTIF</div>
+
+    <div id="statsBlock" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Entités</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Maillages</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Sommets</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Triangles</div></div>
+      </div>
+    </div>
+
+    <!-- ── FILTRES TYPES ── -->
+    <div class="filter-wrap" id="filterWrap" style="display:none">
+      <div class="filter-header" id="filterHeader">
+        <span class="filter-header-label">Types & Couleurs</span>
+        <div class="filter-header-right">
+          <span class="filter-count-badge" id="filterCountBadge">0</span>
+          <span class="filter-chevron open" id="filterChevron">▾</span>
+        </div>
+      </div>
+      <div class="filter-body" id="filterBody">
+        <div class="filter-controls">
+          <button class="filter-ctrl-btn" id="btnShowAll">👁 Tout afficher</button>
+          <button class="filter-ctrl-btn" id="btnHideAll">🚫 Aucun</button>
+          <button class="filter-ctrl-btn" id="btnResetColors">↺ Couleurs</button>
+        </div>
+        <div id="filterRows"></div>
+      </div>
+    </div>
+
+    <div class="err-banner" id="errBanner"></div>
+
+    <div class="log-wrap">
+      <div class="log-header">Console</div>
+      <div id="log"></div>
+    </div>
+  </aside>
+
+  <!-- ── VIEWPORT 3D ── -->
+  <section class="viewport" id="viewport">
+
+    <p style="margin-left:10px">
+      Cette page permet la visualisation 3D de fichiers BIM au format <b>.IFC (Autodesk Revit)</b> ou <b>.DXF (AutoCAD)</b>.
+      L’algorithme sous-jacent convertit ces formats propriétaires en un <b>format JSON</b>, pouvant être sauvegardé et réutilisé afin d’optimiser le rendu 3D.
+      Le format JSON utilisé s’inspire des spécifications de buildingSMART
+      (<a href="https://www.buildingsmart.org" target="_blank">https://www.buildingsmart.org</a>),
+      une organisation internationale à but non lucratif :
+      <a href="https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec" target="_blank">
+        lien GitHub buildingSMART
+      </a>
+      <br><br>
+      N’hésitez pas à nous envoyer vos commentaires à
+      <a href="mailto:info@digitalenergyaudit.com">info@digitalenergyaudit.com</a>.
+      Vos retours nous aideront à améliorer notre solution BIM nouvelle génération,
+      collaborative et multi-plateforme (Windows, Linux, macOS), prévue pour fin août 2026.
+    </p>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-card">
+        <div class="empty-icon">🏗</div>
+        <div class="empty-title">Aucun modèle chargé</div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- message mobile -->
+<div class="mobile-message">
+  ⚠️ Ce contenu n’est pas disponible sur mobile. Veuillez ouvrir cette page sur un ordinateur.
+</div>
+
+</body>
+</html>
