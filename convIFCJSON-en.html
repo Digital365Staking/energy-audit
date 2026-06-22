@@ -48,8 +48,13 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #99cee8 transparent;
   }
+  .panel::-webkit-scrollbar { width: 4px; }
+  .panel::-webkit-scrollbar-thumb { background: #99cee8; border-radius: 2px; }
 
   /* ── DROP AREA ── */
   .drop-area {
@@ -155,8 +160,160 @@
   .err-banner { display: none; background: #fde8e8; border: 1px solid #f5a3a3; border-radius: 10px; padding: 10px 12px; font-size: .83rem; color: #9b1c1c; white-space: pre-wrap; line-height: 1.5; flex-shrink: 0; }
   .err-banner.visible { display: block; }
 
+  /* ── TYPE FILTER PANEL ── */
+  .filter-wrap {
+    background: var(--card);
+    border: 1px solid #dbe9f3;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f5fbff;
+    border-bottom: 1px solid #edf4fa;
+    cursor: pointer;
+    user-select: none;
+  }
+  .filter-header-label {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--title);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .filter-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-count-badge {
+    font-size: .7rem;
+    font-weight: 700;
+    background: #e0eef8;
+    color: var(--accent-2);
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+  .filter-chevron {
+    font-size: .7rem;
+    color: #4f6780;
+    transition: transform .2s ease;
+  }
+  .filter-chevron.open { transform: rotate(180deg); }
+  .filter-body {
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #99cee8 transparent;
+  }
+  .filter-body::-webkit-scrollbar { width: 3px; }
+  .filter-body::-webkit-scrollbar-thumb { background: #99cee8; }
+  .filter-body-inner {
+    padding: 6px 0;
+  }
+  /* "Show all / Hide all" controls bar */
+  .filter-controls {
+    display: flex;
+    gap: 6px;
+    padding: 4px 10px 8px;
+    border-bottom: 1px solid #edf4fa;
+  }
+  .filter-ctrl-btn {
+    flex: 1;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 8px;
+    border: 1px solid #c8e0ef;
+    background: #f5fbff;
+    color: var(--accent-2);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    text-align: center;
+  }
+  .filter-ctrl-btn:hover { background: #d7eef9; border-color: var(--accent); }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px;
+    transition: background .1s;
+  }
+  .filter-row:hover { background: #f5fbff; }
+  .filter-row.hidden-type { opacity: 0.45; }
+
+  .vis-btn {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: .85rem;
+    color: var(--accent-2);
+    transition: background .15s, opacity .15s;
+    padding: 0;
+  }
+  .vis-btn:hover { background: #d7eef9; }
+  .vis-btn.hidden { color: #aac2d2; }
+
+  /* Native color input styled as a small swatch */
+  .color-swatch-wrap {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid rgba(11,60,93,0.15);
+    cursor: pointer;
+    position: relative;
+    transition: border-color .15s, transform .1s;
+  }
+  .color-swatch-wrap:hover { border-color: var(--accent); transform: scale(1.1); }
+  .color-swatch-wrap input[type="color"] {
+    position: absolute;
+    inset: -4px;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  .type-label {
+    flex: 1;
+    font-size: .77rem;
+    color: var(--title);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Courier New', monospace;
+  }
+  .type-count-badge {
+    flex-shrink: 0;
+    font-size: .68rem;
+    font-weight: 700;
+    background: #e0eef8;
+    color: #4f6780;
+    padding: 1px 6px;
+    border-radius: 20px;
+    min-width: 24px;
+    text-align: center;
+  }
+
   /* ── LOG ── */
-  .log-wrap { flex: 1; min-height: 0; background: var(--card); border: 1px solid #dbe9f3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .log-wrap { flex: 1; min-height: 80px; background: var(--card); border: 1px solid #dbe9f3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
   .log-header { padding: 8px 12px; font-size: .78rem; font-weight: 700; color: var(--title); text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid #edf4fa; background: #f5fbff; flex-shrink: 0; }
   #log { flex: 1; overflow-y: auto; padding: 10px 12px; font-family: 'Courier New', monospace; font-size: .8rem; color: #37566f; line-height: 1.7; scrollbar-width: thin; scrollbar-color: #99cee8 transparent; }
   #log .ok   { color: #1a7a4a; }
@@ -187,9 +344,58 @@
   .empty-formats { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
   .empty-fmt { font-size: .7rem; font-weight: 700; letter-spacing: .06em; padding: 3px 9px; border-radius: 20px; border: 1px solid #c8e0ef; color: #4f6780; text-transform: uppercase; background: #f5fbff; }
 
-  /* ── HUD ── */
-  .hud { position: absolute; bottom: 14px; right: 14px; font-size: .75rem; background: rgba(255,255,255,0.72); border: 1px solid #c8e0ef; border-radius: 10px; padding: 8px 12px; backdrop-filter: blur(8px); color: #4f6780; line-height: 1.9; pointer-events: none; display: none; }
+  /* ── HUD (controls reminder) ── */
+  .hud {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    font-size: .75rem;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid #c8e0ef;
+    border-radius: 10px;
+    padding: 8px 12px;
+    backdrop-filter: blur(8px);
+    color: #4f6780;
+    line-height: 1.9;
+    pointer-events: none;
+    display: none;
+  }
   .hud-key { color: var(--accent-2); font-weight: 700; }
+
+  /* ── FPV TOGGLE BUTTON ── */
+  .fpv-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.82);
+    border: 1.5px solid #c8e0ef;
+    border-radius: 10px;
+    padding: 7px 12px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--title);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: background .15s, border-color .15s, color .15s;
+    z-index: 10;
+  }
+  .fpv-btn:hover { background: #d7eef9; border-color: var(--accent); }
+  .fpv-btn.active {
+    background: var(--title);
+    border-color: var(--title);
+    color: #fff;
+  }
+  .fpv-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .fpv-btn.active .fpv-dot { background: #7dffcf; opacity: 1; }
 
   /* ── ELEMENT DETAIL POPUP ── */
   .detail-popup {
@@ -272,6 +478,27 @@
       </div>
     </div>
 
+    <!-- ── TYPE FILTER PANEL ── -->
+    <div class="filter-wrap" id="filterWrap" style="display:none">
+      <div class="filter-header" id="filterHeader">
+        <span class="filter-header-label">Types &amp; Colors</span>
+        <div class="filter-header-right">
+          <span class="filter-count-badge" id="filterCountBadge">0</span>
+          <span class="filter-chevron open" id="filterChevron">▾</span>
+        </div>
+      </div>
+      <div class="filter-body" id="filterBody">
+        <div class="filter-body-inner">
+          <div class="filter-controls">
+            <button class="filter-ctrl-btn" id="btnShowAll">👁 Show all</button>
+            <button class="filter-ctrl-btn" id="btnHideAll">🚫 Hide all</button>
+            <button class="filter-ctrl-btn" id="btnResetColors">↺ Reset colors</button>
+          </div>
+          <div id="filterRows"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="err-banner" id="errBanner"></div>
 
     <div class="log-wrap">
@@ -298,6 +525,12 @@
       </div>
     </div>
 
+    <!-- Look-around (FPV) toggle -->
+    <button class="fpv-btn" id="btnFPV" title="Toggle look-around mode — rotate from your viewpoint instead of orbiting a target (shortcut: L)">
+      <span class="fpv-dot"></span>
+      Look-around
+    </button>
+
     <!-- Element detail popup -->
     <div class="detail-popup" id="detailPopup">
       <div class="detail-popup-header">
@@ -311,9 +544,8 @@
     </div>
 
     <div class="hud" id="hud">
-      <div><span class="hud-key">LMB </span>orbit (drag any direction)</div>
-      <div><span class="hud-key">RMB </span>pan</div>
-      <div><span class="hud-key">SCR </span>zoom</div>
+      <div><span class="hud-key">LMB </span>orbit · <span class="hud-key">RMB </span>pan · <span class="hud-key">SCR </span>zoom</div>
+      <div><span class="hud-key">L </span>toggle look-around (rotate in place)</div>
       <div><span class="hud-key">CLICK </span>select element</div>
     </div>
   </section>
@@ -323,20 +555,96 @@
 <script>
 /* ═══════════════════════════════════
    BACKEND CONFIG
-   Supported formats: .ifc → /convert-ifc
-                      .dxf → /convert-dxf
-                      .json → /upload-json  (pre-converted CADJSON pass-through)
-   .dwg is NOT supported in this build.
 ═══════════════════════════════════ */
 const BASE = "https://ifcjsonbackend-production.up.railway.app";
-
 const ENDPOINTS = {
   ifc:  BASE + "/convert-ifc",
   dxf:  BASE + "/convert-dxf",
   json: BASE + "/upload-json",
 };
-
 const ALLOWED_EXT = ["ifc", "dxf", "json"];
+
+/* ═══════════════════════════════════
+   COLOR DEFAULTS + LOCALSTORAGE
+   Colors are loaded from localStorage on start, overriding the defaults
+   below. Any user customisation in the filter panel is saved back.
+═══════════════════════════════════ */
+const LS_COLOR_KEY = "bimviewer_type_colors";
+
+// Canonical defaults (can be overridden per-session via localStorage)
+const DEFAULT_COLORS = {
+  IFCWALL:              0x5b8fc7,
+  IFCWALLSTANDARDCASE:  0x5b8fc7,
+  IFCSLAB:              0x6b7d99,
+  IFCCOLUMN:            0x3f7cb8,
+  IFCBEAM:              0xd17a3a,
+  IFCDOOR:              0xc98a3e,
+  IFCWINDOW:            0x4fa8d8,
+  IFCSTAIR:             0x8a5fc2,
+  IFCSTAIRFLIGHT:       0xa46bd6,
+  IFCROOF:              0x4a6fa1,
+  IFCFURNISHINGELEMENT: 0x9c7748,
+  IFCFOOTING:           0x7a6a55,
+  IFCPILE:              0x6b5d4d,
+  IFCCURTAINWALL:       0x4ea0d6,
+  IFCRAMP:              0x7a63d1,
+  IFCRAMPFLIGHT:        0x9b72e6,
+  IFCPLATE:             0x7d8694,
+  IFCMEMBER:            0xc97650,
+  IFCCOVERING:          0x5f95c7,
+  IFCRAILING:           0x8f6b4a,
+  IFCBUILDINGELEMENTPROXY: 0x7c8a99,
+  IFCPIPESEGMENT:       0x3cb371,
+  IFCPIPEFITTING:       0x2b8c6f,
+  IFCDUCTSEGMENT:       0x4dd0a8,
+  IFCDUCTFITTING:       0x28a58d,
+  IFCAIRTERMINAL:       0x1f9d9a,
+  IFCSANITARYTERMINAL:  0x5cc5b8,
+  IFCFLOWTERMINAL:      0x2f9e8f,
+  IFCDISTRIBUTIONPORT:  0x4a9d8f,
+  DEFAULT:              0x4d84b0,
+};
+
+// Working copy — mutated by user colour picks; persisted to localStorage
+const TYPE_COLORS = Object.assign({}, DEFAULT_COLORS);
+
+// Utility: number → "#rrggbb"
+function numToHex(num) {
+  return "#" + ((num | 0) & 0xffffff).toString(16).padStart(6, "0");
+}
+// Utility: "#rrggbb" → number
+function hexToNum(hex) {
+  return parseInt((hex || "#000000").replace("#", ""), 16);
+}
+
+function loadStoredColors() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(LS_COLOR_KEY) || "{}");
+    for (const [k, v] of Object.entries(stored)) {
+      if (typeof v === "string" && v.startsWith("#")) {
+        TYPE_COLORS[k] = hexToNum(v);
+      }
+    }
+  } catch (e) {}
+}
+
+function saveStoredColors() {
+  try {
+    const obj = {};
+    for (const [k, v] of Object.entries(TYPE_COLORS)) {
+      obj[k] = numToHex(v);
+    }
+    localStorage.setItem(LS_COLOR_KEY, JSON.stringify(obj));
+  } catch (e) {}
+}
+
+function resetStoredColors() {
+  try { localStorage.removeItem(LS_COLOR_KEY); } catch (e) {}
+  Object.assign(TYPE_COLORS, DEFAULT_COLORS);
+}
+
+// Merge localStorage overrides into TYPE_COLORS right away
+loadStoredColors();
 
 /* ═══════════════════════════════════
    SCENE SETUP
@@ -359,22 +667,17 @@ controls.dampingFactor      = 0.08;
 controls.screenSpacePanning = true;
 controls.minDistance        = 0.01;
 controls.maxDistance        = 5000;
-controls.enableRotate       = true;
-controls.enableZoom         = true;
-controls.enablePan          = true;
 controls.rotateSpeed        = 1.0;
 controls.minPolarAngle      = 0;
 controls.maxPolarAngle      = Math.PI;
-controls.minAzimuthAngle    = -Infinity;
-controls.maxAzimuthAngle    = Infinity;
 controls.mouseButtons = {
   LEFT:   THREE.MOUSE.ROTATE,
   MIDDLE: THREE.MOUSE.DOLLY,
-  RIGHT:  THREE.MOUSE.PAN
+  RIGHT:  THREE.MOUSE.PAN,
 };
 controls.touches = {
   ONE: THREE.TOUCH.ROTATE,
-  TWO: THREE.TOUCH.DOLLY_PAN
+  TWO: THREE.TOUCH.DOLLY_PAN,
 };
 
 /* Lights */
@@ -405,12 +708,95 @@ resize();
 window.addEventListener("resize", resize);
 new ResizeObserver(resize).observe(viewport);
 
-/* Render loop */
+/* ── Render loop ── */
 (function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
 })();
+
+/* ═══════════════════════════════════
+   LOOK-AROUND (FPV) MODE
+   When active, left-drag rotates the camera around its own position
+   (first-person "look around") instead of orbiting the scene target.
+   Right-drag and scroll continue to work normally for pan & zoom.
+   Pressing L or clicking the button toggles the mode.
+═══════════════════════════════════ */
+const btnFPV   = document.getElementById("btnFPV");
+const fpvEuler = new THREE.Euler(0, 0, 0, "YXZ");
+let fpvActive   = false;
+let fpvDragging = false;
+let fpvLastX    = 0;
+let fpvLastY    = 0;
+
+function setFPV(on) {
+  fpvActive = on;
+  btnFPV.classList.toggle("active", on);
+  btnFPV.title = on
+    ? "Look-around ON — drag to look around in place (L to toggle)"
+    : "Toggle look-around mode — rotate from your viewpoint (L to toggle)";
+
+  if (on) {
+    // Disable orbit's left-button rotate; keep pan + zoom
+    controls.mouseButtons = {
+      LEFT:   -1,               // disabled
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT:  THREE.MOUSE.PAN,
+    };
+    controls.enableRotate = false;
+  } else {
+    controls.mouseButtons = {
+      LEFT:   THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT:  THREE.MOUSE.PAN,
+    };
+    controls.enableRotate = true;
+    fpvDragging = false;
+  }
+}
+
+btnFPV.addEventListener("click", () => setFPV(!fpvActive));
+
+window.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "l" || e.key === "L") setFPV(!fpvActive);
+});
+
+/* FPV pointer events — attached to canvas so they fire in the viewport */
+canvas.addEventListener("pointerdown", (e) => {
+  if (!fpvActive || e.button !== 0) return;
+  fpvDragging = true;
+  fpvLastX = e.clientX;
+  fpvLastY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+  e.stopPropagation();
+});
+
+canvas.addEventListener("pointermove", (e) => {
+  if (!fpvActive || !fpvDragging) return;
+  const dx = e.clientX - fpvLastX;
+  const dy = e.clientY - fpvLastY;
+  fpvLastX = e.clientX;
+  fpvLastY = e.clientY;
+
+  fpvEuler.setFromQuaternion(camera.quaternion, "YXZ");
+  fpvEuler.y -= dx * 0.0025;
+  fpvEuler.x -= dy * 0.0025;
+  fpvEuler.x = Math.max(-Math.PI / 2 + 0.02, Math.min(Math.PI / 2 - 0.02, fpvEuler.x));
+  camera.quaternion.setFromEuler(fpvEuler);
+
+  // Keep OrbitControls target in front of camera so pan/zoom stay consistent
+  const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  controls.target.copy(camera.position).addScaledVector(forward, 2);
+  controls.update();
+});
+
+canvas.addEventListener("pointerup", (e) => {
+  if (fpvDragging && e.button === 0) {
+    fpvDragging = false;
+    canvas.releasePointerCapture(e.pointerId);
+  }
+});
 
 /* ═══════════════════════════════════
    UI HELPERS
@@ -517,69 +903,16 @@ detailClose.addEventListener("click", hideDetailPopup);
 
 /* ═══════════════════════════════════
    GEOMETRY ENGINE
-   CADJSON Mesh schema:
-     { type:"Mesh", id, name, properties:{...},
-       vertices:[{x,y,z},...], faces:[[i,j,k],...] }
 ═══════════════════════════════════ */
-const TYPE_COLORS = {
-  IFCWALL: 0x5b8fc7,
-  IFCWALLSTANDARDCASE: 0x4f7fb8,
-
-  IFCSLAB: 0x6b7d99,
-  IFCCOLUMN: 0x3f7cb8,
-  IFCBEAM: 0xd17a3a,
-  IFCMEMBER: 0xc97650,
-
-  IFCDOOR: 0xc98a3e,
-  IFCWINDOW: 0x4fa8d8,
-  IFCSTAIR: 0x8a5fc2,
-  IFCSTAIRFLIGHT: 0xa46bd6,
-  IFCRAMP: 0x7a63d1,
-  IFCRAMPFLIGHT: 0x9b72e6,
-
-  IFCROOF: 0x4a6fa1,
-  IFCPLATE: 0x7d8694,
-  IFCCOVERING: 0x5f95c7,
-  IFCRAILING: 0x8f6b4a,
-  IFCCURTAINWALL: 0x4ea0d6,
-  IFCBUILDINGELEMENTPROXY: 0x7c8a99,
-
-  IFCFOOTING: 0x7a6a55,
-  IFCPILE: 0x6b5d4d,
-
-  IFCFLOWTERMINAL: 0x2f9e8f,
-  IFCPIPESEGMENT: 0x3cb371,
-  IFCPIPEFITTING: 0x2b8c6f,
-  IFCDUCTSEGMENT: 0x4dd0a8,
-  IFCDUCTFITTING: 0x28a58d,
-  IFCAIRTERMINAL: 0x1f9d9a,
-  IFCSANITARYTERMINAL: 0x5cc5b8,
-
-  IFCFURNISHINGELEMENT: 0x9c7748,
-  IFCFURNITURE: 0xb68a5c,
-
-  IFCAIRTERMINALTYPE: 0x1f9d9a,
-  IFCSANITARYTERMINALTYPE: 0x5cc5b8,
-  IFCMEMBERTYPE: 0xd98c5f,
-  IFCCOLUMNTYPE: 0x4a90d9,
-  IFCCOVERINGTYPE: 0x6baed6,
-  IFCCURTAINWALLTYPE: 0x5aaee3,
-  IFCFURNISHINGELEMENTTYPE: 0xae7b50,
-  IFCDUCTSEGMENTTYPE: 0x52c7b8,
-  IFCPIPESEGMENTTYPE: 0x46b27d,
-  IFCDUCTFITTINGTYPE: 0x37a28c,
-  IFCPIPEFITTINGTYPE: 0x2f8f75,
-
-  DEFAULT: 0x4d84b0,
-};
 const SELECT_COLOR = 0xff9d00;
 
-function getIfcType(entity) {
-  return (entity.properties && (entity.properties.ifc_type || entity.properties.dxf_type))
-         || entity.type || "UNKNOWN";
+function getTypeKey(entity) {
+  const raw = (entity.properties && (entity.properties.ifc_type || entity.properties.dxf_type))
+              || entity.type || "UNKNOWN";
+  return (raw || "").toUpperCase();
 }
-function colorForType(t) {
-  return TYPE_COLORS[(t||"").toUpperCase()] ?? TYPE_COLORS.DEFAULT;
+function colorForTypeKey(key) {
+  return TYPE_COLORS[key] !== undefined ? TYPE_COLORS[key] : TYPE_COLORS.DEFAULT;
 }
 
 function buildGeometry(entity) {
@@ -607,6 +940,167 @@ function buildGeometry(entity) {
 }
 
 /* ═══════════════════════════════════
+   TYPE FILTER PANEL
+   Built after each model load. Tracks visibility and colour per type key.
+   Colour changes are written back to TYPE_COLORS and persisted to
+   localStorage so they survive page refreshes.
+═══════════════════════════════════ */
+// typeKey → { visible: bool, meshes: Mesh[] }
+const filterState = {};
+
+function buildFilterPanel() {
+  // Gather types from current modelGroup
+  const typeMap = {}; // typeKey → Mesh[]
+  for (const mesh of modelGroup.children) {
+    const key = mesh.userData.typeKey;
+    if (!typeMap[key]) typeMap[key] = [];
+    typeMap[key].push(mesh);
+  }
+
+  const types = Object.keys(typeMap).sort();
+  document.getElementById("filterCountBadge").textContent = types.length;
+
+  // Reset state
+  for (const k of Object.keys(filterState)) delete filterState[k];
+  for (const key of types) {
+    filterState[key] = { visible: true, meshes: typeMap[key] };
+  }
+
+  // Render rows
+  const rowsEl = document.getElementById("filterRows");
+  rowsEl.innerHTML = "";
+  for (const key of types) {
+    const count = typeMap[key].length;
+    const hexColor = numToHex(colorForTypeKey(key));
+
+    const row = document.createElement("div");
+    row.className = "filter-row";
+    row.dataset.typeKey = key;
+
+    // Visibility toggle
+    const visBtn = document.createElement("button");
+    visBtn.className = "vis-btn";
+    visBtn.title = "Toggle visibility";
+    visBtn.textContent = "👁";
+    visBtn.addEventListener("click", () => toggleTypeVisibility(key));
+
+    // Color swatch
+    const swatchWrap = document.createElement("div");
+    swatchWrap.className = "color-swatch-wrap";
+    swatchWrap.style.background = hexColor;
+    swatchWrap.title = "Change color";
+
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value = hexColor;
+    colorInput.addEventListener("input", (e) => {
+      const newHex = e.target.value;
+      swatchWrap.style.background = newHex;
+      applyTypeColor(key, newHex);
+    });
+    swatchWrap.appendChild(colorInput);
+
+    // Label
+    const label = document.createElement("span");
+    label.className = "type-label";
+    // Make the label readable: "IFCWALL" → "IfcWall"
+    label.textContent = key.charAt(0) + key.slice(1).toLowerCase().replace(/^ifc/, "Ifc");
+    label.title = key;
+
+    // Count badge
+    const badge = document.createElement("span");
+    badge.className = "type-count-badge";
+    badge.textContent = count;
+
+    row.appendChild(visBtn);
+    row.appendChild(swatchWrap);
+    row.appendChild(label);
+    row.appendChild(badge);
+    rowsEl.appendChild(row);
+  }
+
+  document.getElementById("filterWrap").style.display = "";
+}
+
+function toggleTypeVisibility(key) {
+  const state = filterState[key];
+  if (!state) return;
+  state.visible = !state.visible;
+  for (const mesh of state.meshes) mesh.visible = state.visible;
+
+  // Update row style
+  const row = document.querySelector(`.filter-row[data-type-key="${key}"]`);
+  if (row) {
+    row.classList.toggle("hidden-type", !state.visible);
+    const visBtn = row.querySelector(".vis-btn");
+    if (visBtn) {
+      visBtn.classList.toggle("hidden", !state.visible);
+      visBtn.textContent = state.visible ? "👁" : "🚫";
+    }
+  }
+}
+
+function applyTypeColor(key, hexColor) {
+  const numColor = hexToNum(hexColor);
+  TYPE_COLORS[key] = numColor;
+  saveStoredColors();
+
+  // Update all meshes of this type (including the selected one)
+  const state = filterState[key];
+  if (!state) return;
+  for (const mesh of state.meshes) {
+    mesh.userData.baseColor = numColor;
+    // Only update colour if not currently selected (selected mesh gets SELECT_COLOR)
+    if (selectedMesh !== mesh) {
+      mesh.material.color.setHex(numColor);
+    }
+  }
+}
+
+// Collapse / expand filter body
+let filterOpen = true;
+document.getElementById("filterHeader").addEventListener("click", () => {
+  filterOpen = !filterOpen;
+  const body = document.getElementById("filterBody");
+  const chev = document.getElementById("filterChevron");
+  body.style.display = filterOpen ? "" : "none";
+  chev.classList.toggle("open", filterOpen);
+});
+
+// Show all / Hide all
+document.getElementById("btnShowAll").addEventListener("click", () => {
+  for (const key of Object.keys(filterState)) {
+    if (!filterState[key].visible) toggleTypeVisibility(key);
+  }
+});
+document.getElementById("btnHideAll").addEventListener("click", () => {
+  for (const key of Object.keys(filterState)) {
+    if (filterState[key].visible) toggleTypeVisibility(key);
+  }
+});
+// Reset colours to defaults
+document.getElementById("btnResetColors").addEventListener("click", () => {
+  resetStoredColors();
+  // Re-apply default colors to all meshes and update swatches
+  for (const key of Object.keys(filterState)) {
+    const hex = numToHex(colorForTypeKey(key));
+    const state = filterState[key];
+    for (const mesh of state.meshes) {
+      mesh.userData.baseColor = colorForTypeKey(key);
+      if (selectedMesh !== mesh) mesh.material.color.setHex(colorForTypeKey(key));
+    }
+    const row = document.querySelector(`.filter-row[data-type-key="${key}"]`);
+    if (row) {
+      const sw = row.querySelector(".color-swatch-wrap");
+      const inp = row.querySelector("input[type=color]");
+      if (sw) sw.style.background = hex;
+      if (inp) inp.value = hex;
+    }
+  }
+  log("Colours reset to defaults.", "info");
+});
+
+/* ═══════════════════════════════════
    SCENE BUILD
 ═══════════════════════════════════ */
 function clearModel() {
@@ -620,6 +1114,8 @@ function clearModel() {
         : obj.material.dispose();
     }
   }
+  document.getElementById("filterWrap").style.display = "none";
+  document.getElementById("filterRows").innerHTML = "";
 }
 
 function fitCamera() {
@@ -677,16 +1173,17 @@ function buildScene(json) {
   let meshCount = 0, vertCount = 0, triCount = 0, skipped = 0;
 
   for (const entity of entities) {
-    const type = getIfcType(entity);
-    const geo  = buildGeometry(entity);
+    const typeKey  = getTypeKey(entity);
+    const geo      = buildGeometry(entity);
 
     if (!geo) {
-      log("  No geometry: " + type + " '" + (entity.name || entity.id || "?") + "'", "warn");
+      log("  No geometry: " + typeKey + " '" + (entity.name || entity.id || "?") + "'", "warn");
       skipped++;
       continue;
     }
 
-    const baseColor = colorForType(type);
+    // Use stored/customised colour if available, else canonical default
+    const baseColor = colorForTypeKey(typeKey);
     const mat = new THREE.MeshStandardMaterial({
       color:     baseColor,
       roughness: 0.65,
@@ -696,6 +1193,7 @@ function buildScene(json) {
 
     const mesh = new THREE.Mesh(geo, mat);
     mesh.userData.entity    = entity;
+    mesh.userData.typeKey   = typeKey;
     mesh.userData.baseColor = baseColor;
     modelGroup.add(mesh);
 
@@ -706,7 +1204,7 @@ function buildScene(json) {
     triCount  += Math.round(t);
     meshCount++;
 
-    log("  ✓ " + type + " '" + (entity.name || entity.id || "") + "'"
+    log("  ✓ " + typeKey + " '" + (entity.name || entity.id || "") + "'"
         + "  verts:" + v + "  tris:" + Math.round(t), "ok");
   }
 
@@ -718,12 +1216,17 @@ function buildScene(json) {
   setStatus("READY", "ready");
   emptyState.classList.add("hidden");
   hudEl.style.display = "";
+  btnFPV.style.display = "flex";
   setEnabled(true);
   fitCamera();
+
+  // Populate the type filter panel
+  buildFilterPanel();
 }
 
 /* ═══════════════════════════════════
    PICKING (click-to-select)
+   Ignores events that were consumed by FPV dragging.
 ═══════════════════════════════════ */
 const raycaster  = new THREE.Raycaster();
 const pointerNDC = new THREE.Vector2();
@@ -731,9 +1234,12 @@ let pointerDownPos = null;
 const CLICK_DRAG_TOLERANCE = 6;
 
 canvas.addEventListener("pointerdown", (e) => {
+  // FPV mode handles its own left-button events; still allow picking on right
+  if (fpvActive && e.button === 0) return;
   pointerDownPos = { x: e.clientX, y: e.clientY };
 });
 canvas.addEventListener("pointerup", (e) => {
+  if (fpvActive && e.button === 0) return;  // FPV drag, not a pick
   if (!pointerDownPos) return;
   const dx = e.clientX - pointerDownPos.x;
   const dy = e.clientY - pointerDownPos.y;
@@ -750,10 +1256,6 @@ canvas.addEventListener("pointerup", (e) => {
 
 /* ═══════════════════════════════════
    UPLOAD
-   Format is auto-detected from the file extension.
-   Supported: .ifc  → /convert-ifc
-              .dxf  → /convert-dxf
-              .json → /upload-json
 ═══════════════════════════════════ */
 let currentJsonStr = null;
 let uploadSeq = 0;
@@ -854,6 +1356,8 @@ document.getElementById("btnReset").addEventListener("click", () => {
   document.getElementById("statsBlock").style.display = "none";
   emptyState.classList.remove("hidden");
   hudEl.style.display = "none";
+  btnFPV.style.display = "none";
+  setFPV(false);
   grid.position.y = 0;
   hideError();
   setEnabled(false);
