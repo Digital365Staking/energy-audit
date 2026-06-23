@@ -72,7 +72,7 @@ a.train-button:active {
 }
 
 
-.h1-3d-zoom a {
+.h1-3d-zoom span {
     font-size: 40px;
     font-weight: bold;
     color: #00aaff;
@@ -90,7 +90,7 @@ a.train-button:active {
 }
 
 /* Zoom + extra 3D depth on hover */
-.h1-3d-zoom a:hover {
+.h1-3d-zoom span:hover {
     transform: scale(1.2); /* Zoom effect */
     text-shadow:
         2px 2px 0 #000,
