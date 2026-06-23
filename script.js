@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const DEBUG = false; // set true to see console logs
 
   /* -------------------------
-     TRANSLATIONS (FR / EN / ES)
+     TRANSLATIONS (FR / EN / ES...)
      ------------------------- */
   const translations = {
     en: {
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       urlYTB1: "https://www.youtube.com/embed/9He76uCylVQ", urlYTB2: "https://www.youtube.com/embed/g2Fs5dMTKCw", urlYTB3: "https://www.youtube.com/embed/blwY1Coui_s",
       widget: "We offer a web widget that allows you to visualize a chart displaying your device’s real-time consumption. This component can, of course, be integrated into your web and/or mobile platforms.",
       titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)", launchTrain: "Start the training program", launchESP32: "💳 PAID COURSES",
-      office: "( Representative Office )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en",
+      office: "( Representative Office )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-en.html",
       titleDona: "Dona, Marketing Director (Geneva)",
       titleDiana: "Diana, Marketing Assistant (Geneva)",
       titleNidia: "Nidia, Marketing Assistant (Madrid)",
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       urlYTB1: "https://www.youtube.com/embed/YOtMUHGRBE0", urlYTB2: "https://www.youtube.com/embed/FolPWASMSmY", urlYTB3: "https://www.youtube.com/embed/J3OWF06gfxU",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)", launchTrain: "Commencer la formation", launchESP32: "💳 COURS PAYANTS",     
-      office: "( Bureau de Représentation )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-fr",
+      office: "( Bureau de Représentation )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-fr", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-fr.html",
       titleDona: "Dona, Directrice marketing (Genève)",
       titleDiana: "Diana, Assistante marketing (Genève)",
       titleNidia: "Nidia, Assistante marketing (Madrid)",
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       urlYTB1: "https://www.youtube.com/embed/qLSXEuEyUH4", urlYTB2: "https://www.youtube.com/embed/PMwAN2vTdwI", urlYTB3: "https://www.youtube.com/embed/AHtkPiBwkt4",
       widget: "Ofrecemos un widget web que permite visualizar un gráfico que muestra el consumo en tiempo real de su dispositivo. Este componente puede, por supuesto, integrarse en sus plataformas web y/o móviles.",
       titleJohn: "John, Director Ejecutivo & Analista de Datos (Dublín y Madrid)", launchTrain: "Iniciar la formación", launchESP32: "💳 CURSOS DE PAGO",      
-      office: "( Oficina de Representación )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-es",
+      office: "( Oficina de Representación )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-es", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-es.html",
       titleDona: "Dona, Directora de marketing (Ginebra)",
       titleDiana: "Diana, Asistente de marketing (Ginebra)",
       titleNidia: "Nidia, Asistente de marketing (Madrid)",
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       widget: "Wir bieten ein Web-Widget an, das ein Diagramm mit dem Echtzeitverbrauch Ihres Geräts anzeigt. Diese Komponente kann natürlich in Ihre Web- und/oder Mobilplattformen integriert werden.",
       titleJohn: "John, CEO & Datenanalyst (Dublin und Madrid)",
       launchTrain: "Schulungsprogramm starten", launchESP32: "💳 KOSTENPFLICHTIGE KURSE",
-      office: "( Repräsentationsbüro )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en",
+      office: "( Repräsentationsbüro )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-de.html",
       titleDona: "Dona, Marketingleiterin (Genf)",
       titleDiana: "Diana, Marketingassistentin (Genf)",
       titleNidia: "Nidia, Marketingassistentin (Madrid)",
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       widget: "Oferecemos um widget web que permite visualizar um gráfico com o consumo em tempo real do seu dispositivo. Este componente pode ser integrado às suas plataformas web e/ou móveis.",
       titleJohn: "John, CEO & Analista de Dados (Dublin e Madri)",
       launchTrain: "Iniciar o programa de treinamento", launchESP32: "💳 CURSOS PAGOS",
-      office: "( Escritório de Representação )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en",
+      office: "( Escritório de Representação )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-pt.html",
       titleDona: "Dona, Diretora de Marketing (Genebra)",
       titleDiana: "Diana, Assistente de Marketing (Genebra)",
       titleNidia: "Nidia, Assistente de Marketing (Madri)",
@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       launchTrain: "Start het trainingsprogramma",
       launchESP32: "BETAALDE CURSUSSEN",
       office: "Vertegenwoordiging",
-      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en",
+      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-nl.html",
       titleDona: "Dona, marketingdirecteur, Genève",
       titleDiana: "Diana, marketingassistent, Genève",
       titleNidia: "Nidia, marketingassistent, Madrid",
@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       launchTrain: "Start træningsprogrammet",
       launchESP32: "BETALTE KURSER",
       office: "Repræsentationskontor",
-      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en",
+      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-da.html",
       titleDona: "Dona, marketingdirektør, Genève",
       titleDiana: "Diana, marketingassistent, Genève",
       titleNidia: "Nidia, marketingassistent, Madrid",
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
       launchTrain: "Starta utbildningsprogrammet",
       launchESP32: "BETALDA KURSER",
       office: "Representationskontor",
-      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en",
+      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-sv.html",
       titleDona: "Dona, marknadschef, Genève",
       titleDiana: "Diana, marknadsassistent, Genève",
       titleNidia: "Nidia, marknadsassistent, Madrid",
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
       launchTrain: "Start opplæringsprogrammet",
       launchESP32: "BETALTE KURS",
       office: "Representasjonskontor",
-      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en",
+      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-no.html",
       titleDona: "Dona, markedsdirektør, Genève",
       titleDiana: "Diana, markedsassistent, Genève",
       titleNidia: "Nidia, markedsassistent, Madrid",
@@ -446,7 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
       launchTrain: "Aloita koulutusohjelma",
       launchESP32: "MAKSULLISET KURSSIT",
       office: "Edustusto",
-      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en",
+      linkStartESP32: "https://digitalenergyaudit.com/esp32paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-fi.html",
       titleDona: "Dona, markkinointijohtaja, Geneve",
       titleDiana: "Diana, markkinointiassistentti, Geneve",
       titleNidia: "Nidia, markkinointiassistentti, Madrid",
