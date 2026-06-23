@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="nl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -28,12 +28,12 @@
   }
   .page { display:flex; width:100%; height:100%; gap:14px; padding:16px; }
 
-   /* Standard: Vis indhold på Desktop */
+   /* Standaard: Toon inhoud op Desktop */
     .mobile-message {
       display: none;
     }
 
-   /* Hvis skærmen er mindre end eller lig med 768px → Mobil enhed */
+   /* Als het scherm kleiner is dan of gelijk is aan 768px → Mobiel apparaat */
     @media only screen and (max-width: 768px) {
       .page {
         display: none;
@@ -58,7 +58,7 @@
   .panel::-webkit-scrollbar { width:4px; }
   .panel::-webkit-scrollbar-thumb { background:#99cee8; border-radius:2px; }
 
-  /* ── DROP-OMRÅDE ── */
+  /* ── DROPZONE ── */
   .drop-area {
     border:2px dashed #99cee8; border-radius:14px; padding:18px 16px;
     background:var(--soft); cursor:pointer; transition:.15s ease;
@@ -72,7 +72,7 @@
   .drop-formats { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin-top:8px; }
   .drop-fmt { font-size:.65rem; font-weight:700; letter-spacing:.06em; padding:2px 7px; border-radius:20px; border:1px solid #99cee8; text-transform:uppercase; color:var(--accent-2); background:#fff; }
 
-  /* ── KNAPPER ── */
+  /* ── KNOPPEN ── */
   .btn-row { display:flex; gap:8px; flex-shrink:0; }
   .btn { flex:1; border:none; border-radius:10px; padding:9px 8px; background:var(--title); color:#fff; font-weight:700; font-size:.82rem; cursor:pointer; transition:.2s ease; white-space:nowrap; }
   .btn:hover:not(:disabled) { background:var(--accent-2); transform:translateY(-1px); }
@@ -86,23 +86,23 @@
   .status-badge.loading { background:#fff3cd; color:#7a5800; }
   .status-badge.error   { background:#fde8e8; color:#9b1c1c; }
 
-  /* ── STATUSLINJE ── */
+  /* ── VOORTGANGSBALK ── */
   .progress-wrap { height:4px; background:#c8e0ef; border-radius:2px; overflow:hidden; display:none; flex-shrink:0; }
   .progress-wrap.active { display:block; }
   .progress-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); width:40%; animation:slide 1.2s ease-in-out infinite; }
   @keyframes slide { 0%{transform:translateX(-120%)} 100%{transform:translateX(350%)} }
 
-  /* ── STATISTIK ── */
+  /* ── STATISTIEKEN ── */
   .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; flex-shrink:0; }
   .stat-cell { background:var(--soft); border:1px solid #c8e0ef; border-radius:10px; padding:9px 11px; }
   .stat-value { font-size:1.25rem; font-weight:800; color:var(--title); line-height:1; }
   .stat-key   { font-size:.72rem; color:#4f6780; text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
 
-  /* ── FEJL ── */
+  /* ── FOUTMELDING ── */
   .err-banner { display:none; background:#fde8e8; border:1px solid #f5a3a3; border-radius:10px; padding:9px 11px; font-size:.82rem; color:#9b1c1c; white-space:pre-wrap; line-height:1.5; flex-shrink:0; }
   .err-banner.visible { display:block; }
 
-  /* ── FILTRE ── */
+  /* ── FILTERS ── */
   .filter-wrap { background:var(--card); border:1px solid #dbe9f3; border-radius:12px; overflow:hidden; flex-shrink:0; }
   .filter-header { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:#f5fbff; border-bottom:1px solid #edf4fa; cursor:pointer; user-select:none; }
   .filter-header:hover { background:#e9f5fd; }
@@ -129,7 +129,7 @@
   .type-label { flex:1; font-size:.76rem; color:var(--title); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Courier New',monospace; }
   .type-count-badge { flex-shrink:0; font-size:.67rem; font-weight:700; background:#e0eef8; color:#4f6780; padding:1px 6px; border-radius:20px; min-width:22px; text-align:center; }
 
-  /* ── KONSOL ── */
+  /* ── CONSOLE ── */
   .log-wrap { flex:1; min-height:70px; background:var(--card); border:1px solid #dbe9f3; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
   .log-header { padding:7px 12px; font-size:.75rem; font-weight:700; color:var(--title); text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid #edf4fa; background:#f5fbff; flex-shrink:0; }
   #log { flex:1; overflow-y:auto; padding:8px 12px; font-family:'Courier New',monospace; font-size:.78rem; color:#37566f; line-height:1.65; scrollbar-width:thin; scrollbar-color:#99cee8 transparent; }
@@ -142,7 +142,7 @@
   .viewport { flex:1; min-width:0; position:relative; border-radius:16px; overflow:hidden; background:radial-gradient(circle at 50% 40%,#fff 0%,#eaf7ff 55%,#d5efff 100%); border:1px solid #c8e0ef; box-shadow:var(--shadow); touch-action:none; }
   canvas { display:block; width:100%; height:100%; touch-action:none; }
 
-  /* ── TOM TILSTAND ── */
+  /* ── LEGE TOESTAND ── */
   .empty-state { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
   .empty-state.hidden { display:none; }
   .empty-card { background:rgba(255,255,255,.88); border:1px solid #dbe9f3; border-radius:14px; padding:22px 28px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,.08); }
@@ -152,7 +152,7 @@
   .empty-formats { display:flex; justify-content:center; gap:6px; margin-top:12px; }
   .empty-fmt { font-size:.7rem; font-weight:700; letter-spacing:.06em; padding:3px 9px; border-radius:20px; border:1px solid #c8e0ef; color:#4f6780; text-transform:uppercase; background:#f5fbff; }
 
-  /* ── DREJEPUNKT (PIVOT) INDIKATOR ── */
+  /* ── DRAAIPUNT (PIVOT) INDICATOR ── */
   .pivot-hint {
     position:absolute; pointer-events:none;
     width:22px; height:22px;
@@ -175,7 +175,7 @@
   }
   .pivot-circle.visible { opacity:1; }
 
-  /* ── FØRSTEPERSONSKNAP ── */
+  /* ── FIRST-PERSON KNOP ── */
   .fpv-btn {
     position:absolute; top:14px; right:14px;
     display:none; align-items:center; gap:6px;
@@ -190,7 +190,7 @@
   .fpv-dot { width:8px; height:8px; border-radius:50%; background:currentColor; opacity:.7; }
   .fpv-btn.active .fpv-dot { background:#7dffcf; opacity:1; }
 
-  /* ── NAVIGATIONSHJÆLP ── */
+  /* ── NAVIGATIEHULP ── */
   .nav-help {
     position:absolute; bottom:14px; right:14px;
     background:rgba(11,30,50,.82); border:1px solid rgba(255,255,255,.12);
@@ -216,7 +216,7 @@
   }
   .nav-help-toggle:hover { background:#d7eef9; }
 
-  /* ── DETALJER POPUP ── */
+  /* ── DETAILS POPUP ── */
   .detail-popup { position:absolute; top:14px; left:14px; width:460px; max-height:calc(100% - 28px); background:rgba(255,255,255,.97); border:1px solid #c8e0ef; border-radius:14px; box-shadow:0 12px 30px rgba(11,60,93,.22); backdrop-filter:blur(6px); overflow:hidden; display:none; flex-direction:column; z-index:20; }
   .detail-popup.visible { display:flex; }
   .detail-popup-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:14px 14px 10px 16px; background:linear-gradient(135deg,var(--title),var(--accent-2)); color:#fff; }
@@ -235,13 +235,13 @@
 <body>
 <div class="page">
 
-  <!-- ── VENSTRE SIDEBAR ── -->
+  <!-- ── LINKER SIDEBAR ── -->
   <aside class="panel">
     <div class="drop-area" id="dropArea">
       <input type="file" id="fileInput" accept=".ifc,.dxf,.json,application/octet-stream,application/json" />
       <div class="drop-icon">⬡</div>
-      <div class="drop-title">Træk en CAD/BIM-fil hertil eller klik for at uploade</div>
-      <div class="drop-sub">Sendes til backend · Genererer rigtig geometri</div>
+      <div class="drop-title">Sleep een CAD/BIM-bestand hiernaartoe of klik om te uploaden</div>
+      <div class="drop-sub">Wordt naar de backend verzonden · Genereert echte geometrie</div>
       <div class="drop-formats">
         <span class="drop-fmt">.IFC</span>
         <span class="drop-fmt">.DXF</span>
@@ -253,25 +253,25 @@
 
     <div class="btn-row">
       <button class="btn" id="btnDownload" disabled>↓ JSON</button>
-      <button class="btn secondary" id="btnFit" disabled>⊡ Tilpas</button>
+      <button class="btn secondary" id="btnFit" disabled>⊡ Centreren</button>
       <button class="btn secondary" id="btnReset" disabled>✕</button>
     </div>
 
-    <div id="statusBadge" class="status-badge">KLAR</div>
+    <div id="statusBadge" class="status-badge">GEREED</div>
 
     <div id="statsBlock" style="display:none">
       <div class="stats-grid">
-        <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Elementer</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statEntities">—</div><div class="stat-key">Elementen</div></div>
         <div class="stat-cell"><div class="stat-value" id="statMeshes">—</div><div class="stat-key">Meshes</div></div>
-        <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Hjørner</div></div>
-        <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Trekanter</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statVerts">—</div><div class="stat-key">Vertices</div></div>
+        <div class="stat-cell"><div class="stat-value" id="statTris">—</div><div class="stat-key">Polygonen</div></div>
       </div>
     </div>
 
-    <!-- ── TYPE- OG FARGEFILTER ── -->
+    <!-- ── TYPE- EN KLEURFILTERS ── -->
     <div class="filter-wrap" id="filterWrap" style="display:none">
       <div class="filter-header" id="filterHeader">
-        <span class="filter-header-label">Typer &amp; Farver</span>
+        <span class="filter-header-label">Types &amp; Kleuren</span>
         <div class="filter-header-right">
           <span class="filter-count-badge" id="filterCountBadge">0</span>
           <span class="filter-chevron open" id="filterChevron">▾</span>
@@ -279,9 +279,9 @@
       </div>
       <div class="filter-body" id="filterBody">
         <div class="filter-controls">
-          <button class="filter-ctrl-btn" id="btnShowAll">👁 Alle</button>
-          <button class="filter-ctrl-btn" id="btnHideAll">🚫 Ingen</button>
-          <button class="filter-ctrl-btn" id="btnResetColors">↺ Farver</button>
+          <button class="filter-ctrl-btn" id="btnShowAll">👁 Alles</button>
+          <button class="filter-ctrl-btn" id="btnHideAll">🚫 Geen</button>
+          <button class="filter-ctrl-btn" id="btnResetColors">↺ Kleuren</button>
         </div>
         <div id="filterRows"></div>
       </div>
@@ -290,7 +290,7 @@
     <div class="err-banner" id="errBanner"></div>
 
     <div class="log-wrap">
-      <div class="log-header">Konsol</div>
+      <div class="log-header">Console</div>
       <div id="log"></div>
     </div>
   </aside>
@@ -298,50 +298,50 @@
   <!-- ── 3D VIEWPORT ── -->
   <section class="viewport" id="viewport">
     <p style="margin-left:10px">
-      Denne side tillader 3D-visualisering af BIM-filer i <b>.IFC-formatet (Autodesk Revit)</b> eller <b>.DXF-formatet (AutoCAD)</b>. Den underliggende algoritme konverterer disse proprietære formater til et <b>JSON-format</b>, som kan gemmes og genbruges, hvilket optimerer 3D-rendering. Det anvendte JSON-format er inspireret af specifikationerne fra buildingSMART (<a href="https://www.buildingsmart.org" target="_blank">https://www.buildingsmart.org</a>), en international non-profit organisation: <a href="https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec" target="_blank">https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec</a><br><br>Du er velkommen til at sende os din feedback om denne side til <a href="mailto:info@digitalenergyaudit.com">info@digitalenergyaudit.com</a>. Din feedback hjælper os med at forbedre vores <b>næste generations kollaborative BIM-løsning</b>, der fungerer på tværs af platforme (Windows, Linux, macOS) og forventes lanceret i slutningen af august 2026.
+      Deze pagina maakt de 3D-visualisatie mogelijk van BIM-bestanden in <b>.IFC-indeling (Autodesk Revit)</b> of <b>.DXF-indeling (AutoCAD)</b>. Het onderliggende algoritme converteert deze propriëtaire indelingen naar een <b>JSON-formaat</b> dat kan worden opgeslagen en hergebruikt, wat de 3D-rendering optimaliseert. Het gebruikte JSON-formaat is geïnspireerd op de specificaties van buildingSMART (<a href="https://www.buildingsmart.org" target="_blank">https://www.buildingsmart.org</a>), een internationale non-profitorganisatie: <a href="https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec" target="_blank">https://github.com/buildingsmart-community/ifcJSON/tree/main/Samples/IFC_4.0/BuildingSMARTSpec</a><br><br>U kunt uw feedback over deze pagina sturen naar <a href="mailto:info@digitalenergyaudit.com">info@digitalenergyaudit.com</a>. Uw feedback helpt ons bij het verbeteren van onze <b>volgende generatie collaboratieve BIM-oplossing</b>, die cross-platform werkt (Windows, Linux, macOS) en gepland staat voor lancering eind augustus 2026.
     </p>
     <canvas id="canvas"></canvas>
 
     <div class="empty-state" id="emptyState">
       <div class="empty-card">
         <div class="empty-icon">🏗</div>
-        <div class="empty-title">Ingen model indlæst</div>        
+        <div class="empty-title">Geen model geladen</div>        
       </div>
     </div>
 
-    <!-- Drejepunktsindikator (vises ved dobbeltklik for at fokusere) -->
+    <!-- Draaipuntindicator (verschijnt bij dubbelklikken om te focussen) -->
     <div class="pivot-hint"   id="pivotHint"></div>
     <div class="pivot-circle" id="pivotCircle"></div>
 
-    <!-- Førstepersonsknap -->
-    <button class="fpv-btn" id="btnFPV" title="Førstepersonstilstand (L)">
-      <span class="fpv-dot"></span>1. Person
+    <!-- First-person knop -->
+    <button class="fpv-btn" id="btnFPV" title="First-person modus (L)">
+      <span class="fpv-dot"></span>1e Persoon
     </button>
 
-    <!-- Navigationshjælp (H for at slå til/fra) -->
+    <!-- Navigatiehulp (H om te tonen/verbergen) -->
     <div class="nav-help" id="navHelp">
-      <div class="nav-help-title">Navigationsgenveje</div>
-      <div class="nav-help-section">Mus</div>
-      <div><span class="nav-k">VENSTRE MUS</span> Orbit &nbsp; <span class="nav-k">HØJRE MUS</span> Pan &nbsp; <span class="nav-k">RELE</span> Zoom</div>
-      <div><span class="nav-k">DOBBELTKLIK</span> Fokuser rotation på det klikkede punkt</div>
-      <div class="nav-help-section">Tastatur — Bevægelse</div>
-      <div><span class="nav-k">W</span><span class="nav-k">S</span> Frem / Tilbage &nbsp; <span class="nav-k">A</span><span class="nav-k">D</span> Sidelæns</div>
-      <div><span class="nav-k">Q</span><span class="nav-k">E</span> Ned / Op &nbsp; <span class="nav-k">Shift</span> Hurtig</div>
-      <div class="nav-help-section">Tastatur — Visninger</div>
-      <div><span class="nav-k">T</span> Top &nbsp; <span class="nav-k">F</span> Front &nbsp; <span class="nav-k">R</span> Side</div>
-      <div><span class="nav-k">Home</span> Vis Alt &nbsp; <span class="nav-k">L</span> 1. Person</div>
-      <div><span class="nav-k">H</span> Vis/skjul dette panel</div>
+      <div class="nav-help-title">Sneltoetsen navigatie</div>
+      <div class="nav-help-section">Muis</div>
+      <div><span class="nav-k">LINKS</span> Draaien &nbsp; <span class="nav-k">RECHTS</span> Pannen &nbsp; <span class="nav-k">SCROLL</span> Zoomen</div>
+      <div><span class="nav-k">DUBBELKLIK</span> Focus rotatie op het aangeklikte punt</div>
+      <div class="nav-help-section">Toetsenbord — Beweging</div>
+      <div><span class="nav-k">W</span><span class="nav-k">S</span> Vooruit / Achteruit &nbsp; <span class="nav-k">A</span><span class="nav-k">D</span> Zijwaarts</div>
+      <div><span class="nav-k">Q</span><span class="nav-k">E</span> Omlaag / Omhoog &nbsp; <span class="nav-k">Shift</span> Snel</div>
+      <div class="nav-help-section">Toetsenbord — Weergaven</div>
+      <div><span class="nav-k">T</span> Boven &nbsp; <span class="nav-k">F</span> Voorkant &nbsp; <span class="nav-k">R</span> Zijkant</div>
+      <div><span class="nav-k">Home</span> Alles tonen &nbsp; <span class="nav-k">L</span> 1e Persoon</div>
+      <div><span class="nav-k">H</span> Toon/verberg dit paneel</div>
     </div>
-    <button class="nav-help-toggle" id="navHelpToggle">⌨ H · Genveje</button>
+    <button class="nav-help-toggle" id="navHelpToggle">⌨ H · Sneltoetsen</button>
 
-    <!-- Detaljer Popup -->
+    <!-- Details Popup -->
     <div class="detail-popup" id="detailPopup">
       <div class="detail-popup-header">
         <div>
           <div class="detail-popup-title" id="detailTitle">—</div>
           <div class="detail-popup-type"  id="detailType">—</div>
         </div>
-        <button class="detail-popup-close" id="detailClose" title="Luk">✕</button>
+        <button class="detail-popup-close" id="detailClose" title="Sluiten">✕</button>
       </div>
       <div class="detail-popup-body" id="detailBody"></div>
     </div>
@@ -358,7 +358,7 @@ const ENDPOINTS = { ifc:BASE+"/convert-ifc", dxf:BASE+"/convert-dxf", json:BASE+
 const ALLOWED_EXT = ["ifc","dxf","json"];
 
 /* ══════════════════════════════════════════════
-   FARVER + LOCALSTORAGE
+   KLEUREN + LOCALSTORAGE
 ══════════════════════════════════════════════ */
 const LS_COLOR_KEY = "bimviewer_type_colors";
 const DEFAULT_COLORS = {
@@ -432,7 +432,7 @@ window.addEventListener("resize", resize);
 new ResizeObserver(resize).observe(viewport);
 
 /* ══════════════════════════════════════════════
-   SMOOTH CAMERA ANIMATION
+   SOEPELE CAMERA ANIMATIE
 ══════════════════════════════════════════════ */
 const camAnim = {
   active:false, t:0, dur:0.38,
@@ -458,7 +458,7 @@ function tickCameraAnim(dt) {
 }
 
 /* ══════════════════════════════════════════════
-   TASTATURBEVÆGELSE (WASD)
+   TOETSENBORD BEWEGING (WASD)
 ══════════════════════════════════════════════ */
 const keys = {};
 let moveSpeed = 5;
@@ -521,7 +521,7 @@ function tickMovement(dt) {
 }
 
 /* ══════════════════════════════════════════════
-   FØRSTEPERSONSTILSTAND (FPV)
+   FIRST-PERSON MODUS (FPV)
 ══════════════════════════════════════════════ */
 const btnFPV   = document.getElementById("btnFPV");
 const fpvEuler = new THREE.Euler(0,0,0,"YXZ");
@@ -565,7 +565,7 @@ canvas.addEventListener("pointerup", e=>{
 });
 
 /* ══════════════════════════════════════════════
-   DOBBELTKLIK → FOKUS PÅ PUNKT
+   DUBBELKLIK → FOCUS OP PUNT
 ══════════════════════════════════════════════ */
 const pivotHint   = document.getElementById("pivotHint");
 const pivotCircle = document.getElementById("pivotCircle");
@@ -611,7 +611,7 @@ canvas.addEventListener("dblclick", e=>{
 });
 
 /* ══════════════════════════════════════════════
-   PRÆDEFINEREDE VISNINGER
+   PREDEFINIEERDE WEERGAVEN
 ══════════════════════════════════════════════ */
 function presetView(type) {
   const box = new THREE.Box3().setFromObject(modelGroup);
@@ -633,7 +633,7 @@ function presetView(type) {
 }
 
 /* ══════════════════════════════════════════════
-   TASTATURGENVEJE (HÅNDTERING)
+   SNELTOETSEN VERWERKING
 ══════════════════════════════════════════════ */
 window.addEventListener("keydown", e=>{
   if (isTyping()) return;
@@ -652,7 +652,7 @@ window.addEventListener("keydown", e=>{
 });
 
 /* ══════════════════════════════════════════════
-   VIS/SKJUL HJÆLPEPANEL
+   TOON/VERBERG HULPPANEEL
 ══════════════════════════════════════════════ */
 const navHelp       = document.getElementById("navHelp");
 const navHelpToggle = document.getElementById("navHelpToggle");
@@ -681,7 +681,7 @@ let lastTime = performance.now();
 })();
 
 /* ══════════════════════════════════════════════
-   UI HJÆLPEFUNKTIONER
+   UI HULPFUNCTIES
 ══════════════════════════════════════════════ */
 const logEl      = document.getElementById("log");
 const badgeEl    = document.getElementById("statusBadge");
@@ -708,27 +708,27 @@ function setStats(entities,meshes,verts,tris) {
 }
 
 /* ══════════════════════════════════════════════
-   ELEMENT DETALJER POPUP
+   ELEMENT DETAILS POPUP
 ══════════════════════════════════════════════ */
 const detailPopup=document.getElementById("detailPopup"),detailTitle=document.getElementById("detailTitle"),detailType=document.getElementById("detailType"),detailBody=document.getElementById("detailBody");
 function escH(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function dRow(k,v){return`<div class="detail-row"><div class="detail-key">${escH(k)}</div><div class="detail-val">${escH(v)}</div></div>`;}
 function showDetailPopup(entity){
   const p=entity.properties||{};
-  detailTitle.textContent=entity.name||p.globalId||entity.id||"Uden navn";
-  detailType.textContent=p.ifc_type||p.dxf_type||entity.type||"UKENDT";
+  detailTitle.textContent=entity.name||p.globalId||entity.id||"Naamloos";
+  detailType.textContent=p.ifc_type||p.dxf_type||entity.type||"ONBEKEND";
   let html="";
   if(p.expressID!==undefined)html+=dRow("Express ID",p.expressID);
   if(p.globalId)html+=dRow("Global ID",p.globalId);
   if(p.ifc_type)html+=dRow("IFC Type",p.ifc_type);
   if(p.dxf_type)html+=dRow("DXF Type",p.dxf_type);
-  if(p.layer)html+=dRow("Lag (Layer)",p.layer);
-  if(p.color)html+=dRow("Farve",p.color);
+  if(p.layer)html+=dRow("Laag (Layer)",p.layer);
+  if(p.color)html+=dRow("Kleur",p.color);
   html+=dRow("Element ID",entity.id??"—");
-  if(Array.isArray(entity.vertices)&&Array.isArray(entity.faces)){html+=dRow("Hjørner",entity.vertices.length.toLocaleString());html+=dRow("Trekanter",entity.faces.length.toLocaleString());}
+  if(Array.isArray(entity.vertices)&&Array.isArray(entity.faces)){html+=dRow("Vertices",entity.vertices.length.toLocaleString());html+=dRow("Polygonen",entity.faces.length.toLocaleString());}
   const known=new Set(["expressID","globalId","ifc_type","dxf_type","layer","color"]);
   const extra=Object.keys(p).filter(k=>!known.has(k));
-  if(extra.length){html+=`<div class="detail-props-title">Egenskaber</div>`;for(const k of extra){let v=p[k];if(v!==null&&typeof v==="object"){try{v=JSON.stringify(v);}catch(e){v=String(v);}}html+=dRow(k,v);}}
+  if(extra.length){html+=`<div class="detail-props-title">Eigenschappen</div>`;for(const k of extra){let v=p[k];if(v!==null&&typeof v==="object"){try{v=JSON.stringify(v);}catch(e){v=String(v);}}html+=dRow(k,v);}}
   detailBody.innerHTML=html;
   detailPopup.classList.add("visible");
 }
@@ -736,10 +736,10 @@ function hideDetailPopup(){detailPopup.classList.remove("visible");}
 document.getElementById("detailClose").addEventListener("click",hideDetailPopup);
 
 /* ══════════════════════════════════════════════
-   GEOMETRI MOTOR
+   GEOMETRIE ENGINE
 ══════════════════════════════════════════════ */
 const SELECT_COLOR = 0xff9d00;
-function getTypeKey(e){ const r=(e.properties&&(e.properties.ifc_type||e.properties.dxf_type))||e.type||"UKENDT"; return(r||"UKENDT").toUpperCase(); }
+function getTypeKey(e){ const r=(e.properties&&(e.properties.ifc_type||e.properties.dxf_type))||e.type||"ONBEKEND"; return(r||"ONBEKEND").toUpperCase(); }
 function colorForKey(k){ return TYPE_COLORS[k]!==undefined?TYPE_COLORS[k]:TYPE_COLORS.DEFAULT; }
 function buildGeometry(entity){
   const v=entity.vertices,f=entity.faces;
@@ -754,7 +754,7 @@ function buildGeometry(entity){
 }
 
 /* ══════════════════════════════════════════════
-   FILTERPANEL
+   FILTERPANEEL
 ══════════════════════════════════════════════ */
 const filterState={};
 function buildFilterPanel(){
@@ -768,9 +768,9 @@ function buildFilterPanel(){
   for(const key of types){
     const count=typeMap[key].length, hexColor=numToHex(colorForKey(key));
     const row=document.createElement("div"); row.className="filter-row"; row.dataset.typeKey=key;
-    const visBtn=document.createElement("button"); visBtn.className="vis-btn"; visBtn.title="Vis/skjul"; visBtn.textContent="👁";
+    const visBtn=document.createElement("button"); visBtn.className="vis-btn"; visBtn.title="Toon/verberg"; visBtn.textContent="👁";
     visBtn.addEventListener("click",()=>toggleTypeVisibility(key));
-    const sw=document.createElement("div"); sw.className="color-swatch-wrap"; sw.style.background=hexColor; sw.title="Skift farve";
+    const sw=document.createElement("div"); sw.className="color-swatch-wrap"; sw.style.background=hexColor; sw.title="Kleur wijzigen";
     const ci=document.createElement("input"); ci.type="color"; ci.value=hexColor;
     ci.addEventListener("input",e=>{ sw.style.background=e.target.value; applyTypeColor(key,e.target.value); });
     sw.appendChild(ci);
@@ -809,11 +809,11 @@ document.getElementById("btnResetColors").addEventListener("click",()=>{
     const row=document.querySelector(`.filter-row[data-type-key="${key}"]`);
     if(row){ const sw=row.querySelector(".color-swatch-wrap"),ci=row.querySelector("input[type=color]"); if(sw)sw.style.background=hex; if(ci)ci.value=hex; }
   }
-  log("Farver nulstillet til standard.","info");
+  log("Kleuren hersteld naar standaard.","info");
 });
 
 /* ══════════════════════════════════════════════
-   NULSTIL MODEL
+   MODEL RESETTEN
 ══════════════════════════════════════════════ */
 function clearModel(){
   while(modelGroup.children.length){ const o=modelGroup.children[modelGroup.children.length-1]; modelGroup.remove(o); o.geometry&&o.geometry.dispose(); if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose()); }
@@ -847,11 +847,11 @@ function selectMesh(mesh){
 function buildScene(json){
   clearModel(); clearSelection();
   const entities=Array.isArray(json.entities)?json.entities:Array.isArray(json.data)?json.data:Array.isArray(json)?json:[];
-  log("Modtagne elementer: "+entities.length,"info");
+  log("Ontvangen elementen: "+entities.length,"info");
   let meshCount=0,vertCount=0,triCount=0,skipped=0;
   for(const entity of entities){
     const typeKey=getTypeKey(entity), geo=buildGeometry(entity);
-    if(!geo){ log("  Ingen geometri: "+typeKey+" '"+(entity.name||entity.id||"?")+"'","warn"); skipped++; continue; }
+    if(!geo){ log("  Geen geometrie: "+typeKey+" '"+(entity.name||entity.id||"?")+"'","warn"); skipped++; continue; }
     const baseColor=colorForKey(typeKey);
     const mat=new THREE.MeshStandardMaterial({color:baseColor,roughness:0.65,metalness:0.05,side:THREE.DoubleSide});
     const mesh=new THREE.Mesh(geo,mat);
@@ -859,13 +859,13 @@ function buildScene(json){
     modelGroup.add(mesh);
     const v=geo.attributes.position.count, t=geo.index?geo.index.count/3:Math.round(v/3);
     vertCount+=v; triCount+=Math.round(t); meshCount++;
-    log("  ✓ "+typeKey+" '"+(entity.name||entity.id||"")+"' Hjørner:"+v+" Trekanter:"+Math.round(t),"ok");
+    log("  ✓ "+typeKey+" '"+(entity.name||entity.id||"")+"' Vertices:"+v+" Polygonen:"+Math.round(t),"ok");
   }
-  if(skipped>0)log(skipped+" element(s) manglede geometri.","warn");
-  log("Rendrede meshes: "+meshCount,"ok");
-  log("Hjørner i alt: "+vertCount.toLocaleString()+"  Trekanter i alt: "+triCount.toLocaleString(),"ok");
+  if(skipped>0)log(skipped+" element(en) misten geometrie.","warn");
+  log("Gerenderde meshes: "+meshCount,"ok");
+  log("Totaal aantal vertices: "+vertCount.toLocaleString()+"  Totaal aantal polygonen: "+triCount.toLocaleString(),"ok");
   setStats(entities.length,meshCount,vertCount,triCount);
-  setStatus("KLAR","ready");
+  setStatus("GEREED","ready");
   emptyState.classList.add("hidden");
   btnFPV.style.display="flex";
   navHelpToggle.style.display="";
@@ -880,7 +880,7 @@ function buildScene(json){
 }
 
 /* ══════════════════════════════════════════════
-   RAYCASTING (VALG AF ELEMENTER)
+   RAYCASTING (ELEMENTSELECTIE)
 ══════════════════════════════════════════════ */
 const raycaster=new THREE.Raycaster(), pointerNDC=new THREE.Vector2();
 let pointerDownPos=null;
@@ -901,28 +901,28 @@ canvas.addEventListener("pointerup",e=>{
 });
 
 /* ══════════════════════════════════════════════
-   UPLOAD PROCES
+   UPLOADPROCES
 ══════════════════════════════════════════════ */
 let currentJsonStr=null, uploadSeq=0;
 async function loadFile(file){
   const seq=++uploadSeq, ext=(file.name||"").split(".").pop().toLowerCase();
-  if(!ALLOWED_EXT.includes(ext)){ log("Afvist: Format ikke understøttet '."+ext+"'","err"); showError("Ikke understøttet: ."+ext); return; }
-  log("["+ext.toUpperCase()+"] Indlæser: "+file.name,"info");
-  setStatus("UPLOADER…","loading"); setLoading(true); hideError();
+  if(!ALLOWED_EXT.includes(ext)){ log("Geweigerd: Formaat niet ondersteund '."+ext+"'","err"); showError("Niet ondersteund: ."+ext); return; }
+  log("["+ext.toUpperCase()+"] Laden van: "+file.name,"info");
+  setStatus("UPLOADING…","loading"); setLoading(true); hideError();
   try {
     const form=new FormData(); form.append("file",file,file.name);
     const res=await fetch(ENDPOINTS[ext],{method:"POST",body:form});
     if(seq!==uploadSeq)return;
     if(!res.ok){ const txt=await res.text().catch(()=>""); let d=txt; try{d=JSON.parse(txt).detail||txt;}catch(e){} throw new Error("Backend "+res.status+": "+(d||res.statusText)); }
-    log("Upload færdig – Behandler…","ok"); setStatus("BEHANDLER…","loading");
+    log("Upload voltooid – Verwerken…","ok"); setStatus("VERWERKEN…","loading");
     const json=await res.json(); if(seq!==uploadSeq)return;
     currentJsonStr=JSON.stringify(json,null,2); buildScene(json);
-  } catch(err) { if(seq!==uploadSeq)return; log("Fejl: "+err.message,"err"); setStatus("FEJL","error"); showError(err.message); }
+  } catch(err) { if(seq!==uploadSeq)return; log("Fout: "+err.message,"err"); setStatus("FOUT","error"); showError(err.message); }
   finally { if(seq===uploadSeq)setLoading(false); }
 }
 
 /* ══════════════════════════════════════════════
-   UI EVENT BINDINGS
+   UI EVENT KOPPELINGEN
 ══════════════════════════════════════════════ */
 const dropArea=document.getElementById("dropArea"), fileInput=document.getElementById("fileInput");
 dropArea.addEventListener("click",()=>fileInput.click());
@@ -934,8 +934,8 @@ window.addEventListener("dragover",e=>{if(e.dataTransfer)e.preventDefault();});
 window.addEventListener("drop",    e=>{if(e.dataTransfer)e.preventDefault();});
 document.getElementById("btnDownload").addEventListener("click",()=>{
   if(!currentJsonStr)return;
-  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([currentJsonStr],{type:"application/json"})); a.download="cadjson-eksport.json"; a.click();
-  log("JSON downloadet med succes.","ok");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([currentJsonStr],{type:"application/json"})); a.download="cadjson-export.json"; a.click();
+  log("JSON succesvol gedownload.","ok");
 });
 document.getElementById("btnFit").addEventListener("click", fitCamera);
 document.getElementById("btnReset").addEventListener("click",()=>{
@@ -944,11 +944,11 @@ document.getElementById("btnReset").addEventListener("click",()=>{
   emptyState.classList.remove("hidden");
   btnFPV.style.display="none"; navHelpToggle.style.display="none";
   navHelp.classList.remove("visible"); navHelpVisible=false;
-  setFPV(false); grid.position.y=0; hideError(); setEnabled(false); setStatus("KLAR"); setLoading(false);
+  setFPV(false); grid.position.y=0; hideError(); setEnabled(false); setStatus("GEREED"); setLoading(false);
 });
 </script>
  <div class="mobile-message">
-    ⚠️ Dette indhold er ikke tilgængeligt på mobile enheder. Venligst åbn denne side på en stationær eller bærbar computer.
+    ⚠️ Deze inhoud is niet beschikbaar op mobiele apparaten. Open deze pagina op een desktop of laptop.
   </div>
 </body>
 </html>
