@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       titleJohn: "John, CEO & Data Analyst (Dublin and Madrid)", launchTrain: "Start the training program", launchESP32: "💳 PAID COURSES",
       office: "( Representative Office )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-en", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-en.html",
       titleDona: "Dona, Marketing Director (Geneva)", headerConvIFCJSON: "New : IFC/DXF → JSON & 3D Visualization",
-      titleDiana: "Diana, Marketing Assistant (Geneva)", drone: "",
+      titleDiana: "Diana, Marketing Assistant (Geneva)", drone: "Discover our new drone-based construction site monitoring service:<br><br>Drone-based site monitoring provides accurate and regular visual documentation of the progress of a construction project. Using our professional drone, we capture high-definition aerial images that facilitate management, coordination, and communication across your sites among stakeholders: architects, project owners, general contractors, and engineering offices. Each mission includes a customized flight plan, actionable deliverables (photos and videos), as well as seamless integration into your project management platforms.",
       titleNidia: "Nidia, Marketing Assistant (Madrid)",
       titlePaola: "Paola, Marketing Assistant (Madrid)",
       titleAmelia: "Amelia, Marketing Assistant (Madrid)",
