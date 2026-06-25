@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)", launchTrain: "Commencer la formation", launchESP32: "💳 COURS PAYANTS",     
       office: "( Bureau de Représentation )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-fr", linkConvIFCJSON: "https://digitalenergyaudit.com/convIFCJSON-fr.html",
       titleDona: "Dona, Directrice marketing (Genève)", headerConvIFCJSON: "Nouveau : IFC/DXF → JSON & Visualisation 3D",
-      titleDiana: "Diana, Assistante marketing (Genève)", drone: "",
+      titleDiana: "Diana, Assistante marketing (Genève)", drone: "<b>Découvrez notre nouveau service de suivi de chantier par drone :</b><br>Le suivi de chantier par drone permet une documentation visuelle précise et régulière de l’évolution d’un projet de construction. Grâce à notre drone professionnel, nous capturons des images aériennes haute définition qui facilitent la gestion, la coordination et la communication sur vos chantiers entre les différents acteurs : architectes, maîtres d’ouvrage, entreprises générales et bureaux techniques. Chaque mission inclut un plan de vol sur mesure, des livrables exploitables (photos et vidéos) ainsi qu’une intégration fluide dans vos plateformes de gestion de projet.",
       titleNidia: "Nidia, Assistante marketing (Madrid)",
       titlePaola: "Paola, Assistante marketing (Madrid)", 
       titleAmelia: "Amelia, Assistante marketing (Madrid)", 
