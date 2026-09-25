@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moustique tigre · TIS · Survey</title>
+<!--
+GOOGLE SETUP (Apps Script: script.google.com > New project > Deploy > Web app > access "Anyone"):
+function doPost(e){var s=SpreadsheetApp.openById("1B3ikKWSbriBinkZzkpsUuBMKtyfcJJrslRtlPMeAbZs").getSheets()[0],d=JSON.parse(e.postData.contents);
+if(!s.getLastRow())s.appendRow(Object.keys(d));s.appendRow(Object.values(d));return ContentService.createTextOutput("ok")}
+Paste the web-app URL in ENDPOINT below. Export the sheet with File > Download > CSV.
+-->
+<style>
+:root{--bg:#f2f6f8;--fg:#12283a;--card:#fff;--ac:#1d4e89;--mu:#5b6f80;--ln:#cbd8e1;--hi:#f2b705}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1b26;--fg:#e6eef4;--card:#15283a;--ac:#7fb2ea;--mu:#93a8b8;--ln:#274257}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:700px;margin:0 auto;padding:20px 16px 64px}
+h1{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:12px 0;border-left:8px solid var(--hi);padding-left:14px}
+h2{font-size:20px;font-weight:700;margin:36px 0 6px;color:var(--ac)}
+.mu{color:var(--mu)}
+.lang{display:flex;gap:6px;justify-content:flex-end}
+.lang button{border:1px solid var(--ln);background:none;color:inherit;padding:4px 12px;border-radius:6px;cursor:pointer}
+.lang .on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+fieldset{background:var(--card);border:1px solid var(--ln);border-radius:12px;margin:12px 0;padding:12px 16px 8px}
+legend{font-weight:600;padding:0 6px}
+label.o{display:flex;gap:10px;align-items:center;padding:9px 12px;margin:6px 0;border:1px solid var(--ln);border-radius:8px;cursor:pointer}
+label.o:has(input:checked){border-color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent)}
+input[type=text],input[type=email]{width:100%;padding:10px;margin:4px 0 8px;border:1px solid var(--ln);border-radius:8px;background:transparent;color:inherit;font:inherit}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.go{margin-top:20px;padding:12px 28px;border:0;border-radius:8px;background:var(--ac);color:var(--bg);font-weight:700;font-size:16px;cursor:pointer}
+.hide{display:none}
+.bar{height:6px;background:var(--ln);border-radius:3px;margin:16px 0 4px}
+.bar i{display:block;height:100%;background:var(--hi);border-radius:3px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:20px}
+.nav .go{margin:0 0 0 auto}
+.back{border:1px solid var(--ln);background:none;color:inherit;padding:12px 22px;border-radius:8px;font-size:16px;cursor:pointer}
+</style></head><body><main>
+<div class="lang" id="lg"></div><h1 id="h"></h1><p class="mu" id="in"></p>
+<form id="f"></form><p id="msg" class="mu"></p></main>
+<script>
+const ENDPOINT="https://script.google.com/macros/s/AKfycbzjsNMx60SI6HkPrKbuRxaVoCL1y5OK87EGZQeObONyQ-nzvJGpG1Q5eSrMaYueLMd2Rw/exec"; // Apps Script web-app URL
+const LN=["en","fr","es"]; // label order: EN|FR|ES
+const T={
+h:"Tiger mosquito: sterile insect technique|Moustique tigre : technique de l'insecte stérile|Mosquito tigre: técnica del insecto estéril",
+in:"Short survey (5 min) for tourism businesses, ahead of a meetup in Barcelona in October. Your answers are kept on this device as you go.|Enquête courte (5 min) pour les acteurs du tourisme, en vue d'un meetup à Barcelone en octobre. Vos réponses sont conservées sur cet appareil au fil de la saisie.|Encuesta breve (5 min) para el sector turístico, antes de un meetup en Barcelona en octubre. Sus respuestas se guardan en este dispositivo mientras avanza.",
+go:"Send my answers|Envoyer mes réponses|Enviar mis respuestas",
+next:"Next|Suivant|Siguiente",back:"Back|Retour|Atrás",step:"Step {0} of {1}|Étape {0} sur {1}|Paso {0} de {1}",
+no:"No problem: the meetup is a good way to discover it.|Pas de souci : le meetup est l'occasion de la découvrir.|Sin problema: el meetup es una buena ocasión para conocerla.",
+ok:"Thank you! See you in Barcelona.|Merci ! À bientôt à Barcelone.|¡Gracias! Nos vemos en Barcelona.",
+sent:"Your answers have been received.|Vos réponses ont bien été reçues.|Sus respuestas han sido recibidas.",
+fb:"Your answers could not be sent. Please try again in a moment.|Vos réponses n'ont pas pu être envoyées. Merci de réessayer dans un instant.|No se pudieron enviar las respuestas. Inténtelo de nuevo en unos instantes."};
+const S=["Your organisation|Votre structure|Su organización","Tiger mosquito on your sites|Le moustique tigre sur vos sites|El mosquito tigre en sus instalaciones","Sterile insect technique (SIT)|Technique de l'insecte stérile (TIS)|Técnica del insecto estéril (TIE)","Barcelona meetup|Meetup à Barcelone|Meetup en Barcelona","Contact"];
+const YN="yes:Yes|Oui|Sí,mb:Maybe|Peut-être|Quizá,no:No|Non|No";
+// [id, type s=single m=multi t=text, section, only-if-knows-SIT, question, options]
+const Q=[
+["type","s",0,0,"Type of business|Type d'activité|Tipo de actividad","hotel:Hotel|Hôtel|Hotel,camp:Campsite|Camping|Camping,res:Tourist residence / apartments|Résidence de tourisme|Residencia turística / apartamentos,park:Leisure park / golf|Parc de loisirs / golf|Parque de ocio / golf,dmo:Tourism office / local authority|Office de tourisme / collectivité|Oficina de turismo / administración local,tour:Tour operator|Tour-opérateur|Operador turístico,other:Other|Autre|Otro"],
+["size","s",0,0,"Number of sites you manage|Nombre de sites gérés|Número de sitios que gestiona","1:1,2-5:2 to 5|2 à 5|2 a 5,6+:6 or more|6 ou plus|6 o más"],
+["season","s",0,0,"Main season|Saison principale|Temporada principal","summer:Summer|Été|Verano,mid:Spring to autumn|Printemps à automne|Primavera a otoño,year:Year-round|Toute l'année|Todo el año"],
+["pres","s",1,0,"Is the tiger mosquito present at your sites?|Le moustique tigre est-il présent sur vos sites ?|¿Está presente el mosquito tigre en sus instalaciones?","high:Yes, a lot|Oui, beaucoup|Sí, mucho,some:Yes, a little|Oui, un peu|Sí, un poco,no:No|Non|No,dk:Don't know|Je ne sais pas|No lo sé"],
+["impact","m",1,0,"Observed impacts (several answers possible)|Impacts constatés (plusieurs réponses possibles)|Impactos observados (varias respuestas)","compl:Guest complaints|Plaintes de clients|Quejas de clientes,rev:Negative reviews|Avis négatifs|Reseñas negativas,canc:Cancellations|Annulations|Cancelaciones,health:Disease cases reported nearby|Cas de maladie signalés à proximité|Casos de enfermedad cercanos,none:None|Aucun|Ninguno"],
+["meas","m",1,0,"Current control measures|Mesures de lutte actuelles|Medidas de control actuales","larv:Larvicides / breeding-site removal|Larvicides / suppression des gîtes|Larvicidas / eliminación de criaderos,adul:Adulticide spraying|Traitements adulticides|Fumigación adulticida,trap:Traps|Pièges|Trampas,pro:External pest-control company|Prestataire de démoustication|Empresa de control de plagas,none:Nothing|Rien|Nada"],
+["bud","s",1,0,"Annual budget for mosquito control|Budget annuel de lutte anti-moustiques|Presupuesto anual contra mosquitos","b0:&lt;2 k€,b1:2-10 k€,b2:10-50 k€,b3:&gt;50 k€"],
+["know","s",2,0,"Do you already know the sterile insect technique (SIT)?|Connaissez-vous déjà la technique de l'insecte stérile (TIS) ?|¿Conoce ya la técnica del insecto estéril (TIE)?","yes:Yes|Oui|Sí,no:No|Non|No"],
+["arg","m",2,1,"Which arguments convince you most?|Quels arguments vous convainquent le plus ?|¿Qué argumentos le convencen más?","ins:Fewer insecticides|Moins d'insecticides|Menos insecticidas,spec:Targets only the tiger mosquito|Cible uniquement le moustique tigre|Actúa solo sobre el mosquito tigre,img:Sustainable image|Image durable|Imagen sostenible,eff:Proven efficacy|Efficacité démontrée|Eficacia demostrada,cost:Cost|Coût|Coste"],
+["con","m",2,1,"Main concerns|Principales inquiétudes|Principales preocupaciones","cli:Guest reaction to releases|Réaction des clients aux lâchers|Reacción de los clientes a las sueltas,reg:Regulation|Réglementation|Normativa,cost:Cost|Coût|Coste,eff:Effectiveness on a small area|Efficacité sur une petite zone|Eficacia en un área pequeña,com:Communication|Communication|Comunicación,none:None|Aucune|Ninguna"],
+["host","s",2,1,"Would you host releases of sterile males on your sites?|Accueilleriez-vous des lâchers de mâles stériles sur vos sites ?|¿Aceptaría sueltas de machos estériles en sus instalaciones?",YN],
+["coll","s",2,1,"Would you join a collective scheme with other sites or the municipality?|Participeriez-vous à un dispositif collectif avec d'autres sites ou la commune ?|¿Participaría en un dispositivo colectivo con otros sitios o el municipio?",YN],
+["mod","s",2,1,"Preferred model|Modèle préféré|Modelo preferido","key:Turnkey service|Service clé en main|Servicio llave en mano,part:Partial support|Accompagnement partiel|Acompañamiento parcial,co:Co-managed with the municipality|Co-pilotage avec la commune|Cogestión con el municipio"],
+["tb","s",2,1,"Annual budget you could allocate to SIT|Budget annuel possible pour la TIS|Presupuesto anual posible para la TIE","b0:&lt;2 k€,b1:2-10 k€,b2:10-50 k€,b3:&gt;50 k€"],
+["mi","s",3,0,"Interested in a meetup in Barcelona in October?|Intéressé(e) par un meetup à Barcelone en octobre ?|¿Le interesa un meetup en Barcelona en octubre?",YN],
+["mf","s",3,0,"Preferred format|Format préféré|Formato preferido","half:Half day|Demi-journée|Media jornada,day:Full day|Journée|Jornada completa,eve:Evening|Soirée|Tarde-noche,hyb:Hybrid / online|Hybride / en ligne|Híbrido / en línea"],
+["mt","m",3,0,"Topics you would like|Sujets souhaités|Temas de interés","field:Field feedback from destinations|Retours de terrain de destinations|Experiencias de destinos,demo:Technical demo|Démonstration technique|Demostración técnica,cost:Costs and business models|Coûts et modèles économiques|Costes y modelos de negocio,reg:Regulation and funding|Réglementation et financements|Normativa y financiación,net:Networking|Mise en relation|Networking"],
+["sp","s",3,0,"Would you share your experience as a speaker?|Souhaitez-vous témoigner ?|¿Le gustaría compartir su experiencia?","yes:Yes|Oui|Sí,no:No|Non|No"],
+["nm","t",4,0,"Name|Nom|Nombre"],
+["em","t",4,0,"Email|E-mail|Correo electrónico"],
+["org","t",4,0,"Organisation|Organisation|Organización"],
+["ok","m",4,0,"Consent (GDPR)|Consentement (RGPD)|Consentimiento (RGPD)","y:I agree to be contacted about this event|J'accepte d'être recontacté(e) au sujet de cet événement|Acepto ser contactado/a sobre este evento"]];
+
+const $=s=>document.querySelector(s),f=$("#f");
+let A={},lang=0,ml,done=0,step=0;
+const bl=()=>{for(const l of navigator.languages||[navigator.language]){const i=LN.indexOf(String(l).slice(0,2).toLowerCase());if(i>-1)return i}return 0};
+const tx=(s,i=lang)=>{const p=s.split("|");return p[i]||p[0]};
+const save=()=>{const s=JSON.stringify({l:ml,a:A,p:step});
+ try{document.cookie="sit="+encodeURIComponent(s)+";max-age=2592000;path=/;SameSite=Lax"}catch(e){}
+ try{localStorage.sit=s}catch(e){}};
+const isSent=()=>{try{if(localStorage.sitSent)return 1}catch(e){}return /(?:^|; )sit_sent=1/.test(document.cookie)};
+const markSent=()=>{document.cookie="sit_sent=1;max-age=31536000;path=/;SameSite=Lax";try{localStorage.sitSent=1}catch(e){}};
+const wipe=()=>{document.cookie="sit=;max-age=0;path=/";try{localStorage.removeItem("sit")}catch(e){}};
+function load(){lang=bl();let s=(document.cookie.match(/(?:^|; )sit=([^;]*)/)||[])[1];s=s?decodeURIComponent(s):null;
+ try{s=s||localStorage.sit}catch(e){}
+ try{const d=JSON.parse(s);A=d.a||{};step=Math.min(d.p||0,S.length-1);if(d.l!=null)ml=lang=d.l}catch(e){}}
+function vis(){document.querySelectorAll(".tis").forEach(e=>e.classList.toggle("hide",A.know!="yes"));
+ const n=$("#no");if(n)n.textContent=A.know=="no"?tx(T.no):""}
+function draw(){
+ document.documentElement.lang=LN[lang];
+ $("#lg").innerHTML=LN.map((l,i)=>`<button type="button" data-i="${i}"${i==lang?' class="on"':""}>${l.toUpperCase()}</button>`).join("");
+ $("#h").textContent=tx(T.h);$("#in").textContent=tx(T.in);
+ if(done){f.innerHTML=`<h2>${tx(T.ok)}</h2><p class="mu">${tx(T.sent)}</p>`;return}
+ let h=`<div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="${S.length}" aria-valuenow="${step+1}"><i style="width:${(step+1)/S.length*100}%"></i></div><p class="mu">${tx(T.step).replace("{0}",step+1).replace("{1}",S.length)}</p><h2>${tx(S[step])}</h2>`;
+ for(const[id,ty,s,tis,q,o]of Q){
+  if(s!=step)continue;
+  h+=`<fieldset data-id="${id}"${tis?' class="tis"':""}><legend>${tx(q)}</legend>`;
+  if(ty=="t")h+=`<input type="${id=="em"?"email":"text"}" name="${id}" value="${(A[id]||"").replace(/"/g,"&quot;")}">`;
+  else for(const x of o.split(/,(?=[\w+-]+:)/)){const[k,...r]=x.split(":"),v=r.join(":")||k,
+   on=ty=="m"?(A[id]||[]).includes(k):A[id]==k;
+   h+=`<label class="o"><input type="${ty=="m"?"checkbox":"radio"}" name="${id}" value="${k}"${on?" checked":""}${ty=="s"&&["type","know"].includes(id)?" required":""}> ${tx(v)}</label>`}
+  h+="</fieldset>"+(id=="know"?'<p id="no" class="mu"></p>':"")}
+ const last=step==S.length-1;
+ f.innerHTML=h+`<div class="nav">${step?`<button type="button" class="back">${tx(T.back)}</button>`:""}<button class="go">${tx(last?T.go:T.next)}</button></div>`;vis()}
+f.oninput=e=>{const t=e.target,n=t.name;if(!n)return;
+ A[n]=t.type=="checkbox"?[...f.querySelectorAll(`[name=${n}]:checked`)].map(x=>x.value):t.value;
+ save();vis()};
+$("#lg").onclick=e=>{if(e.target.dataset.i){ml=lang=+e.target.dataset.i;save();draw()}};
+f.onclick=e=>{if(e.target.classList.contains("back")){step--;save();draw();scrollTo(0,0)}};
+// Headers: EN / ES, so the sheet reads regardless of the respondent's language.
+const HDR={date:"Date|Fecha",lang:"Language|Idioma",type:"Business type|Tipo de actividad",
+ size:"Number of sites|Número de sitios",season:"Main season|Temporada principal",
+ pres:"Tiger mosquito present|Presencia mosquito tigre",
+ impact:"Observed impacts|Impactos observados",meas:"Current measures|Medidas actuales",
+ bud:"Current control budget|Presupuesto control actual",know:"Knows SIT|Conoce la TIE",
+ arg:"Convincing arguments|Argumentos convincentes",con:"Concerns|Preocupaciones",
+ host:"Would host releases|Aceptaría sueltas",
+ coll:"Would join collective scheme|Se uniría a un dispositivo colectivo",
+ mod:"Preferred model|Modelo preferido",tb:"Possible SIT budget|Presupuesto posible TIE",
+ mi:"Interested in meetup|Interesado en meetup",mf:"Preferred format|Formato preferido",
+ mt:"Topics wanted|Temas deseados",sp:"Willing to speak|Dispuesto a hablar",
+ nm:"Name|Nombre",em:"Email|Correo electrónico",org:"Organisation|Organización",
+ ok:"GDPR consent|Consentimiento RGPD"};
+const hd=k=>HDR[k].split("|").join(" / ");
+f.onsubmit=async e=>{e.preventDefault();
+ if(step<S.length-1){step++;save();draw();scrollTo(0,0);return}
+ const r={};r[hd("date")]=new Date().toISOString();r[hd("lang")]=LN[lang];
+ for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[hd(q[0])]=Array.isArray(v)?v.join(";"):v||""}
+ const b=f.querySelector(".go");b.disabled=true;
+ try{if(!ENDPOINT)throw "no endpoint";
+  const w=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
+  const t=await w.text();
+  if(!t.trim().startsWith("ok"))throw "HTTP "+w.status+" "+t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,120);
+  wipe();markSent();A={};done=1;$("#msg").textContent="";draw()}
+ catch(x){b.disabled=false;$("#msg").textContent=tx(T.fb)+" ["+(x&&x.message||x)+"]"}};
+load();done=isSent();draw();
+</script></body></html>
