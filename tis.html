@@ -126,9 +126,11 @@ const HDR={date:"Date|Fecha",lang:"Language|Idioma",type:"Business type|Tipo de 
  nm:"Name|Nombre",em:"Email|Correo electrónico",org:"Organisation|Organización",
  ok:"GDPR consent|Consentimiento RGPD"};
 const hd=k=>HDR[k].split("|").join(" / ");
+const fmtDate=d=>{const p=n=>String(n).padStart(2,"0");
+ return p(d.getDate())+"/"+p(d.getMonth()+1)+"/"+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes())};
 f.onsubmit=async e=>{e.preventDefault();
  if(step<S.length-1){step++;save();draw();scrollTo(0,0);return}
- const r={};r[hd("date")]=new Date().toISOString();r[hd("lang")]=LN[lang];
+ const r={};r[hd("date")]=fmtDate(new Date());r[hd("lang")]=LN[lang];
  for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[hd(q[0])]=Array.isArray(v)?v.join(";"):v||""}
  const b=f.querySelector(".go");b.disabled=true;
  try{if(!ENDPOINT)throw "no endpoint";
