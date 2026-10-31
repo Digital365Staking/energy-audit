@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       headerBases: "📘 Bases fondamentales", srcBas:"basFR.png", headerKnowledge1: "Objectif :", headerKnowledge2: "Comprendre jusqu’à 80% des fondamentaux du métier",
       headerMidnight: "Faut-il vraiment s’affranchir des systèmes centralisés ? Le pari de Midnight", linkStartMidnight: "https://digitalenergyaudit.com/cardano/beginner/fr",
       realisations: "🎬 Nos réalisations", titleAdrien: "Adrien, Ingénieur en intelligence artificielle et Auditeur énergétique ( Genève, Luxembourg et Madrid )",
-      muebles: "",
+      muebles: "Nouveau service de vente et de location de mobilier en bois démontable (sans vis).",
       widget: "Nous proposons un widget web permettant de visualiser un graphique représentant la consommation en temps réel de votre appareil. Ce composant peut bien sûr être intégré à vos plateformes web et/ou mobiles.",
       titleJohn: "John, PDG & Analyste de Données (Dublin et Madrid)", launchTrain: "Commencer la formation", launchESP32: "💳 COURS PAYANTS",     
       office: "( Bureau de Représentation )", linkStartESP32: "https://digitalenergyaudit.com/esp32/paid-fr", linkConvIFCJSON: "https://3dbimviewer.pages.dev/?lang=fr",
